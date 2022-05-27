@@ -1,0 +1,9 @@
+Before anything else, we MUST install Tesseract.
+
+Following the official documentation of "PyTesseract" we finally get to the link:
+https://digi.bib.uni-mannheim.de/tesseract/tesseract-ocr-w64-setup-v5.1.0.20220510.exe
+
+> - https://pypi.org/project/pytesseract/
+>> - https://github.com/tesseract-ocr/tesseract
+>>> - https://github.com/UB-Mannheim/tesseract/wiki
+>>>> - https://digi.bib.uni-mannheim.de/tesseract/tesseract-ocr-w64-setup-v5.1.0.20220510.exe
