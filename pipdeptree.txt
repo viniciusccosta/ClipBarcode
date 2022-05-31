@@ -1,5 +1,6 @@
 pipdeptree==2.2.1
   - pip [required: >=6.0.0, installed: 21.3.1]
+pyperclip==1.8.2
 pytesseract==0.3.9
   - packaging [required: >=21.3, installed: 21.3]
     - pyparsing [required: >=2.0.2,!=3.0.5, installed: 3.0.9]
