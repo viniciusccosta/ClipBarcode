@@ -1,11 +1,13 @@
 # ======================================================================================================================
-import datetime
 import tkinter as tk
+from tkinter import messagebox
 from PIL import ImageGrab
 import pytesseract
 import os
 import json
 from time import time_ns
+from pyzbar.pyzbar import decode
+from datetime_tools import timens_to_datetime
 
 
 # ======================================================================================================================
@@ -29,21 +31,15 @@ def save_result(result, img):
 
     # Incluíndo a leitura no arquivo de resultados:
     lista_atual = []
-    with open("./history/results.json", 'r') as jsonfile:
+    with open("./history/results.json", 'r', encoding='UTF8') as jsonfile:
         try:
             lista_atual = json.load(jsonfile)
         except json.decoder.JSONDecodeError as e:
             pass    # TODO: Handle it
 
-    with open("./history/results.json", 'w') as jsonfile:
+    with open("./history/results.json", 'w', encoding='UTF8') as jsonfile:
         lista_atual.append(result)
-        json.dump(lista_atual, jsonfile)
-
-
-def timens_to_datetime(nanoseconds):    # TODO: Enviar para o próprio arquivo de "tempo"
-    timestamp_microseconds = nanoseconds / 1000
-    timestamp_seconds = timestamp_microseconds / 1000000
-    return datetime.datetime.fromtimestamp(timestamp_seconds)
+        json.dump(lista_atual, jsonfile, ensure_ascii=False)
 
 
 def ler_print():
@@ -54,9 +50,10 @@ def ler_print():
     # -----------------------------------------------------------
     img = ImageGrab.grabclipboard()
     try:
-        text = pytesseract.image_to_string(img).strip("\n")
+        text = pytesseract.image_to_string(img, lang="por").strip("\n")
     except TypeError:
-        return  # TODO: Avisar usuário que não existe nenhuma image no CTRL V
+        messagebox.showwarning("Sem Imagem", "Tire um print antes")
+        return
 
     # -----------------------------------------------------------
     # Linha Digitável:
@@ -73,7 +70,38 @@ def ler_print():
     # -----------------------------------------------------------
     # Código de Barras ?
     else:
-        print("Será que o print é de um código de barras então?")
+        results = decode(img)
+
+        if len(results) == 1:
+            d = results[0]
+            text = d.data.decode("utf-8")
+
+            if d.type == "I25":         # Boletos de Cobraça e Convênio
+                print("Boleto ?", text)
+                cod_conv = text     # TODO: Converter texto lido do código de barras para linhas digitáveis
+            elif d.type == "CODE128":   # Código de Nota Fiscal
+                print("Nota Fiscal ?", text)
+                cod_conv = text     # TODO: Fazer nada né?
+            elif d.type == "QRCODE":
+                print("QRCODE", text)   # QR Codes
+                cod_conv = text     # TODO: Fazer nada né?
+            else:
+                messagebox.showerror("Ainda não", "Código de barras não suportado")
+                return
+
+            result = {
+                "id": timens,
+                "data": agora.strftime("%d/%m/%Y %H:%M:%S"),
+                "type": 1,
+                "cod_lido": text,
+                "cod_conv": cod_conv
+            }
+
+            save_result(result, img)
+        elif len(results) > 1:
+            messagebox.showerror("Ops!", "O seu print só deve conter apenas 1 código de barras")
+        else:
+            messagebox.showerror("Cadê?", "Código de barras não localizado!")
 
 
 # ======================================================================================================================
@@ -114,7 +142,6 @@ class MainWindow:
 
         # -------------------------------------
         # Detail Frame:
-
         tk.Frame(self.f2, bg="yellow").grid(row=0, rowspan=10, column=1, columnspan=6, sticky="nsew")
 
         tv_data = tk.StringVar()
@@ -136,10 +163,15 @@ class MainWindow:
         for c in range(cols):
             self.f2.columnconfigure(index=c, weight=1)
 
+        # -------------------------------------
+        ler_print()
+
+        # -------------------------------------
+
     def _fill_list(self):
         self.listbox.delete(0, "end")
 
-        with open("./history/results.json", 'r') as jsonfile:
+        with open("./history/results.json", 'r', encoding='UTF-8') as jsonfile:
             try:
                 data = json.load(jsonfile)
                 for cdb in data:
@@ -151,6 +183,10 @@ class MainWindow:
         ler_print()
         self._fill_list()
 
+    def raise_above_all(self):
+        self.root.attributes('-topmost', 1)
+        self.root.attributes('-topmost', 0)
+
 
 # ======================================================================================================================
 if __name__ == '__main__':
@@ -160,8 +196,10 @@ if __name__ == '__main__':
         # TODO: ASK FOR FULL PATH OF TESSERACT
         pytesseract.pytesseract.tesseract_cmd = r'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 
+    # -------------------------------------
     check_history_path()
 
+    # -------------------------------------
     tk_root = tk.Tk()
-    MainWindow(tk_root)
+    w = MainWindow(tk_root)
     tk_root.mainloop()
