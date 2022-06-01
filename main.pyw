@@ -133,21 +133,22 @@ class MainWindow:
 
         self.root = root
         self.root.title("Clip Barcode")
-        self.root.minsize(1500, 720)
+        self.root.geometry("1280x720")
+        self.root.bind('<Configure>', self._configure_callback)
+
+        self.last_width = 0
+        self.last_height = 0
 
         # -------------------------------------
         # Frames:
         self.f1 = tk.Frame(self.root, )
         self.f2 = tk.Frame(self.root, )
-        tk.Button(self.root, text="Ler Print", font=("Consolas", 16), command=self._ler_print_pressed).grid(pady=10)
+        tk.Button(self.root, text="Ler Print", font=("Consolas", 16), command=self._lerprint_pressed).grid(pady=10)
 
         self.f1.grid(row=1, column=0, padx=5, pady=(0, 10), sticky="nswe")
-        self.f2.grid(row=1, column=1, columnspan=2, padx=5, pady=(0, 10), sticky="nswe")
+        self.f2.grid(row=1, column=1, columnspan=2, padx=5, pady=(0, 15), sticky="nswe")
 
-        cols, rows = self.root.grid_size()
-        for c in range(cols):
-            self.root.columnconfigure(index=c, weight=1)
-
+        self.root.columnconfigure(index=1, weight=1)
         self.root.rowconfigure(index=1, weight=1)
 
         # -------------------------------------
@@ -168,34 +169,32 @@ class MainWindow:
 
         # -------------------------------------
         # Detail Frame:
-
-        self.canvas = tk.Label(self.f2, bg="gray", width=1110, height=1)
-        self.canvas.grid(row=0, rowspan=10, column=1, columnspan=6, sticky="nsew", )
+        self.canvas = tk.Label(self.f2, bg="gray")
+        self.canvas.grid(row=0, column=1, sticky="nsew")
 
         self.lbl_date = tk.StringVar()
-        tk.Label(self.f2, textvariable=self.lbl_date, font=("Consolas", 16)).grid(row=10, column=1, columnspan=6, sticky="nswe")
+        tk.Label(self.f2, textvariable=self.lbl_date, font=("Consolas", 16)).grid(row=2, column=1, sticky="nswe", pady=(15, 0))
 
         self.entry_cod_lido = tk.StringVar()
-        tk.Label(self.f2, text="Código Lido:", font=("Consolas", 16), ).grid(row=12, sticky="nswe")
-        tk.Entry(self.f2, font=("Consolas", 16), state=tk.DISABLED, textvariable=self.entry_cod_lido).grid(row=12, column=1, columnspan=6, sticky="we")
-        tk.Button(self.f2, text="Copiar", font=("Consolas", 12), command=self.copiar_codlido).grid(row=12, column=7, )
+        tk.Label(self.f2, text="Código Lido:", font=("Consolas", 16), ).grid(row=3, column=0, sticky="nswe", pady=(15, 15))
+        tk.Entry(self.f2, font=("Consolas", 16), state=tk.DISABLED, textvariable=self.entry_cod_lido).grid(row=3, column=1, sticky="we")
+        tk.Button(self.f2, text="Copiar", font=("Consolas", 12), command=self.copiar_codlido).grid(row=3, column=2, sticky="ew")
 
         self.entry_cod_conv = tk.StringVar()
-        tk.Label(self.f2, text="Código Convertido:", font=("Consolas", 16), ).grid(row=13, sticky="nswe")
-        tk.Entry(self.f2, font=("Consolas", 16), state=tk.DISABLED, textvariable=self.entry_cod_conv).grid(row=13, column=1, columnspan=6, sticky="we")
-        tk.Button(self.f2, text="Copiar", font=("Consolas", 12), command=self.copiar_codconv).grid(row=13, column=7, )
+        tk.Label(self.f2, text="Código Convertido:", font=("Consolas", 16), ).grid(row=4, sticky="nswe", pady=(15, 15))
+        tk.Entry(self.f2, font=("Consolas", 16), state=tk.DISABLED, textvariable=self.entry_cod_conv).grid(row=4, column=1, sticky="we")
+        tk.Button(self.f2, text="Copiar", font=("Consolas", 12), command=self.copiar_codconv).grid(row=4, column=2, sticky="ew")
 
-        cols, rows = self.f2.grid_size()
-        for r in range(16):
-            self.f2.rowconfigure(index=r, weight=1)
-        for c in range(cols):
-            self.f2.columnconfigure(index=c, weight=1)
+        self.f2.rowconfigure(index=0, weight=1)
+        self.f2.columnconfigure(index=1, weight=1)
 
         # -------------------------------------
+        self.cur_img = None
+        self.cur_img_resized = None
         self.photoimage = None
-        self.update_canvas("ocr.png")           # TODO: A primeira imagem não está sendo redimensionada, provavelmente porque a interface ainda não está pronta
+        # self.update_canvas()                    # TODO: Desnecessário ?
 
-        self._ler_print_pressed(init=True)
+        self._lerprint_pressed(init=True)
 
         # -------------------------------------
 
@@ -210,7 +209,7 @@ class MainWindow:
             except json.decoder.JSONDecodeError:
                 pass    # TODO: Handle it
 
-    def _ler_print_pressed(self, init=False):
+    def _lerprint_pressed(self, init=False):
         try:
             ler_print()
 
@@ -255,6 +254,18 @@ class MainWindow:
             self.listbox.select_set(self.selection)
             self._item_selected(None)   # TODO: Não curti passar esse None...
 
+    def _configure_callback(self, event):
+        if event.widget == self.canvas:                                                                 # Houve uma alteração no Canvas:
+            if abs(event.width - self.last_width) > 50 or abs(event.height - self.last_height) > 50:    # Foi uma alteração de tamanho
+                if self.last_width != 0 and self.last_height != 0:                                      # Ignorando a inicialização da interface
+                    try:
+                        res_img = self.resize_image(self.cur_img, des_width=event.width)
+                        self.update_canvas(img_resized=res_img)
+                    except NoImageException:
+                        pass
+                self.last_width  = event.width
+                self.last_height = event.height
+
     def copiar_codlido(self):
         # TODO: Lidar com exceções
         pyperclip.copy(self.entry_cod_lido.get())
@@ -269,7 +280,8 @@ class MainWindow:
         # TODO: Alterar texto dos botões para os originais
 
         if cdb:
-            self.update_canvas(f"./history/{timens}.png")
+            self.canvas.update()
+            self.update_canvas(filename=f"./history/{timens}.png")
             self.update_date(cdb.get("data"))
             self.update_entry_codlido(cdb.get("cod_lido", ""))
             self.update_entry_codconv(cdb.get("cod_conv", ""))
@@ -285,27 +297,34 @@ class MainWindow:
     def update_entry_codconv(self, new_text):
         self.entry_cod_conv.set(new_text)
 
-    def update_canvas(self, filename):
-        def get_resize_params(size):
-            des_widht = self.canvas.winfo_width()
-            cur_width, cur_height = size
-            h = int((cur_height * des_widht) / cur_width)
+    def resize_image(self, img, des_width=None):
+        if img:
+            if not des_width:
+                des_width = self.canvas.winfo_width()
 
-            return int(des_widht), int(h)
+            cur_width, cur_height = img.size
+            h = int((cur_height * des_width) / cur_width)
 
-        try:
-            cur_img = Image.open(filename)
+            return img.resize((int(des_width) - 5, int(h) - 5), Image.ANTIALIAS)  # TODO: Lidar com o warning de que ANTIALIAS está depreciado
+        else:
+            raise NoImageException
 
-            new_w, new_h = get_resize_params(cur_img.size)
-            if new_h > 0 and new_h > 0:
-                cur_img_resized = cur_img.resize((new_w, new_h), Image.ANTIALIAS)   # TODO: Lidar com o warning de que ANTIALIAS está depreciado
-                self.photoimage = ImageTk.PhotoImage(cur_img_resized)
-            else:
-                self.photoimage = ImageTk.PhotoImage(cur_img)
+    def update_canvas(self, filename=None, img_resized=None,):
+        if filename:
+            try:
+                self.cur_img         = Image.open(filename)
+                self.cur_img_resized = self.resize_image(self.cur_img)
+                self.photoimage      = ImageTk.PhotoImage(self.cur_img_resized)
+                self.canvas["image"] = self.photoimage
+            except (FileNotFoundError, FileExistsError, NoImageException):
+                messagebox.showerror("Imagem", "Imagem não encontrada")
+            except ValueError:
+                pass
 
+        elif img_resized:
+            self.cur_img_resized = img_resized
+            self.photoimage = ImageTk.PhotoImage(self.cur_img_resized)
             self.canvas["image"] = self.photoimage
-        except (FileNotFoundError, FileExistsError, Exception) as e:
-            messagebox.showerror("Imagem", "Imagem não encontrada")
 
     def raise_above_all(self):
         self.root.attributes('-topmost', 1)
@@ -314,6 +333,7 @@ class MainWindow:
 
 # ======================================================================================================================
 if __name__ == '__main__':
+
     try:
         pytesseract.get_languages()             # Apenas para testar se o Tesseract está no PATH
     except pytesseract.pytesseract.TesseractNotFoundError:
