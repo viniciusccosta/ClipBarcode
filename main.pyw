@@ -9,7 +9,7 @@ from time import time_ns
 from pyzbar.pyzbar import decode
 from datetime_tools import timens_to_datetime
 import pyperclip
-from boleto import instanciar_boleto
+from boleto import new_boleto
 
 
 # ======================================================================================================================
@@ -59,39 +59,21 @@ def ler_print():
     # -----------------------------------------------------------
     img = ImageGrab.grabclipboard()
 
-    try:
-        text = pytesseract.image_to_string(img, lang="por", config="--psm 13").strip("\n")     # TODO: Tesseract está tendo dificuldades em ler números com mais de dois 0 seguidos
-    except TypeError:
-        raise NoImageException
-
-    # -----------------------------------------------------------
-    # Linha Digitável:
-    if len(text) > 1:
-        boleto = instanciar_boleto(linha_digitavel=text)
-
-        result = {
-            f"{timens}": {
-                "data": agora.strftime("%d/%m/%Y %H:%M:%S"),
-                "type": 0,
-                "cod_lido": text,
-                "cod_conv": boleto.linha_digitavel if boleto else ""    # TODO: Instanciar_boleto pode retornar nulo...
-            }
-        }
-
-        save_result(result, img)
-
     # -----------------------------------------------------------
     # Código de Barras ?
-    else:
+    try:
         results = decode(img)
+    except (TypeError, Exception):
+        raise NoImageException
 
+    if len(results) > 0:
         if len(results) == 1:
             d = results[0]
             text = d.data.decode("utf-8")
 
             if d.type == "I25":         # Boletos de Cobraça e Arrecadação
                 print("Boleto ?", text)
-                boleto = instanciar_boleto(cod_barras=text)                  # TODO: Deveria ser "automático", definindo se é Cobrança ou Arrecadação
+                boleto = new_boleto(cod_barras=text)                  # TODO: Deveria ser "automático", definindo se é Cobrança ou Arrecadação
                 cod_conv = boleto.linha_digitavel
             elif d.type == "CODE128":   # Código de Nota Fiscal
                 print("Nota Fiscal ?", text)
@@ -117,6 +99,29 @@ def ler_print():
             messagebox.showerror("Ops!", "O seu print só deve conter apenas 1 código de barras")
         else:
             messagebox.showerror("Cadê?", "Código de barras não localizado!")
+
+    # -----------------------------------------------------------
+    # Linha Digitável:
+    else:
+
+        try:
+            text = pytesseract.image_to_string(img, lang="por", config="--psm 13").strip("\n")     # TODO: Tesseract está tendo dificuldades em ler números com mais de dois 0 seguidos
+        except TypeError:
+            raise NoImageException
+
+        if len(text) > 1:
+            boleto = new_boleto(linha_digitavel=text)
+
+            result = {
+                f"{timens}": {
+                    "data": agora.strftime("%d/%m/%Y %H:%M:%S"),
+                    "type": 0,
+                    "cod_lido": text,
+                    "cod_conv": boleto.linha_digitavel if boleto else ""    # TODO: Instanciar_boleto pode retornar nulo...
+                }
+            }
+
+            save_result(result, img)
 
 
 def get_leitura(timens):
