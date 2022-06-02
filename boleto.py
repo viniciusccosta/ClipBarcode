@@ -48,14 +48,6 @@ class Boleto(ABC):
     def from_cod_barras(self, cod_barras):
         pass
 
-    @abstractmethod
-    def validar_linha_digitavel(self):
-        pass
-
-    @abstractmethod
-    def validar_cod_barras(self):
-        pass
-
 
 class Arrecadacao(Boleto):
     """
@@ -66,28 +58,27 @@ class Arrecadacao(Boleto):
         4. Telecomunicações;
         5. Órgãos Governamentais;
         6. Carnes e Assemelhados ou demais
-         Empresas / Órgãos que serão identificadas através do CNPJ.
+            Empresas / Órgãos que serão identificadas através do CNPJ.
         7. Multas de trânsito
         9. Uso exclusivo do banco
 
     Valor Efetivo ou Referência:
         “6”- Valor a ser cobrado efetivamente em reais com dígito verificador calculado pelo módulo 10 na quarta posição do Código de Barras e valor com 11 posições (versão 2 e posteriores) sem qualquer alteração;
+
         “7”- Quantidade de moeda:
-            Zeros – somente na impossibilidade de utilizar o valor;
-            Valor a ser reajustado por um índice com dígito.
-                Vverificador calculado pelo módulo 10 na quarta posição do Código de Barras e valor com 11 posições (versão 2 e posteriores).
-        “8” – Valor a ser cobrado efetivamente em reais com dígito verificador calculado pelo módulo 11 na quarta posição do Código de Barras e valor com 11 posições (versão 2 e posteriores) sem qualquer alteração.
-        “9” – Quantidade de moeda
-            Zeros – somente na impossibilidade de utilizar o valor;
-            Valor a ser reajustado por um índice com dígito.
-                Verificador calculado pelo módulo 11 na quarta posição do Código de Barras e valor com 11 posições (versão 2 e posteriores).
+            Zeros– somente na impossibilidade de utilizar o valor;
+            Valor a ser reajustado por um índice com dígito verificador calculado pelo módulo 10 na quarta posição do Código de Barras e valor com 11 posições (versão 2 e posteriores).
 
+        “8”– Valor a ser cobrado efetivamente em reais com dígito verificador calculado pelo módulo 11 na quarta posição do Código de Barras e valor com 11 posições (versão 2 e posteriores) sem qualquer alteração.
 
-
-
+        “9”– Quantidade de moeda
+            Zeros– somente na impossibilidade de utilizar o valor;
+            Valor a ser reajustado por um índice com dígito verificador calculado pelo módulo 11 na quarta posição do Código de Barras e valor com 11 posições (versão 2 e posteriores).
     """
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
         self.id_prod     = None     # Constante “8” para identificar arrecadação
         self.seg_prod    = None
         self.id_ve_ref   = None
@@ -111,12 +102,30 @@ class Arrecadacao(Boleto):
             self.from_cod_barras(kwargs.get("cod_barras"))
 
     def from_linha_digitavel(self, linha_digitavel):
+        def validar_linha_digitavel():
+            # TODO: No caso da DAS (Simples Nacional), GRF (FGTS), GRRF (Rescisório FGTS), GPS (INSS), e talvez outros, os dígitos verificadores são feitos através do mod11 com a opção de x10
+
+            if self.campo1[0:0 + 3] == "858":           # TODO: Ao invés desses "ifs" poderíamos fazer uma subclasse de Arrecadação
+                dv1 = mod11(f'{self.campo1}', x10=True)
+                dv2 = mod11(f'{self.campo2}', x10=True)
+                dv3 = mod11(f'{self.campo3}', x10=True)
+                dv4 = mod11(f'{self.campo4}', x10=True)
+                dv_geral = mod11(f'{self.campo1[0:0 + 3]}{self.campo1[4:4 + 8]}{self.campo2}{self.campo3}{self.campo4}', x10=True)
+            else:
+                dv1 = mod10(f'{self.campo1}')
+                dv2 = mod10(f'{self.campo2}')
+                dv3 = mod10(f'{self.campo3}')
+                dv4 = mod10(f'{self.campo4}')
+                dv_geral = mod10(f'{self.campo1[0:0 + 3]}{self.campo1[4:4 + 8]}{self.campo2}{self.campo3}{self.campo4}')
+
+            return dv1 == self.dv1 and dv2 == self.dv2 and dv3 == self.dv3 and dv4 == self.dv4 and self.dv_geral == dv_geral
+
         def converter_para_cod_barras():
             self.cod_barras = f'{self.campo1}{self.campo2}{self.campo3}{self.campo4}'
 
         linha_digitavel = linha_digitavel.strip("").replace(" ", "").replace(".", "")
 
-        if len(linha_digitavel) == 48:  # TODO: Realizar verificações necessárias
+        if len(linha_digitavel) == 48:  # TODO: Realizar verificações necessárias, como verificar se só possuem números e coisas similares
             self.linha_digitavel = linha_digitavel
             self.campo1 = linha_digitavel[ 0: 0+11]     # TODO: Separar por campos, tais como vencimento, empresa, e etc
             self.dv1    = linha_digitavel[11:11+ 1]
@@ -129,10 +138,11 @@ class Arrecadacao(Boleto):
 
             self.dv_geral = self.campo1[3]
 
-            if self.validar_linha_digitavel():
+            if validar_linha_digitavel():
                 converter_para_cod_barras()
             else:
-                print("CÓDIGO INVÁLIDO")    # TODO: Lidar apropriadamente, talvez "raise DigitoVerificadorInvalido"
+                pass
+                # print("CÓDIGO INVÁLIDO")    # TODO: Lidar apropriadamente, talvez "raise DigitoVerificadorInvalido"
 
     def from_cod_barras(self, cod_barras):
         """
@@ -159,17 +169,37 @@ class Arrecadacao(Boleto):
             +---------+---------+--------------------------------------------+
         """
 
+        def validar_cod_barras():
+            # TODO: No caso da DAS (Simples Nacional), GRF (FGTS), GRRF (Rescisório FGTS), GPS (INSS), e talvez outros, os dígitos verificadores são feitos através do mod11 com a opção de x10
+
+            if self.campo1[0:0+3] == "858":     # TODO: Ao invés desses "ifs" poderíamos fazer uma subclasse de Arrecadação
+                dv_geral = mod11(f'{self.campo1[0:0 + 3]}{self.campo1[4:4 + 8]}{self.campo2}{self.campo3}{self.campo4}', x10=True)
+            else:
+                dv_geral = mod10(f'{self.campo1[0:0 + 3]}{self.campo1[4:4 + 8]}{self.campo2}{self.campo3}{self.campo4}')
+
+            return dv_geral == self.dv_geral
+
         def conveter_para_linha_digitavel():
-            self.dv1 = mod10(f'{self.campo1}')
-            self.dv2 = mod10(f'{self.campo2}')
-            self.dv3 = mod10(f'{self.campo3}')
-            self.dv4 = mod10(f'{self.campo4}')
-            self.dv_geral = mod10(f'{self.campo1[0:0 + 3]}{self.campo1[4:4 + 8]}{self.campo2}{self.campo3}{self.campo4}')
+            # TODO: No caso da DAS (Simples Nacional), GRF (FGTS), GRRF (Rescisório FGTS), GPS (INSS), e talvez outros, os dígitos verificadores são feitos através do mod11 com a opção de x10
+
+            if self.campo1[0:0 + 3] == "858":               # TODO: Ao invés desses "ifs" poderíamos fazer uma subclasse de Arrecadação
+                self.dv1 = mod11(f'{self.campo1}', x10=True)
+                self.dv2 = mod11(f'{self.campo2}', x10=True)
+                self.dv3 = mod11(f'{self.campo3}', x10=True)
+                self.dv4 = mod11(f'{self.campo4}', x10=True)
+                self.dv_geral = mod11(f'{self.campo1[0:0 + 3]}{self.campo1[4:4 + 8]}{self.campo2}{self.campo3}{self.campo4}', x10=True)
+            else:
+                self.dv1 = mod10(f'{self.campo1}')
+                self.dv2 = mod10(f'{self.campo2}')
+                self.dv3 = mod10(f'{self.campo3}')
+                self.dv4 = mod10(f'{self.campo4}')
+                self.dv_geral = mod10(f'{self.campo1[0:0 + 3]}{self.campo1[4:4 + 8]}{self.campo2}{self.campo3}{self.campo4}')
+
             self.linha_digitavel = f'{self.campo1}{self.dv1}{self.campo2}{self.dv2}{self.campo3}{self.dv3}{self.campo4}{self.dv4}'
 
         cod_barras = cod_barras.strip("").replace(" ", "").replace(".", "")
 
-        if len(cod_barras) == 44:           # TODO: Realizar verificações necessárias
+        if len(cod_barras) == 44:           # TODO: Realizar verificações necessárias, como verificar se só possuem números e coisas similares
             self.cod_barras = cod_barras
 
             self.campo1 = cod_barras[ 0: 0+11]
@@ -179,24 +209,11 @@ class Arrecadacao(Boleto):
 
             self.dv_geral = self.campo1[3]
 
-            if self.validar_cod_barras():
+            if validar_cod_barras():
                 conveter_para_linha_digitavel()
             else:
-                print("CÓDIGO INVÁLIDO")    # TODO: Lidar apropriadamente, talvez "raise DigitoVerificadorInvalido"
-
-    def validar_linha_digitavel(self):
-        dv1      = mod10(f'{self.campo1}')
-        dv2      = mod10(f'{self.campo2}')
-        dv3      = mod10(f'{self.campo3}')
-        dv4      = mod10(f'{self.campo4}')
-        dv_geral = mod10(f'{self.campo1[0:0+3]}{self.campo1[4:4+8]}{self.campo2}{self.campo3}{self.campo4}')
-
-        return dv1 == self.dv1 and dv2 == self.dv2 and dv3 == self.dv3 and dv4 == self.dv4 and self.dv_geral == dv_geral
-
-    def validar_cod_barras(self):
-        dv_geral = mod10(f'{self.campo1[0:0 + 3]}{self.campo1[4:4 + 8]}{self.campo2}{self.campo3}{self.campo4}')
-
-        return dv_geral == self.dv_geral
+                pass
+                # print("CÓDIGO INVÁLIDO")    # TODO: Lidar apropriadamente, talvez "raise DigitoVerificadorInvalido"
 
     def __repr__(self):
         return f'{vars(self,)}'
@@ -269,6 +286,14 @@ class Cobranca(Boleto):
             +---------+---------+--------------------------------------+
         """
 
+        def validar_linha_digitavel():
+            dv1 = mod10(f'{self.id_banco}{self.cod_moeda}{self.campo_livre_1}')
+            dv2 = mod10(f'{self.campo_livre_2}')
+            dv3 = mod10(f'{self.campo_livre_3}')
+            dv = mod11(f'{self.id_banco}{self.cod_moeda}{self.fator_venc}{int(self.valor * 100):010}{self.campo_livre_1}{self.campo_livre_2}{self.campo_livre_3}')
+
+            return dv1 == self.dv1 and dv2 == self.dv2 and dv3 == self.dv3 and dv == self.dv_geral
+
         def converter_para_cod_barras():
             self.campo_livre_cod_barras = f'{self.campo_livre_1}{self.campo_livre_2}{self.campo_livre_3}'
             self.dv_cod_barras          = self.dv_geral
@@ -276,7 +301,7 @@ class Cobranca(Boleto):
 
         linha_digitavel = linha_digitavel.strip("").replace(" ", "").replace(".", "")
 
-        if len(linha_digitavel) == 47:                          # TODO: Realizar verificações necessárias
+        if len(linha_digitavel) == 47:                          # TODO: Realizar verificações necessárias, como verificar se só possuem números e coisas similares
             self.linha_digitavel = linha_digitavel
 
             self.id_banco       = linha_digitavel[ 0: 0 +  3]
@@ -293,10 +318,11 @@ class Cobranca(Boleto):
 
             self.venc           = calculate_date(DATA_BASE, self.fator_venc)
 
-            if self.validar_linha_digitavel():
+            if validar_linha_digitavel():
                 converter_para_cod_barras()
             else:
-                print("CÓDIGO INVÁLIDO")    # TODO: Lidar apropriadamente, talvez "raise DigitoVerificadorInvalido"
+                pass
+                # print("CÓDIGO INVÁLIDO")    # TODO: Lidar apropriadamente, talvez "raise DigitoVerificadorInvalido"
 
         elif len(linha_digitavel) == 44:
             pass
@@ -323,6 +349,10 @@ class Cobranca(Boleto):
                     +---------+---------+----------+--------------------------------------------------------------------------------+
                 """
 
+        def validar_cod_barras():
+            dv = mod11(f'{self.id_banco}{self.cod_moeda}{self.fator_venc}{int(self.valor * 100):010}{self.campo_livre_cod_barras}')
+            return dv == self.dv_cod_barras
+
         def conveter_para_linha_digitavel():
             self.campo_livre_1  = self.campo_livre_cod_barras[0:0+5]
             self.dv1            = mod10(f'{self.id_banco}{self.cod_moeda}{self.campo_livre_1}')
@@ -339,7 +369,7 @@ class Cobranca(Boleto):
 
         cod_barras = cod_barras.strip("").replace(" ", "").replace(".", "")
 
-        if len(cod_barras) == 44:       # TODO: Realizar verificações necessárias, como se só tem números e etc
+        if len(cod_barras) == 44:       # # TODO: Realizar verificações necessárias, como verificar se só possuem números e coisas similares
             self.cod_barras = cod_barras
 
             self.id_banco               = cod_barras[ 0: 0 +  3]
@@ -351,24 +381,13 @@ class Cobranca(Boleto):
 
             self.venc                   = calculate_date(DATA_BASE, self.fator_venc)
 
-            if self.validar_cod_barras():
+            if validar_cod_barras():
                 conveter_para_linha_digitavel()
             else:
-                print("CÓDIGO INVÁLIDO")    # TODO: Lidar apropriadamente, talvez "raise DigitoVerificadorInvalido"
+                pass
+                # print("CÓDIGO INVÁLIDO")    # TODO: Lidar apropriadamente, talvez "raise DigitoVerificadorInvalido"
 
-        # TODO: Código de Barras são só 44 posições né?
-
-    def validar_linha_digitavel(self):
-        dv1 = mod10(f'{self.id_banco}{self.cod_moeda}{self.campo_livre_1}')
-        dv2 = mod10(f'{self.campo_livre_2}')
-        dv3 = mod10(f'{self.campo_livre_3}')
-        dv  = mod11(f'{self.id_banco}{self.cod_moeda}{self.fator_venc}{int(self.valor * 100):010}{self.campo_livre_1}{self.campo_livre_2}{self.campo_livre_3}')
-
-        return dv1 == self.dv1 and dv2 == self.dv2 and dv3 == self.dv3 and dv == self.dv_geral
-
-    def validar_cod_barras(self):
-        dv = mod11(f'{self.id_banco}{self.cod_moeda}{self.fator_venc}{int(self.valor*100):010}{self.campo_livre_cod_barras}')
-        return dv == self.dv_cod_barras
+        # TODO: Nossos códigos de barras são só 44 posições né?
 
 
 # =============================================================================
@@ -386,6 +405,11 @@ if __name__ == "__main__":
         "826300000153 351200081708 924000000027 203104000013",
         "826400000228 885000080006 000000000307 004246000022",
         "826500000110 314400081704 924000000027 202104000015",
+        "85870000134 7 79110328221 0 40072022125 6 74512580554 8",
+        "85850000202 1 04850328221 3 40072022125 6 70826920695 7",
+        "85860000109 4 68720328221 7 40072022125 6 70772110165 0",
+        "85850000045 2 08510328221 0 40072022125 6 74127180523 6",
+        "858900000077 725101792204 507664050831 594309600014",
 
     ]
     cdb = [
@@ -401,6 +425,11 @@ if __name__ == "__main__":
         "82630000015351200081709240000000220310400001",
         "82640000022885000080000000000003000424600002",
         "82650000011314400081709240000000220210400001",
+        "85870000134791103282214007202212574512580554",
+        "85850000202048503282214007202212570826920695",
+        "85860000109687203282214007202212570772110165",
+        "85850000045085103282214007202212574127180523",
+        "85890000007725101792205076640508359430960001",
 
     ]
 
@@ -408,10 +437,14 @@ if __name__ == "__main__":
         c1 = new_boleto(linha_digitavel=lds[c_index])
         c2 = new_boleto(cod_barras=cdb[c_index])
 
+        print('\n', c_index)
+        print(f'\t{"-"*165}')
+        print(f'\t|{"Iguais":^10}|{"Atributo":^50}|{"From Linha Digitável":^50}|{"From Código de Barra":^50}|')
+        print(f'\t{"-"*165}')
         for k, c1v in c1.__dict__.items():
             c2v = c2.__dict__.get(k)
-            print(c1v == c2v, k, c1v, c2v, sep="|")
-
+            e = c1v == c2v
+            print(f'\t|{str(c1v == c2v):^10}|{k:^50}|{str(c1v) if not e else "":^50}|{str(c2v) if not e else "":^50}|')
 
 """
     https://www.boletobancario-codigodebarras.com/2016/04/linha-digitavel.html
