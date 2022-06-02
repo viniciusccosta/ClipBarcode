@@ -2,7 +2,7 @@
 from abc import ABC, abstractmethod
 from datetime_tools import calculate_date
 from digito_verificador import mod10, mod11
-
+import re
 
 # =============================================================================
 DATA_BASE = "07/10/1997"
@@ -13,6 +13,8 @@ def new_boleto(*args, **kwargs):
     if "linha_digitavel" in kwargs:
         linha_digitavel = kwargs.get("linha_digitavel")
         linha_digitavel = linha_digitavel.strip("").replace(" ", "").replace(".", "")
+        # linha_digitavel = ''.join(filter(str.isdigit, linha_digitavel))
+        linha_digitavel = re.sub('\D', '', linha_digitavel)
 
         if len(linha_digitavel) == 47:
             return Cobranca(linha_digitavel=linha_digitavel)
@@ -22,9 +24,11 @@ def new_boleto(*args, **kwargs):
     elif "cod_barras" in kwargs:
         cod_barras = kwargs.get("cod_barras")
         cod_barras = cod_barras.strip("").replace(" ", "").replace(".", "")
+        # cod_barras = ''.join(filter(str.isdigit, cod_barras))
+        cod_barras = re.sub('\D', '', cod_barras)
 
         if len(cod_barras) == 44:
-            if cod_barras[0] == "8":                        # TODO: Verificar se é isso mesmo
+            if cod_barras[0] == "8":
                 return Arrecadacao(cod_barras=cod_barras)
             else:
                 return Cobranca(cod_barras=cod_barras)
@@ -124,6 +128,8 @@ class Arrecadacao(Boleto):
             self.cod_barras = f'{self.campo1}{self.campo2}{self.campo3}{self.campo4}'
 
         linha_digitavel = linha_digitavel.strip("").replace(" ", "").replace(".", "")
+        # linha_digitavel = ''.join(filter(str.isdigit, linha_digitavel))
+        linha_digitavel = re.sub('\D', '', linha_digitavel)
 
         if len(linha_digitavel) == 48:  # TODO: Realizar verificações necessárias, como verificar se só possuem números e coisas similares
             self.linha_digitavel = linha_digitavel
@@ -198,6 +204,8 @@ class Arrecadacao(Boleto):
             self.linha_digitavel = f'{self.campo1}{self.dv1}{self.campo2}{self.dv2}{self.campo3}{self.dv3}{self.campo4}{self.dv4}'
 
         cod_barras = cod_barras.strip("").replace(" ", "").replace(".", "")
+        # cod_barras = ''.join(filter(str.isdigit, cod_barras))
+        cod_barras = re.sub('\D', '', cod_barras)
 
         if len(cod_barras) == 44:           # TODO: Realizar verificações necessárias, como verificar se só possuem números e coisas similares
             self.cod_barras = cod_barras
@@ -300,6 +308,8 @@ class Cobranca(Boleto):
             self.cod_barras             = f'{self.id_banco}{self.cod_moeda}{self.dv_cod_barras}{self.fator_venc}{int(self.valor * 100):010}{self.campo_livre_cod_barras}'
 
         linha_digitavel = linha_digitavel.strip("").replace(" ", "").replace(".", "")
+        # linha_digitavel = ''.join(filter(str.isdigit, linha_digitavel))
+        linha_digitavel = re.sub('\D', '', linha_digitavel)
 
         if len(linha_digitavel) == 47:                          # TODO: Realizar verificações necessárias, como verificar se só possuem números e coisas similares
             self.linha_digitavel = linha_digitavel
@@ -368,6 +378,8 @@ class Cobranca(Boleto):
             self.linha_digitavel = f'{self.id_banco}{self.cod_moeda}{self.campo_livre_1}{self.dv1}{self.campo_livre_2}{self.dv2}{self.campo_livre_3}{self.dv3}{self.dv_geral}{self.fator_venc}{int(self.valor*100):010}'
 
         cod_barras = cod_barras.strip("").replace(" ", "").replace(".", "")
+        # cod_barras = ''.join(filter(str.isdigit, cod_barras))
+        cod_barras = re.sub('\D', '', cod_barras)
 
         if len(cod_barras) == 44:       # # TODO: Realizar verificações necessárias, como verificar se só possuem números e coisas similares
             self.cod_barras = cod_barras

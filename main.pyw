@@ -103,9 +103,8 @@ def ler_print():
     # -----------------------------------------------------------
     # Linha Digitável:
     else:
-
         try:
-            text = pytesseract.image_to_string(img, lang="por", config="--psm 13").strip("\n")     # TODO: Tesseract está tendo dificuldades em ler números com mais de dois 0 seguidos
+            text = pytesseract.image_to_string(img, lang="por",).strip("\n")     # TODO: Tesseract está tendo dificuldades em ler números com mais de dois 0 seguidos
         except TypeError:
             raise NoImageException
 
