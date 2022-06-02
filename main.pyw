@@ -1,7 +1,7 @@
 # ======================================================================================================================
 import tkinter as tk
-from tkinter import messagebox
-from PIL import ImageGrab, ImageTk, Image
+from tkinter import messagebox, filedialog
+from PIL import ImageGrab, ImageTk, Image, ImageDraw
 import pytesseract
 import os
 import json
@@ -14,7 +14,7 @@ from boleto import new_boleto
 
 # ======================================================================================================================
 RESULTS_PATH = "./history/results.json"
-TYPES = {0: "Linha Digitável", "1": "Código de Barras"}
+TYPES = {0: "Linha Digitável", 1: "Código de Barras", 2: "Nota Fiscal", 3: "QRCode"}
 
 
 # ======================================================================================================================
@@ -30,6 +30,37 @@ def check_history_path():
         open(RESULTS_PATH, 'w').close()
 
 
+def check_config_path():
+    if not os.path.exists(".config"):
+        with open(".config", "w", encoding="UTF-8") as file:
+            json.dump({"TESSERACT_CMD": r'C:/Program Files/Tesseract-OCR/tesseract.exe'}, file)
+
+
+def initial_config():
+    check_history_path()
+
+    check_config_path()
+
+    while True:
+        try:
+            with open(".config", "r", encoding="UTF-8") as file:
+                configs = json.load(file)
+                pytesseract.pytesseract.tesseract_cmd = configs.get("TESSERACT_CMD", "")
+
+            pytesseract.get_languages()                                  # Apenas para testar se o Tesseract está no PATH
+            break
+
+        except pytesseract.pytesseract.TesseractNotFoundError:
+            messagebox.showerror("EITA!", "Tesseract não encontrado!")
+            tesseract_path = filedialog.askopenfilename(title="Onde está tesseract.exe ?")
+
+            if tesseract_path:
+                with open(".config", "w", encoding="UTF-8") as file:
+                    json.dump({"TESSERACT_CMD": tesseract_path}, file)
+            else:
+                exit(1)
+
+
 def save_result(result, img):
     check_history_path()
 
@@ -42,8 +73,8 @@ def save_result(result, img):
     with open("./history/results.json", 'r', encoding='UTF8') as jsonfile:
         try:
             lista_atual = json.load(jsonfile)
-        except json.decoder.JSONDecodeError as e:
-            print(e)    # TODO: Handle it
+        except json.decoder.JSONDecodeError:
+            pass    # Arquivo está vazio, apenas isso!
 
     with open("./history/results.json", 'w', encoding='UTF8') as jsonfile:
         for k, v in result.items():        
@@ -66,39 +97,42 @@ def ler_print():
     except (TypeError, Exception):
         raise NoImageException
 
-    if len(results) > 0:
-        if len(results) == 1:
-            d = results[0]
-            text = d.data.decode("utf-8")
-
-            if d.type == "I25":         # Boletos de Cobraça e Arrecadação
-                print("Boleto ?", text)
-                boleto = new_boleto(cod_barras=text)                  # TODO: Deveria ser "automático", definindo se é Cobrança ou Arrecadação
-                cod_conv = boleto.linha_digitavel
-            elif d.type == "CODE128":   # Código de Nota Fiscal
-                print("Nota Fiscal ?", text)
-                cod_conv = text     # TODO: Fazer nada né?
-            elif d.type == "QRCODE":
-                print("QRCODE", text)   # QR Codes
-                cod_conv = text     # TODO: Fazer nada né?
-            else:
-                messagebox.showerror("Ainda não", "Código de barras não suportado")
-                return
-
-            result = {
-                f"{timens}": {
-                    "data": agora.strftime("%d/%m/%Y %H:%M:%S"),
-                    "type": 1,
-                    "cod_lido": text,
-                    "cod_conv": cod_conv
-                }
-            }
-
-            save_result(result, img)
-        elif len(results) > 1:
+    if len(results) >= 1:
+        if len(results) > 1:
             messagebox.showerror("Ops!", "O seu print só deve conter apenas 1 código de barras")
+            return
+
+        d = results[0]
+        text = d.data.decode("utf-8")
+
+        if d.type == "I25":         # Boletos de Cobraça e Arrecadação
+            boleto   = new_boleto(cod_barras=text)
+            cod_conv = boleto.linha_digitavel
+            m_type   = 1
+        elif d.type == "CODE128":   # Código de Nota Fiscal
+            cod_conv = text
+            m_type   = 2
+        elif d.type == "QRCODE":
+            cod_conv = text
+            m_type   = 3
         else:
-            messagebox.showerror("Cadê?", "Código de barras não localizado!")
+            messagebox.showerror("Ainda não", "Código de barras não suportado")
+            return
+
+        x, y, wi, h = d.rect.left, d.rect.top, d.rect.width, d.rect.height
+        imgdraw = ImageDraw.Draw(img)
+        imgdraw.rectangle(xy=(x, y, x+wi, y+h), outline="#FF0000", width=2,)
+
+        result = {
+            f"{timens}": {
+                "data": agora.strftime("%d/%m/%Y %H:%M:%S"),
+                "type": m_type,
+                "cod_lido": text,
+                "cod_conv": cod_conv
+            }
+        }
+
+        save_result(result, img)
 
     # -----------------------------------------------------------
     # Linha Digitável:
@@ -114,7 +148,7 @@ def ler_print():
             result = {
                 f"{timens}": {
                     "data": agora.strftime("%d/%m/%Y %H:%M:%S"),
-                    "type": 0,
+                    "type": "0",
                     "cod_lido": text,
                     "cod_conv": boleto.linha_digitavel if boleto else ""    # TODO: Instanciar_boleto pode retornar nulo...
                 }
@@ -132,7 +166,7 @@ def get_leitura(timens):
             return data.get(timens,)
 
         except json.decoder.JSONDecodeError as e:
-            pass  # TODO: Handle it
+            pass  # Arquivo vazio, apenas isso!
 
 
 # ======================================================================================================================
@@ -201,7 +235,6 @@ class MainWindow:
         self.cur_img = None
         self.cur_img_resized = None
         self.photoimage = None
-        # self.update_canvas()                    # TODO: Desnecessário ?
 
         self._lerprint_pressed(init=True)
 
@@ -342,16 +375,7 @@ class MainWindow:
 
 # ======================================================================================================================
 if __name__ == '__main__':
-
-    try:
-        pytesseract.get_languages()             # Apenas para testar se o Tesseract está no PATH
-    except pytesseract.pytesseract.TesseractNotFoundError:
-        # TODO: ASK FOR FULL PATH OF TESSERACT
-        # TODO: Arquivo ".config" para só termos que setar o path do tesseract uma única vez
-        pytesseract.pytesseract.tesseract_cmd = r'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
-
-    # -------------------------------------
-    check_history_path()
+    initial_config()
 
     # -------------------------------------
     tk_root = tk.Tk()
