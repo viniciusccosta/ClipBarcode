@@ -172,6 +172,8 @@ def get_leitura(timens):
 # ======================================================================================================================
 class MainWindow:
     def __init__(self, root, *args, **kwargs):
+        # TODO: Uma forma de excluir os registros salvos.
+
         super().__init__(*args, **kwargs)
 
         self.root = root

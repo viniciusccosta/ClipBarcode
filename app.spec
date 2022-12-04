@@ -5,7 +5,7 @@ block_cipher = None
 
 
 a = Analysis(
-    ['main.pyw'],
+    ['app.pyw'],
     pathex=[],
     binaries=[("venv\Lib\site-packages\pyzbar\libiconv.dll", "."), ("venv\Lib\site-packages\pyzbar\libzbar-64.dll", ".")],
     datas=[],
@@ -19,6 +19,9 @@ a = Analysis(
     cipher=block_cipher,
     noarchive=False,
 )
+
+a.datas += [('icone.ico', 'C:/Users/vinic/PycharmProjects/clipbarcode/icone.ico', 'DATA'),]
+
 pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
 
 exe = EXE(
@@ -37,7 +40,7 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon="icone.ico"
+    icon='C:/Users/vinic/PycharmProjects/clipbarcode/icone.ico'
 )
 coll = COLLECT(
     exe,
