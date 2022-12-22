@@ -1,7 +1,7 @@
-packaging==21.3
-Pillow==9.1.1
-pipdeptree==2.2.1
+packaging==22.0
+Pillow==9.3.0
+pipdeptree==2.3.3
 pyparsing==3.0.9
 pyperclip==1.8.2
-pytesseract==0.3.9
+pytesseract==0.3.10
 pyzbar==0.1.9

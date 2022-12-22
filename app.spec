@@ -20,7 +20,7 @@ a = Analysis(
     noarchive=False,
 )
 
-a.datas += [('icone.ico', 'C:/Users/vinic/PycharmProjects/clipbarcode/icone.ico', 'DATA'),]
+a.datas += [('icon.ico', 'icon.ico', 'DATA'),]
 
 pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
 
@@ -40,7 +40,7 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon='C:/Users/vinic/PycharmProjects/clipbarcode/icone.ico'
+    icon='icon.ico'
 )
 coll = COLLECT(
     exe,
