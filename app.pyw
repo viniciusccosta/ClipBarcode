@@ -391,7 +391,7 @@ class MainWindow:
             new_width               = int(cur_width * ratio)
             new_height              = int(cur_height * ratio)
 
-            return img.resize((new_width, new_height), Resampling.LANCZOS)  # TODO: Lidar com o warning de que ANTIALIAS está depreciado
+            return img.resize((new_width, new_height), Resampling.LANCZOS)
         else:
             raise NoImageException
 
