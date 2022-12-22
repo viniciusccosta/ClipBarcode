@@ -15,7 +15,10 @@ def new_boleto(*args, **kwargs):
         linha_digitavel = re.sub('\D', '', linha_digitavel)
 
         if len(linha_digitavel) == 47:
-            return Cobranca(linha_digitavel=linha_digitavel)
+            try:
+                return Cobranca(linha_digitavel=linha_digitavel)
+            except BoletoInvalidoException:
+                raise
         elif len(linha_digitavel) == 48:
             return Arrecadacao(linha_digitavel=linha_digitavel)
 

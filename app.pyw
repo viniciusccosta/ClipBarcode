@@ -1,16 +1,20 @@
 # ======================================================================================================================
-import tkinter as tk
-from tkinter import messagebox, filedialog
-from PIL import ImageGrab, ImageTk, Image, ImageDraw
 import pytesseract
 import os
 import json
-from time import time_ns
-from pyzbar.pyzbar import decode
-from datetime_tools import timens_to_datetime
+import logging
 import pyperclip
-from boleto import new_boleto
 
+import tkinter as tk
+
+from tkinter        import messagebox, filedialog
+from PIL            import ImageGrab, ImageTk, Image, ImageDraw
+from PIL.Image      import Resampling                               # NOQA
+from time           import time_ns
+from pyzbar.pyzbar  import decode
+from datetime_tools import timens_to_datetime
+
+from boleto import new_boleto, BoletoInvalidoException
 
 # ======================================================================================================================
 RESULTS_PATH = "./history/results.json"
@@ -26,17 +30,27 @@ class NoImageException(Exception):
 def check_history_path():
     if not os.path.exists("./history"):
         os.mkdir("./history")
+        logging.info("Pasta HISTORY criada com sucesso")
     if not os.path.exists(RESULTS_PATH):
         open(RESULTS_PATH, 'w').close()
+        logging.info("Arquivo |results.json| criado com sucesso")
 
 
 def check_config_path():
     if not os.path.exists(".config"):
+        logging.warning("Arquivo de configuração inexistente, criando um novo:")
         with open(".config", "w", encoding="UTF-8") as file:
             json.dump({"TESSERACT_CMD": r'C:/Program Files/Tesseract-OCR/tesseract.exe'}, file)
+            logging.info("Arquivo de configuração criado com sucesso")
 
 
 def initial_config():
+    logging.basicConfig(
+        stream  = open(f'app.log', 'a', encoding='utf-8')   ,
+        level   = logging.INFO, datefmt='%Y-%m-%d %H:%M:%S' ,
+        format  = '%(asctime)s %(levelname)-8s %(message)s' ,
+    )
+
     check_history_path()
 
     check_config_path()
@@ -51,13 +65,19 @@ def initial_config():
             break
 
         except pytesseract.pytesseract.TesseractNotFoundError:
+            logging.error("Tesseract não encontrado")
+
             messagebox.showerror("EITA!", "Tesseract não encontrado!")
             tesseract_path = filedialog.askopenfilename(title="Onde está tesseract.exe ?")
+
+            logging.info(f"Usuário informou |{tesseract_path}| como path para o Tesseract")
 
             if tesseract_path:
                 with open(".config", "w", encoding="UTF-8") as file:
                     json.dump({"TESSERACT_CMD": tesseract_path}, file)
+                    logging.info("Path do Tesseract salvo com sucesso")
             else:
+                logging.error("Path inexistente, encerrando programa")
                 exit(1)
 
 
@@ -67,6 +87,7 @@ def save_result(result, img):
     # Salvando a imagem primeiro:
     for k, v in result.items():
         img.save(f'./history/{k}.png')
+        logging.info(f"{k}.png salvo com sucesso na pasta History")
 
     # Incluíndo a leitura no arquivo de resultados:
     lista_atual = {}
@@ -80,6 +101,7 @@ def save_result(result, img):
         for k, v in result.items():        
             lista_atual[k] = v
         json.dump(lista_atual, jsonfile, ensure_ascii=False)
+        logging.info("Leiturada adicionada ao arquivo |results.json| com sucesso")
 
 
 def ler_print():
@@ -98,7 +120,10 @@ def ler_print():
         raise NoImageException
 
     if len(results) >= 1:
+        logging.info("Código de barras encontrado")
+
         if len(results) > 1:
+            logging.error(f"Imagem só deve conter 1 código de barras e foram encontrados {len(results)}.")
             messagebox.showerror("Ops!", "O seu print só deve conter apenas 1 código de barras")
             return
 
@@ -106,22 +131,31 @@ def ler_print():
         text = d.data.decode("utf-8")
 
         if d.type == "I25":         # Boletos de Cobraça e Arrecadação
-            boleto   = new_boleto(cod_barras=text)
-            cod_conv = boleto.linha_digitavel
-            m_type   = 1
+            logging.debug("Código de barrras do tipo I25 (boletos de cobrança e arrecadação)")
+            try:
+                boleto   = new_boleto(cod_barras=text)
+                cod_conv = boleto.linha_digitavel
+                m_type   = 1
+            except BoletoInvalidoException:
+                logging.error(f"Boleto Inválido: |{text}|")
+                return
         elif d.type == "CODE128":   # Código de Nota Fiscal
+            logging.debug("Código de barras do tipo CODE128 (notas fiscais)")
             cod_conv = text
             m_type   = 2
         elif d.type == "QRCODE":
+            logging.debug("Código de barras do tipo QRCODE")
             cod_conv = text
             m_type   = 3
         else:
+            logging.warning(f"Código de barras do tipo {d.type} que ainda não é suportado")
             messagebox.showerror("Ainda não", "Código de barras não suportado")
             return
 
         x, y, wi, h = d.rect.left, d.rect.top, d.rect.width, d.rect.height
         imgdraw = ImageDraw.Draw(img)
         imgdraw.rectangle(xy=(x, y, x+wi, y+h), outline="#FF0000", width=2,)
+        logging.debug(f"Imagem encontrada em ({x},{y}) -> ({x+wi},{y+h})")
 
         result = {
             f"{timens}": {
@@ -137,12 +171,16 @@ def ler_print():
     # -----------------------------------------------------------
     # Linha Digitável:
     else:
+        logging.info("Nenhum código de barras encontrado, programa tentará fazer OCR.")
+
         try:
             text = pytesseract.image_to_string(img, lang="por",).strip("\n")     # TODO: Tesseract está tendo dificuldades em ler números com mais de dois 0 seguidos
         except TypeError:
             raise NoImageException
 
         if len(text) > 1:
+            logging.debug(f"OCR realizado com sucesso |{text}|")
+
             boleto = new_boleto(linha_digitavel=text)
 
             result = {
@@ -155,6 +193,12 @@ def ler_print():
             }
 
             save_result(result, img)
+        else:
+            # messagebox.showwarning("Ops!", "Nada encontrado")
+            logging.warning("OCR não encontrou nada")
+            return
+
+    return True
 
 
 def get_leitura(timens):
@@ -255,21 +299,21 @@ class MainWindow:
 
     def _lerprint_pressed(self, init=False):
         try:
-            ler_print()
-
-            self._fill_list()
-            self.listbox.selection_clear(0, tk.END)
-            self.listbox.selection_set(0)
-            self.listbox.event_generate("<<ListboxSelect>>")
-            # Caso 1: Abriu o programa e tinha um print no "CTRL V"
-            # Caso 3: Apertou "Ler Print" e tinha um print no "CTRL V"
+            if ler_print():
+                # Caso 1: Abriu o programa e tinha um print no "CTRL V" e Caso 3: Apertou "Ler Print" e tinha um print no "CTRL V"
+                self._fill_list()
+                self.listbox.selection_clear(0, tk.END)
+                self.listbox.selection_set(0)
+                self.listbox.event_generate("<<ListboxSelect>>")
+            else:
+                self.clear()
 
         except NoImageException:
             if not init:
                 # Caso 4: Apertou "Ler Print", mas não tinha um print no "CTRL V"
                 messagebox.showwarning("Sem Imagem", "Tire um print antes")
 
-            # Caso 2: Abriu o programa, mas não tinha um print no "CTRL V"
+            # Caso 2: Abriu o programa, mas não tinha um print no "CTRL V" = Simplesmente não fazer nada
 
     def _item_selected(self, event):
         index = self.listbox.curselection()
@@ -300,10 +344,10 @@ class MainWindow:
 
     def _configure_callback(self, event):
         if event.widget == self.canvas:                                                                 # Houve uma alteração no Canvas:
-            if abs(event.width - self.last_width) > 50 or abs(event.height - self.last_height) > 50:    # Foi uma alteração de tamanho
-                if self.last_width != 0 and self.last_height != 0:                                      # Ignorando a inicialização da interface
+            if abs(event.width - self.last_width) > 50 or abs(event.height - self.last_height) > 50:    # Foi uma alteração de tamanho (usuário aumentou/diminui a janela ou simplesmente foi a inicialiação do GUI)
+                if self.last_width != 0 and self.last_height != 0:                                      # Ignorando a inicialização do GUI
                     try:
-                        res_img = self.resize_image(self.cur_img, des_width=event.width)
+                        res_img = self.resize_image(self.cur_img)
                         self.update_canvas(img_resized=res_img)
                     except NoImageException:
                         pass
@@ -324,7 +368,6 @@ class MainWindow:
         # TODO: Alterar texto dos botões para os originais
 
         if cdb:
-            self.canvas.update()
             self.update_canvas(filename=f"./history/{timens}.png")
             self.update_date(cdb.get("data"))
             self.update_entry_codlido(cdb.get("cod_lido", ""))
@@ -341,38 +384,50 @@ class MainWindow:
     def update_entry_codconv(self, new_text):
         self.entry_cod_conv.set(new_text)
 
-    def resize_image(self, img, des_width=None):
+    def resize_image(self, img):
         if img:
-            if not des_width:
-                des_width = self.canvas.winfo_width()
+            cur_width, cur_height   = img.size
+            ratio                   = min(self.canvas.winfo_width() / cur_width, self.canvas.winfo_height() / cur_height)
+            new_width               = int(cur_width * ratio)
+            new_height              = int(cur_height * ratio)
 
-            cur_width, cur_height = img.size
-            h = int((cur_height * des_width) / cur_width)
-
-            return img.resize((int(des_width) - 5, int(h) - 5), Image.ANTIALIAS)  # TODO: Lidar com o warning de que ANTIALIAS está depreciado
+            return img.resize((new_width, new_height), Resampling.LANCZOS)  # TODO: Lidar com o warning de que ANTIALIAS está depreciado
         else:
             raise NoImageException
 
     def update_canvas(self, filename=None, img_resized=None,):
+        self.canvas.update()
+
         if filename:
             try:
                 self.cur_img         = Image.open(filename)
-                self.cur_img_resized = self.resize_image(self.cur_img)
+                self.cur_img_resized = self.resize_image(self.cur_img)          # Vamos redimensionar a imagem e deixar a função calcular automaticamente o tamanho
                 self.photoimage      = ImageTk.PhotoImage(self.cur_img_resized)
                 self.canvas["image"] = self.photoimage
             except (FileNotFoundError, FileExistsError, NoImageException):
+                logging.error("Imagem não encontrada")
                 messagebox.showerror("Imagem", "Imagem não encontrada")
             except ValueError:
                 pass
 
         elif img_resized:
             self.cur_img_resized = img_resized
-            self.photoimage = ImageTk.PhotoImage(self.cur_img_resized)
+            self.photoimage      = ImageTk.PhotoImage(self.cur_img_resized)
             self.canvas["image"] = self.photoimage
+
+        else:
+            self.canvas["image"] = ""
 
     def raise_above_all(self):
         self.root.attributes('-topmost', 1)
         self.root.attributes('-topmost', 0)
+
+    def clear(self):
+        self.listbox.selection_clear(0, tk.END)
+        self.update_canvas()
+        self.update_date("")
+        self.update_entry_codlido("")
+        self.update_entry_codconv("")
 
 
 # ======================================================================================================================
