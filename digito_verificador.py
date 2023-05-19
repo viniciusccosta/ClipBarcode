@@ -23,7 +23,6 @@ def mod10(dados):
     # ---------------------------------------------------------------------------
     return str(dv)
 
-
 def mod11(dados, x10=False):
     fatores       = [i for i in range(2, 10)]                                   # [2, 3, 4, 5, 6, 7, 8, 9]
     multiplicador = [fatores[i % len(fatores)] for i in range(len(dados))]      # [2, 3, 4, 5, 6, 7, 8, 9, 2, 3, 4, 5, 6, 7, 8, 9,...] só que está da esquerda para direita nesse caso
@@ -53,6 +52,5 @@ def mod11(dados, x10=False):
 
     # ---------------------------------------------------------------------------
     return str(dv)
-
 
 # https://www.cjdinfo.com.br/solucao-javascript-calculo-digito-modulo-11?p=34

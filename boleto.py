@@ -7,7 +7,6 @@ import re
 # =============================================================================
 DATA_BASE = "07/10/1997"
 
-
 # =============================================================================
 def new_boleto(*args, **kwargs):
     if "linha_digitavel" in kwargs:
@@ -36,11 +35,9 @@ def new_boleto(*args, **kwargs):
         # TODO: raise "TypeNotSupported" ou algo do tipo
         return None
 
-
 # =============================================================================
 class BoletoInvalidoException(Exception):
     pass
-
 
 # =============================================================================
 class Boleto(ABC):
@@ -55,7 +52,6 @@ class Boleto(ABC):
     @abstractmethod
     def from_cod_barras(self, cod_barras):
         pass
-
 
 class Arrecadacao(Boleto):
     """
@@ -224,7 +220,6 @@ class Arrecadacao(Boleto):
         else:
             raise BoletoInvalidoException
 
-
 class Cobranca(Boleto):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -390,7 +385,6 @@ class Cobranca(Boleto):
                 raise BoletoInvalidoException
         else:
             raise BoletoInvalidoException
-
 
 # =============================================================================
 if __name__ == "__main__":
