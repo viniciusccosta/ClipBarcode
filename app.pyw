@@ -7,14 +7,15 @@ import pyperclip
 
 import tkinter as tk
 
-from tkinter        import messagebox, filedialog
-from PIL            import ImageGrab, ImageTk, Image, ImageDraw
-from PIL.Image      import Resampling                               # NOQA
-from time           import time_ns
-from pyzbar.pyzbar  import decode
-from datetime_tools import timens_to_datetime
+from tkinter            import messagebox, filedialog
+from PIL                import ImageGrab, ImageTk, Image, ImageDraw
+from PIL.PngImagePlugin import PngImageFile
+from PIL.Image          import Resampling                               # NOQA
+from time               import time_ns
+from pyzbar.pyzbar      import decode
+from datetime_tools     import timens_to_datetime
 
-from boleto import new_boleto, BoletoInvalidoException
+from boleto             import new_boleto, BoletoInvalidoException
 
 # ======================================================================================================================
 RESULTS_PATH = "./history/results.json"
@@ -26,12 +27,12 @@ class NoImageException(Exception):
 
 # ======================================================================================================================
 class MainWindow:
-    def __init__(self, root, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         # TODO: Uma forma de excluir os registros salvos.
 
         super().__init__(*args, **kwargs)
 
-        self.root = root
+        self.root = tk.Tk()
         self.root.title("Clip Barcode")
         self.root.geometry("1280x720")
         self.root.iconbitmap("icon.ico")
@@ -97,7 +98,7 @@ class MainWindow:
 
         # -------------------------------------
 
-    def _fill_list(self):
+    def _fill_list(self, *args, **kwargs):
         self.listbox.delete(0, "end")
 
         with open("./history/results.json", 'r', encoding='UTF-8') as jsonfile:
@@ -108,9 +109,9 @@ class MainWindow:
             except json.decoder.JSONDecodeError:
                 pass    # TODO: Handle it
 
-    def _lerprint_pressed(self, init=False):
+    def _lerprint_pressed(self, init:bool=False, *args, **kwargs):
         try:
-            if ler_print():
+            if ler_e_salvar():
                 # Caso 1: Abriu o programa e tinha um print no "CTRL V" e Caso 3: Apertou "Ler Print" e tinha um print no "CTRL V"
                 self._fill_list()
                 self.listbox.selection_clear(0, tk.END)
@@ -126,16 +127,16 @@ class MainWindow:
 
             # Caso 2: Abriu o programa, mas não tinha um print no "CTRL V" = Simplesmente não fazer nada
 
-    def _item_selected(self):
+    def _item_selected(self, *args, **kwargs):
         index = self.listbox.curselection()
 
         if index:
             timens = self.listbox.get(index)
-            cdb = get_leitura(timens)
+            cdb = retrieve_leitura(timens)
 
             self.update_frame_detail(timens, cdb)
 
-    def _arrow_up(self):
+    def _arrow_up(self, *args, **kwargs):
         self.selection = self.listbox.curselection()[0]
 
         if self.selection > 0:
@@ -144,7 +145,7 @@ class MainWindow:
             self.listbox.select_set(self.selection)
             self._item_selected(None)   # TODO: Não curti passar esse None...
 
-    def _arrow_down(self):
+    def _arrow_down(self, *args, **kwargs):
         self.selection = self.listbox.curselection()[0]
 
         if self.selection < self.listbox.size() - 1:
@@ -153,7 +154,7 @@ class MainWindow:
             self.listbox.select_set(self.selection)
             self._item_selected(None)   # TODO: Não curti passar esse None...
 
-    def _configure_callback(self, event):
+    def _configure_callback(self, event, *args, **kwargs):
         if event.widget == self.canvas:                                                                 # Houve uma alteração no Canvas:
             if abs(event.width - self.last_width) > 50 or abs(event.height - self.last_height) > 50:    # Foi uma alteração de tamanho (usuário aumentou/diminui a janela ou simplesmente foi a inicialiação do GUI)
                 if self.last_width != 0 and self.last_height != 0:                                      # Ignorando a inicialização do GUI
@@ -165,12 +166,23 @@ class MainWindow:
                 self.last_width  = event.width
                 self.last_height = event.height
 
-    def copiar_leitura(self):
+    def mainloop(self, *args, **kwargs):
+        self.root.mainloop()
+
+    def copiar_leitura(self, *args, **kwargs):
+        """Envia para a Área de Transferência o que tiver no widget Leitura.
+        """
         # TODO: Lidar com exceções
         pyperclip.copy(self.var_leitura.get())
         # TODO: Alterar texto do botão para "Copiado"
 
-    def update_frame_detail(self, timens, cdb):
+    def update_frame_detail(self, timens:str, cdb:dict, *args, **kwargs):
+        """Atualiza todos os widgets presentes no frame "Detail"
+
+        Args:
+            timens (str): Identificação da leitura
+            cdb (dict): Leitura
+        """
         # TODO: Alterar texto dos botões para os originais
 
         if cdb:
@@ -181,19 +193,45 @@ class MainWindow:
         else:
             messagebox.showerror("EITA!", "Código de barras não localizado.")
 
-    def update_tipo(self, value):
+    def update_tipo(self, value:str|None, *args, **kwargs):
+        """Insere um valor no widget "Tipo".
+
+        Args:
+            value (str | None): Valor a ser inserido no widget
+        """
         tipo = ""
         if value is not None:
             tipo = TYPES.get(value)
         self.var_tipo.set(tipo)
 
-    def update_date(self, new_text):
-        self.lbl_date.set(new_text)
+    def update_date(self, value:str, *args, **kwargs):
+        """Insere um valor no widget "Date".
 
-    def update_leitura(self, new_text):
+        Args:
+            new_text (str): Valor a ser inserido no widget
+        """
+        self.lbl_date.set(value)
+
+    def update_leitura(self, new_text:str, *args, **kwargs):
+        """Insere um valor no widget "Leitura".
+
+        Args:
+            new_text (str): Valor a ser inserido no widget
+        """
         self.var_leitura.set(new_text)
 
-    def resize_image(self, img):
+    def resize_image(self, img:PngImageFile, *args, **kwargs) -> Image.Image:
+        """Realiza o redimensionamento de uma imagem, mantendo as suas proporções, conforme o tamanho do Canvas.
+
+        Args:
+            img (PngImageFile): Imagem a ser redimensionada
+
+        Raises:
+            NoImageException: Caso não haja uma imagem
+
+        Returns:
+            Image.Image: Imagem redimensionada.
+        """
         if img:
             cur_width, cur_height   = img.size
             ratio                   = min(self.canvas.winfo_width() / cur_width, self.canvas.winfo_height() / cur_height)
@@ -204,7 +242,15 @@ class MainWindow:
         else:
             raise NoImageException
 
-    def update_canvas(self, filename=None, img_resized=None,):
+    def update_canvas(self, filename:str=None, img_resized:Image.Image=None, *args, **kwargs):
+        """Insere uma nova imagem ao canvas:
+            Ou através do nome do arquivo da imagem
+            Ou através de um objeto Image.
+
+        Args:
+            filename (str, optional): Nome do arquivo de imagem da leitura salva em history/. Defaults to None.
+            img_resized (Image.Image, optional): Imagem já redimensionada. Defaults to None.
+        """
         self.canvas.update()
 
         if filename:
@@ -227,11 +273,15 @@ class MainWindow:
         else:
             self.canvas["image"] = ""
 
-    def raise_above_all(self):
+    def raise_above_all(self, *args, **kwargs):
+        """Coloca a janela do aplicativo por cima das outras janelas
+        """
         self.root.attributes('-topmost', 1)
         self.root.attributes('-topmost', 0)
 
-    def clear(self):
+    def clear(self, *args, **kwargs):
+        """Limpa todos os widgets.
+        """
         self.listbox.selection_clear(0, tk.END)
         self.update_canvas()
         self.update_date("")
@@ -240,6 +290,10 @@ class MainWindow:
 
 # ======================================================================================================================
 def check_history_path():
+    """Verifica a existência do arquivo de resultados.
+    Caso o arquivo não exista, ele será criado e com o nome padrão (results.json)
+    """
+
     if not os.path.exists("./history"):
         os.mkdir("./history")
         logging.info("Pasta HISTORY criada com sucesso")
@@ -248,6 +302,10 @@ def check_history_path():
         logging.info("Arquivo |results.json| criado com sucesso")
 
 def check_config_path():
+    """Verifica a existência do arquivo de configurações.
+    Caso o arquivo não exista, ele será criado e com o nome padrão (.config)
+    """
+
     if not os.path.exists(".config"):
         logging.warning("Arquivo de configuração inexistente, criando um novo:")
         with open(".config", "w", encoding="UTF-8") as file:
@@ -255,6 +313,13 @@ def check_config_path():
             logging.info("Arquivo de configuração criado com sucesso")
 
 def initial_config():
+    """Realiza as configurações inicias da aplicação.
+
+    - Configurações iniciais do logging
+    - Conferência do arquivo de resultados
+    - Conferência do arquivo de configurações
+    - Configuração do Tesseract
+    """
     logging.basicConfig(
         stream  = open(f'app.log', 'a', encoding='utf-8')   ,
         level   = logging.INFO, datefmt='%Y-%m-%d %H:%M:%S' ,
@@ -290,7 +355,20 @@ def initial_config():
                 logging.error("Path inexistente, encerrando programa")
                 exit(1)
 
-def save_result(result, img):
+def save_result(result: dict, img:PngImageFile):
+    """Inclui uma leitura ao arquivo de resultados.
+
+    Args:
+        result (dict): Dicionário com os dados da leitura
+            {
+                "data": str ("%d/%m/%Y %H:%M:%S"),  
+                "type": str,  
+                "cod_lido": str,  
+                "cod_conv": str,  
+            }
+
+        img (PngImageFile): Print em si
+    """
     check_history_path()
 
     # Salvando a imagem primeiro:
@@ -312,7 +390,21 @@ def save_result(result, img):
         json.dump(lista_atual, jsonfile, ensure_ascii=False)
         logging.info("Leiturada adicionada ao arquivo |results.json| com sucesso")
 
-def ler_print():
+def ler_e_salvar():
+    """A função mais importante do módulo.
+
+    - Realiza a leitura da Área de Transferência
+    - Realiza a leitura dos Códigos de Barra
+    - Realiza OCR
+    - Armazena a imagem no diretório específico
+    - Solicita a inclusão do resultado da leitura no arquivo de resultados
+
+    Raises:
+        NoImageException: Caso não seja encontrado nenhuma imagem na Área de Transferência
+
+    Returns:
+        bool: True se tudo deu certo ou False caso contrário
+    """
     # -----------------------------------------------------------
     timens = time_ns()
     agora = timens_to_datetime(timens)
@@ -333,7 +425,7 @@ def ler_print():
         if len(results) > 1:
             logging.error(f"Imagem só deve conter 1 código de barras e foram encontrados {len(results)}.")
             messagebox.showerror("Ops!", "O seu print só deve conter apenas 1 código de barras")
-            return
+            return False
 
         d = results[0]
         text = d.data.decode("utf-8")
@@ -346,7 +438,7 @@ def ler_print():
                 m_type   = 1
             except BoletoInvalidoException:
                 logging.error(f"Boleto Inválido: |{text}|")
-                return
+                return False
         elif d.type == "CODE128":   # Código de Nota Fiscal
             logging.debug("Código de barras do tipo CODE128 (notas fiscais)")
             cod_conv = text
@@ -358,7 +450,7 @@ def ler_print():
         else:
             logging.warning(f"Código de barras do tipo {d.type} que ainda não é suportado")
             messagebox.showerror("Ainda não", "Código de barras não suportado")
-            return
+            return False
 
         x, y, wi, h = d.rect.left, d.rect.top, d.rect.width, d.rect.height
         imgdraw = ImageDraw.Draw(img)
@@ -369,7 +461,7 @@ def ler_print():
             f"{timens}": {
                 "data": agora.strftime("%d/%m/%Y %H:%M:%S"),
                 "type": m_type,
-                # "cod_lido": text,
+                "cod_lido": text,
                 "cod_conv": cod_conv    # TODO: Alterar "cod_conv" para leitura, mas preserver a compatibilidade com as versões anteriores
             }
         }
@@ -395,7 +487,7 @@ def ler_print():
                 f"{timens}": {
                     "data": agora.strftime("%d/%m/%Y %H:%M:%S"),
                     "type": 0,
-                    # "cod_lido": text,
+                    "cod_lido": text,
                     "cod_conv": boleto.linha_digitavel if boleto else text    # TODO: Alterar "cod_conv" para leitura, mas preserver a compatibilidade com as versões anteriores # TODO: Instanciar_boleto pode retornar nulo...
                 }
             }
@@ -404,11 +496,20 @@ def ler_print():
         else:
             # messagebox.showwarning("Ops!", "Nada encontrado")
             logging.warning("OCR não encontrou nada")
-            return
+            return False
 
     return True
 
-def get_leitura(timens):
+def retrieve_leitura(timens: str) -> dict:
+    """
+    Retorna o resultado da leitura salvo no arquivos de resultados.
+
+    Args:
+        timens (str): Identificação da leitura, que no caso é a data e hora da leitura em milissegundos.
+
+    Returns:
+        dict: Leitura
+    """
     check_history_path()
 
     with open("./history/results.json", 'r', encoding='UTF8') as jsonfile:
@@ -424,6 +525,5 @@ if __name__ == '__main__':
     initial_config()
 
     # -------------------------------------
-    tk_root = tk.Tk()
-    w = MainWindow(tk_root)
-    tk_root.mainloop()
+    w = MainWindow()
+    w.mainloop()
