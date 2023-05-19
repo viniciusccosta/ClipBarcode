@@ -18,7 +18,7 @@ from boleto import new_boleto, BoletoInvalidoException
 
 # ======================================================================================================================
 RESULTS_PATH = "./history/results.json"
-TYPES = {0: "Linha Digitável", 1: "Código de Barras", 2: "Nota Fiscal", 3: "QRCode"}
+TYPES = {0: "Texto", 1: "Código de Barras", 2: "Nota Fiscal", 3: "QRCode"}
 
 # ======================================================================================================================
 class NoImageException(Exception):
@@ -42,11 +42,12 @@ class MainWindow:
 
         # -------------------------------------
         # Frames:
-        self.f1 = tk.Frame(self.root, )
-        self.f2 = tk.Frame(self.root, )
         tk.Button(self.root, text="Ler Print", font=("Consolas", 16), command=self._lerprint_pressed).grid(pady=10)
 
+        self.f1 = tk.Frame(self.root, )
         self.f1.grid(row=1, column=0, padx=5, pady=(0, 10), sticky="nswe")
+
+        self.f2 = tk.Frame(self.root, )        
         self.f2.grid(row=1, column=1, columnspan=2, padx=5, pady=(0, 15), sticky="nswe")
 
         self.root.columnconfigure(index=1, weight=1)
@@ -76,10 +77,8 @@ class MainWindow:
         self.lbl_date = tk.StringVar()
         tk.Label(self.f2, textvariable=self.lbl_date, font=("Consolas", 16)).grid(row=2, column=1, sticky="nswe", pady=(15, 0))
 
-        # self.entry_cod_lido = tk.StringVar()
-        # tk.Label(self.f2, text="Código Lido:", font=("Consolas", 16), ).grid(row=3, column=0, sticky="nswe", pady=(15, 15))
-        # tk.Entry(self.f2, font=("Consolas", 16), state=tk.DISABLED, textvariable=self.entry_cod_lido).grid(row=3, column=1, sticky="we")
-        # tk.Button(self.f2, text="Copiar", font=("Consolas", 12), command=self.copiar_codlido).grid(row=3, column=2, sticky="ew")
+        self.var_tipo = tk.StringVar()
+        tk.Label(self.f2, textvariable=self.var_tipo, font=("Consolas", 16),).grid(row=3, column=1, sticky="nsew", pady=5)
 
         self.var_leitura = tk.StringVar()
         tk.Label(self.f2, text="Leitura:", font=("Consolas", 16), ).grid(row=4, sticky="nswe", pady=(15, 15))
@@ -116,7 +115,7 @@ class MainWindow:
                 self._fill_list()
                 self.listbox.selection_clear(0, tk.END)
                 self.listbox.selection_set(0)
-                self.listbox.event_generate("<<ListboxSelect>>")
+                self.listbox.event_generate("<<ListboxSelect>>")    # Simulando um "item selecionado"
             else:
                 self.clear()
 
@@ -127,7 +126,7 @@ class MainWindow:
 
             # Caso 2: Abriu o programa, mas não tinha um print no "CTRL V" = Simplesmente não fazer nada
 
-    def _item_selected(self, event):
+    def _item_selected(self):
         index = self.listbox.curselection()
 
         if index:
@@ -136,7 +135,7 @@ class MainWindow:
 
             self.update_frame_detail(timens, cdb)
 
-    def _arrow_up(self, event):
+    def _arrow_up(self):
         self.selection = self.listbox.curselection()[0]
 
         if self.selection > 0:
@@ -145,7 +144,7 @@ class MainWindow:
             self.listbox.select_set(self.selection)
             self._item_selected(None)   # TODO: Não curti passar esse None...
 
-    def _arrow_down(self, event):
+    def _arrow_down(self):
         self.selection = self.listbox.curselection()[0]
 
         if self.selection < self.listbox.size() - 1:
@@ -177,9 +176,16 @@ class MainWindow:
         if cdb:
             self.update_canvas(filename=f"./history/{timens}.png")
             self.update_date(cdb.get("data"))
+            self.update_tipo(cdb.get("type"))
             self.update_leitura(cdb.get("cod_conv", ""))    # TODO: Alterar "cod_conv" para leitura, mas preserver a compatibilidade com as versões anteriores
         else:
             messagebox.showerror("EITA!", "Código de barras não localizado.")
+
+    def update_tipo(self, value):
+        tipo = ""
+        if value is not None:
+            tipo = TYPES.get(value)
+        self.var_tipo.set(tipo)
 
     def update_date(self, new_text):
         self.lbl_date.set(new_text)
@@ -229,7 +235,7 @@ class MainWindow:
         self.listbox.selection_clear(0, tk.END)
         self.update_canvas()
         self.update_date("")
-        self.update_entry_codlido("")
+        self.update_tipo()
         self.update_leitura("")
 
 # ======================================================================================================================
@@ -388,7 +394,7 @@ def ler_print():
             result = {
                 f"{timens}": {
                     "data": agora.strftime("%d/%m/%Y %H:%M:%S"),
-                    "type": "0",
+                    "type": 0,
                     # "cod_lido": text,
                     "cod_conv": boleto.linha_digitavel if boleto else text    # TODO: Alterar "cod_conv" para leitura, mas preserver a compatibilidade com as versões anteriores # TODO: Instanciar_boleto pode retornar nulo...
                 }
@@ -408,7 +414,7 @@ def get_leitura(timens):
     with open("./history/results.json", 'r', encoding='UTF8') as jsonfile:
         try:
             data = json.load(jsonfile)
-            return data.get(timens,)
+            return data.get(timens)
 
         except json.decoder.JSONDecodeError as e:
             pass  # Arquivo vazio, apenas isso!
