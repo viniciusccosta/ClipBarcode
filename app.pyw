@@ -223,6 +223,7 @@ class MainWindow:
         self.root = root
         self.root.title("Clip Barcode")
         self.root.geometry("1280x720")
+        self.root.iconbitmap("icon.ico")
         self.root.bind('<Configure>', self._configure_callback)
 
         self.last_width = 0
