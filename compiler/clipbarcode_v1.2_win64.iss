@@ -1,5 +1,6 @@
 #define MyAppName "ClipBarcode"
-#define MyAppVersion "1.1"
+#define MyAppVersion "1.2"
+#define MyOutputBaseFilename "clipbarcode_v1.2_win64"
 #define MyAppPublisher "Vinícius Costa"
 #define MyAppURL "https://github.com/viniciusccosta"
 #define MyAppExeName "ClipBarcode.exe"
@@ -16,7 +17,7 @@ DefaultDirName={userappdata}\..\Local\Programs\{#MyAppName}
 DisableDirPage=yes
 DisableProgramGroupPage=yes
 OutputDir=.
-OutputBaseFilename=clipbarcode_v1.1_win64
+OutputBaseFilename={#MyOutputBaseFilename}
 SetupIconFile=..\dist\main\icon.ico
 Compression=lzma
 SolidCompression=yes
