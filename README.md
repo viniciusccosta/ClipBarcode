@@ -17,21 +17,11 @@ Com esses recursos, o **ClipBarcode** simplifica o processo de leitura de códig
 
 Para instalar o **ClipBarcode**, siga as etapas abaixo:
 
-1. Baixe os três arquivos necessários:
-    1. **clipbarcode_v1.1_win64.exe**
-        - https://github.com/viniciusccosta/clipbarcode/releases/download/release/clipbarcode_v1.1_win64.exe
-    2. **vcredist_x64.exe**
-        - Opção de Download 1: https://aka.ms/highdpimfc2013x64enu
-        - Opção de Download 2: https://github.com/viniciusccosta/clipbarcode/releases/download/release/vcredist_x64.exe
-    3. **tesseract-ocr-w64-setup-v5.2.0.20220712.exe**
-        - Opção de Download 1: https://digi.bib.uni-mannheim.de/tesseract/tesseract-ocr-w64-setup-v5.1.0.20220510.exe
-        - Opção de Download 2: https://github.com/viniciusccosta/clipbarcode/releases/download/release/tesseract-ocr-w64-setup-v5.2.0.20220712.exe
-2. Salve os três arquivos na mesma pasta no seu computador.
-3. Execute o instalador do **ClipBarcode** (arquivo **clipbarcode_v1.1_win64.exe**) e siga as instruções fornecidas.
-4. Se a instalação não for bem-sucedida ou ocorrerem problemas durante a execução do programa, siga as etapas adicionais abaixo:
-    - Instale o arquivo **vcredist_x64.exe** primeiro, executando-o e seguindo as instruções de instalação.
-    - Em seguida, instale o arquivo **tesseract-ocr-w64-setup-v5.2.0.20220712.exe**, executando-o e seguindo as instruções de instalação.
-    - Após a instalação bem-sucedida dessas dependências, tente realizar a instalação do **ClipBarcode** novamente, executando o arquivo **clipbarcode_v1.1_win64.exe**.
+1. Baixe o arquivo de Instalação:
+    1. [**clipbarcode_v1.2_win64.exe**](https://github.com/viniciusccosta/ClipBarcode/releases/download/v1.2/clipbarcode_v1.2_win64.exe)
+2. Execute o instalador do **ClipBarcode** e siga as instruções fornecidas.
+3. Durante a instalação do Tesseract, certifique-se de selecionar a opção "Additional language data (download)" para garantir o suporte a idiomas adicionais.
+4. Se você já possui o Tesseract OCR v5.2.0 e/ou o Microsoft Visual C++ v12.0.40664 instalados em seu sistema, você pode simplesmente cancelar a instalação desses componentes durante o processo de instalação do ClipBarcode.
 
 Certifique-se de ter privilégios de administrador para realizar a instalação e, se necessário, desative temporariamente qualquer software antivírus ou firewall que possa interferir no processo de instalação.
 
@@ -68,7 +58,6 @@ Essas informações adicionais fornecem uma visão mais detalhada sobre o funcio
 
 Se você encontrar algum problema ao utilizar o **ClipBarcode**, aqui estão algumas soluções comuns para ajudar a resolver possíveis dificuldades:
 - **Não realizou a leitura do código de barras**: Caso o programa não consiga ler o código de barras corretamente, tente aumentar o zoom na imagem antes de capturá-la. Ampliar o tamanho do código de barras na imagem pode melhorar a precisão da leitura.
-- **Programa não inicia ou fecha inesperadamente**: Se o **ClipBarcode** não estiver iniciando corretamente ou fechando de forma inesperada, certifique-se de ter instalado os seguintes arquivos de dependência: **vcredist_x64.exe** e **tesseract-ocr-w64-setup-v5.2.0.20220712.exe**.
 
 ## Possíveis Atualizações
 
