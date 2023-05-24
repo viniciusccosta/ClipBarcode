@@ -43,6 +43,10 @@ Para instalar o **ClipBarcode**, siga as etapas abaixo:
 5. Visualize a linha digitável:
     - O **ClipBarcode** exibirá a linha digitável obtida na interface do programa.
     - Copie e cole a linha digitável conforme necessário para realizar pagamentos ou outras finalidades.
+6. Navegue entre os registros:
+    - Utilize as setas do teclado (cima e baixo) para transitar entre os registros salvos na lista de leituras.
+7. Exclua um registro:
+    - Utilize a tecla "Delete" para remover um registro específico da lista de leituras.
 
 ## Instruções Adicionais
 
