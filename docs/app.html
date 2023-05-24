@@ -1,0 +1,1519 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>app API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>app</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python"># ======================================================================================================================
+import pytesseract
+import os
+import json
+import logging
+import pyperclip
+
+import tkinter as tk
+
+from tkinter            import messagebox, filedialog
+from PIL                import ImageGrab, ImageTk, Image, ImageDraw
+from PIL.PngImagePlugin import PngImageFile
+from PIL.Image          import Resampling                               # NOQA
+from time               import time_ns
+from pyzbar.pyzbar      import decode
+
+from datetime_tools     import timens_to_datetime
+from boleto             import new_boleto, BoletoInvalidoException
+
+# ======================================================================================================================
+RESULTS_PATH = &#34;./history/results.json&#34;
+TYPES = {0: &#34;Texto&#34;, 1: &#34;Código de Barras&#34;, 2: &#34;Nota Fiscal&#34;, 3: &#34;QRCode&#34;}
+
+# ======================================================================================================================
+class NoImageException(Exception):
+    pass
+
+# ======================================================================================================================
+class MainWindow:
+    def __init__(self, *args, **kwargs):
+        # TODO: Uma forma de excluir os registros salvos.
+
+        super().__init__(*args, **kwargs)
+
+        self.root = tk.Tk()
+        self.root.title(&#34;Clip Barcode&#34;)
+        self.root.geometry(&#34;1280x720&#34;)
+        self.root.iconbitmap(&#34;icon.ico&#34;)
+        self.root.bind(&#39;&lt;Configure&gt;&#39;, self._configure_callback)
+
+        self.last_width = 0
+        self.last_height = 0
+
+        # -------------------------------------
+        # Frames:
+        tk.Button(self.root, text=&#34;Ler Print&#34;, font=(&#34;Consolas&#34;, 16), command=self._lerprint_pressed).grid(pady=10)
+
+        self.f1 = tk.Frame(self.root, )
+        self.f1.grid(row=1, column=0, padx=5, pady=(0, 10), sticky=&#34;nswe&#34;)
+
+        self.f2 = tk.Frame(self.root, )        
+        self.f2.grid(row=1, column=1, columnspan=2, padx=5, pady=(0, 15), sticky=&#34;nswe&#34;)
+
+        self.root.columnconfigure(index=1, weight=1)
+        self.root.rowconfigure(index=1, weight=1)
+
+        # -------------------------------------
+        # List Frame:
+        self.listbox = tk.Listbox(self.f1, font=(&#34;Consolas&#34;, 14), selectmode=&#34;SINGLE&#34;, activestyle=tk.NONE)
+        self.listbox.bind(&#39;&lt;&lt;ListboxSelect&gt;&gt;&#39;, self._item_selected)
+        self.listbox.bind(&#34;&lt;Down&gt;&#34;, self._arrow_down)
+        self.listbox.bind(&#34;&lt;Up&gt;&#34;, self._arrow_up)
+        self.listbox.grid(sticky=&#34;nsew&#34;, )
+
+        self._fill_list()
+
+        cols, rows = self.f1.grid_size()
+        for r in range(rows):
+            self.f1.rowconfigure(index=r, weight=1)
+        for c in range(cols):
+            self.f1.columnconfigure(index=c, weight=1)
+
+        # -------------------------------------
+        # Detail Frame:
+        self.canvas = tk.Label(self.f2, bg=&#34;gray&#34;)
+        self.canvas.grid(row=0, column=1, sticky=&#34;nsew&#34;)
+
+        self.lbl_date = tk.StringVar()
+        tk.Label(self.f2, textvariable=self.lbl_date, font=(&#34;Consolas&#34;, 16)).grid(row=2, column=1, sticky=&#34;nswe&#34;, pady=(15, 0))
+
+        self.var_tipo = tk.StringVar()
+        tk.Label(self.f2, textvariable=self.var_tipo, font=(&#34;Consolas&#34;, 16),).grid(row=3, column=1, sticky=&#34;nsew&#34;, pady=5)
+
+        self.var_leitura = tk.StringVar()
+        tk.Label(self.f2, text=&#34;Leitura:&#34;, font=(&#34;Consolas&#34;, 16), ).grid(row=4, sticky=&#34;nswe&#34;, pady=(15, 15))
+        tk.Entry(self.f2, font=(&#34;Consolas&#34;, 16), state=tk.DISABLED, textvariable=self.var_leitura).grid(row=4, column=1, sticky=&#34;we&#34;)
+        tk.Button(self.f2, text=&#34;Copiar&#34;, font=(&#34;Consolas&#34;, 12), command=self.copiar_leitura).grid(row=4, column=2, sticky=&#34;ew&#34;)
+
+        self.f2.rowconfigure(index=0, weight=1)
+        self.f2.columnconfigure(index=1, weight=1)
+
+        # -------------------------------------
+        self.cur_img = None
+        self.cur_img_resized = None
+        self.photoimage = None
+
+        self._lerprint_pressed(init=True)
+
+        # -------------------------------------
+
+    def _fill_list(self, *args, **kwargs):
+        self.listbox.delete(0, &#34;end&#34;)
+
+        with open(&#34;./history/results.json&#34;, &#39;r&#39;, encoding=&#39;UTF-8&#39;) as jsonfile:
+            try:
+                data = json.load(jsonfile)
+                for k, v in data.items():
+                    self.listbox.insert(&#34;0&#34;, f&#39;{k}&#39;)
+            except json.decoder.JSONDecodeError:
+                pass    # TODO: Handle it
+
+    def _lerprint_pressed(self, init:bool=False, *args, **kwargs):
+        try:
+            if ler_e_salvar():
+                # Caso 1: Abriu o programa e tinha um print no &#34;CTRL V&#34; e Caso 3: Apertou &#34;Ler Print&#34; e tinha um print no &#34;CTRL V&#34;
+                self._fill_list()
+                self.listbox.selection_clear(0, tk.END)
+                self.listbox.selection_set(0)
+                self.listbox.event_generate(&#34;&lt;&lt;ListboxSelect&gt;&gt;&#34;)    # Simulando um &#34;item selecionado&#34;
+            else:
+                self.clear()
+
+        except NoImageException:
+            if not init:
+                # Caso 4: Apertou &#34;Ler Print&#34;, mas não tinha um print no &#34;CTRL V&#34;
+                messagebox.showwarning(&#34;Sem Imagem&#34;, &#34;Tire um print antes&#34;)
+
+            # Caso 2: Abriu o programa, mas não tinha um print no &#34;CTRL V&#34; = Simplesmente não fazer nada
+
+    def _item_selected(self, *args, **kwargs):
+        index = self.listbox.curselection()
+
+        if index:
+            timens = self.listbox.get(index)
+            cdb = retrieve_leitura(timens)
+
+            self.update_frame_detail(timens, cdb)
+
+    def _arrow_up(self, *args, **kwargs):
+        self.selection = self.listbox.curselection()[0]
+
+        if self.selection &gt; 0:
+            self.listbox.select_clear(self.selection)
+            self.selection -= 1
+            self.listbox.select_set(self.selection)
+            self._item_selected(None)   # TODO: Não curti passar esse None...
+
+    def _arrow_down(self, *args, **kwargs):
+        self.selection = self.listbox.curselection()[0]
+
+        if self.selection &lt; self.listbox.size() - 1:
+            self.listbox.select_clear(self.selection)
+            self.selection += 1
+            self.listbox.select_set(self.selection)
+            self._item_selected(None)   # TODO: Não curti passar esse None...
+
+    def _configure_callback(self, event, *args, **kwargs):
+        if event.widget == self.canvas:                                                                 # Houve uma alteração no Canvas:
+            if abs(event.width - self.last_width) &gt; 50 or abs(event.height - self.last_height) &gt; 50:    # Foi uma alteração de tamanho (usuário aumentou/diminui a janela ou simplesmente foi a inicialiação do GUI)
+                if self.last_width != 0 and self.last_height != 0:                                      # Ignorando a inicialização do GUI
+                    try:
+                        res_img = self.resize_image(self.cur_img)
+                        self.update_canvas(img_resized=res_img)
+                    except NoImageException:
+                        pass
+                self.last_width  = event.width
+                self.last_height = event.height
+
+    def mainloop(self, *args, **kwargs):
+        self.root.mainloop()
+
+    def copiar_leitura(self, *args, **kwargs):
+        &#34;&#34;&#34;Envia para a Área de Transferência o que tiver no widget Leitura.
+        &#34;&#34;&#34;
+        # TODO: Lidar com exceções
+        pyperclip.copy(self.var_leitura.get())
+        # TODO: Alterar texto do botão para &#34;Copiado&#34;
+
+    def update_frame_detail(self, timens:str, cdb:dict, *args, **kwargs):
+        &#34;&#34;&#34;Atualiza todos os widgets presentes no frame &#34;Detail&#34;
+
+        Args:
+            timens (str): Identificação da leitura
+            cdb (dict): Leitura
+        &#34;&#34;&#34;
+        # TODO: Alterar texto dos botões para os originais
+
+        if cdb:
+            self.update_canvas(filename=f&#34;./history/{timens}.png&#34;)
+            self.update_date(cdb.get(&#34;data&#34;))
+            self.update_tipo(cdb.get(&#34;type&#34;))
+            self.update_leitura(cdb.get(&#34;cod_conv&#34;, &#34;&#34;))    # TODO: Alterar &#34;cod_conv&#34; para leitura, mas preserver a compatibilidade com as versões anteriores
+        else:
+            messagebox.showerror(&#34;EITA!&#34;, &#34;Código de barras não localizado.&#34;)
+
+    def update_tipo(self, value:str|None, *args, **kwargs):
+        &#34;&#34;&#34;Insere um valor no widget &#34;Tipo&#34;.
+
+        Args:
+            value (str | None): Valor a ser inserido no widget
+        &#34;&#34;&#34;
+        tipo = &#34;&#34;
+        if value is not None:
+            tipo = TYPES.get(value)
+        self.var_tipo.set(tipo)
+
+    def update_date(self, value:str, *args, **kwargs):
+        &#34;&#34;&#34;Insere um valor no widget &#34;Date&#34;.
+
+        Args:
+            new_text (str): Valor a ser inserido no widget
+        &#34;&#34;&#34;
+        self.lbl_date.set(value)
+
+    def update_leitura(self, new_text:str, *args, **kwargs):
+        &#34;&#34;&#34;Insere um valor no widget &#34;Leitura&#34;.
+
+        Args:
+            new_text (str): Valor a ser inserido no widget
+        &#34;&#34;&#34;
+        self.var_leitura.set(new_text)
+
+    def resize_image(self, img:PngImageFile, *args, **kwargs) -&gt; Image.Image:
+        &#34;&#34;&#34;Realiza o redimensionamento de uma imagem, mantendo as suas proporções, conforme o tamanho do Canvas.
+
+        Args:
+            img (PngImageFile): Imagem a ser redimensionada
+
+        Raises:
+            NoImageException: Caso não haja uma imagem
+
+        Returns:
+            Image.Image: Imagem redimensionada.
+        &#34;&#34;&#34;
+        if img:
+            cur_width, cur_height   = img.size
+            ratio                   = min(self.canvas.winfo_width() / cur_width, self.canvas.winfo_height() / cur_height)
+            new_width               = int(cur_width * ratio)
+            new_height              = int(cur_height * ratio)
+
+            return img.resize((new_width, new_height), Resampling.LANCZOS)
+        else:
+            raise NoImageException
+
+    def update_canvas(self, filename:str=None, img_resized:Image.Image=None, *args, **kwargs):
+        &#34;&#34;&#34;Insere uma nova imagem ao canvas:
+            Ou através do nome do arquivo da imagem
+            Ou através de um objeto Image.
+
+        Args:
+            filename (str, optional): Nome do arquivo de imagem da leitura salva em history/. Defaults to None.
+            img_resized (Image.Image, optional): Imagem já redimensionada. Defaults to None.
+        &#34;&#34;&#34;
+        self.canvas.update()
+
+        if filename:
+            try:
+                self.cur_img         = Image.open(filename)
+                self.cur_img_resized = self.resize_image(self.cur_img)          # Vamos redimensionar a imagem e deixar a função calcular automaticamente o tamanho
+                self.photoimage      = ImageTk.PhotoImage(self.cur_img_resized)
+                self.canvas[&#34;image&#34;] = self.photoimage
+            except (FileNotFoundError, FileExistsError, NoImageException):
+                logging.error(&#34;Imagem não encontrada&#34;)
+                messagebox.showerror(&#34;Imagem&#34;, &#34;Imagem não encontrada&#34;)
+            except ValueError:
+                pass
+
+        elif img_resized:
+            self.cur_img_resized = img_resized
+            self.photoimage      = ImageTk.PhotoImage(self.cur_img_resized)
+            self.canvas[&#34;image&#34;] = self.photoimage
+
+        else:
+            self.canvas[&#34;image&#34;] = &#34;&#34;
+
+    def raise_above_all(self, *args, **kwargs):
+        &#34;&#34;&#34;Coloca a janela do aplicativo por cima das outras janelas
+        &#34;&#34;&#34;
+        self.root.attributes(&#39;-topmost&#39;, 1)
+        self.root.attributes(&#39;-topmost&#39;, 0)
+
+    def clear(self, *args, **kwargs):
+        &#34;&#34;&#34;Limpa todos os widgets.
+        &#34;&#34;&#34;
+        self.listbox.selection_clear(0, tk.END)
+        self.update_canvas()
+        self.update_date(&#34;&#34;)
+        self.update_tipo()
+        self.update_leitura(&#34;&#34;)
+
+# ======================================================================================================================
+def check_history_path():
+    &#34;&#34;&#34;Verifica a existência do arquivo de resultados.
+    Caso o arquivo não exista, ele será criado e com o nome padrão (results.json)
+    &#34;&#34;&#34;
+
+    if not os.path.exists(&#34;./history&#34;):
+        os.mkdir(&#34;./history&#34;)
+        logging.info(&#34;Pasta HISTORY criada com sucesso&#34;)
+    if not os.path.exists(RESULTS_PATH):
+        open(RESULTS_PATH, &#39;w&#39;).close()
+        logging.info(&#34;Arquivo |results.json| criado com sucesso&#34;)
+
+def check_config_path():
+    &#34;&#34;&#34;Verifica a existência do arquivo de configurações.
+    Caso o arquivo não exista, ele será criado e com o nome padrão (.config)
+    &#34;&#34;&#34;
+
+    if not os.path.exists(&#34;.config&#34;):
+        logging.warning(&#34;Arquivo de configuração inexistente, criando um novo:&#34;)
+        with open(&#34;.config&#34;, &#34;w&#34;, encoding=&#34;UTF-8&#34;) as file:
+            json.dump({&#34;TESSERACT_CMD&#34;: r&#39;C:/Program Files/Tesseract-OCR/tesseract.exe&#39;}, file)
+            logging.info(&#34;Arquivo de configuração criado com sucesso&#34;)
+
+def initial_config():
+    &#34;&#34;&#34;Realiza as configurações inicias da aplicação.
+
+    - Configurações iniciais do logging
+    - Conferência do arquivo de resultados
+    - Conferência do arquivo de configurações
+    - Configuração do Tesseract
+    &#34;&#34;&#34;
+    logging.basicConfig(
+        stream  = open(f&#39;app.log&#39;, &#39;a&#39;, encoding=&#39;utf-8&#39;)   ,
+        level   = logging.INFO, datefmt=&#39;%Y-%m-%d %H:%M:%S&#39; ,
+        format  = &#39;%(asctime)s %(levelname)-8s %(message)s&#39; ,
+    )
+
+    check_history_path()
+
+    check_config_path()
+
+    while True:
+        try:
+            with open(&#34;.config&#34;, &#34;r&#34;, encoding=&#34;UTF-8&#34;) as file:
+                configs = json.load(file)
+                pytesseract.pytesseract.tesseract_cmd = configs.get(&#34;TESSERACT_CMD&#34;, &#34;&#34;)
+
+            pytesseract.get_languages()                                  # Apenas para testar se o Tesseract está no PATH
+            break
+
+        except pytesseract.pytesseract.TesseractNotFoundError:
+            logging.error(&#34;Tesseract não encontrado&#34;)
+
+            messagebox.showerror(&#34;EITA!&#34;, &#34;Tesseract não encontrado!&#34;)
+            tesseract_path = filedialog.askopenfilename(title=&#34;Onde está tesseract.exe ?&#34;)
+
+            logging.info(f&#34;Usuário informou |{tesseract_path}| como path para o Tesseract&#34;)
+
+            if tesseract_path:
+                with open(&#34;.config&#34;, &#34;w&#34;, encoding=&#34;UTF-8&#34;) as file:
+                    json.dump({&#34;TESSERACT_CMD&#34;: tesseract_path}, file)
+                    logging.info(&#34;Path do Tesseract salvo com sucesso&#34;)
+            else:
+                logging.error(&#34;Path inexistente, encerrando programa&#34;)
+                exit(1)
+
+def save_result(result: dict, img:PngImageFile):
+    &#34;&#34;&#34;Inclui uma leitura ao arquivo de resultados.
+
+    Args:
+        result (dict): Dicionário com os dados da leitura
+            {
+                &#34;data&#34;: str (&#34;%d/%m/%Y %H:%M:%S&#34;),  
+                &#34;type&#34;: str,  
+                &#34;cod_lido&#34;: str,  
+                &#34;cod_conv&#34;: str,  
+            }
+
+        img (PngImageFile): Print em si
+    &#34;&#34;&#34;
+    check_history_path()
+
+    # Salvando a imagem primeiro:
+    for k, v in result.items():
+        img.save(f&#39;./history/{k}.png&#39;)
+        logging.info(f&#34;{k}.png salvo com sucesso na pasta History&#34;)
+
+    # Incluíndo a leitura no arquivo de resultados:
+    lista_atual = {}
+    with open(&#34;./history/results.json&#34;, &#39;r&#39;, encoding=&#39;UTF8&#39;) as jsonfile:
+        try:
+            lista_atual = json.load(jsonfile)
+        except json.decoder.JSONDecodeError:
+            pass    # Arquivo está vazio, apenas isso!
+
+    with open(&#34;./history/results.json&#34;, &#39;w&#39;, encoding=&#39;UTF8&#39;) as jsonfile:
+        for k, v in result.items():        
+            lista_atual[k] = v
+        json.dump(lista_atual, jsonfile, ensure_ascii=False)
+        logging.info(&#34;Leiturada adicionada ao arquivo |results.json| com sucesso&#34;)
+
+def ler_e_salvar():
+    &#34;&#34;&#34;A função mais importante do módulo.
+
+    - Realiza a leitura da Área de Transferência
+    - Realiza a leitura dos Códigos de Barra
+    - Realiza OCR
+    - Armazena a imagem no diretório específico
+    - Solicita a inclusão do resultado da leitura no arquivo de resultados
+
+    Raises:
+        NoImageException: Caso não seja encontrado nenhuma imagem na Área de Transferência
+
+    Returns:
+        bool: True se tudo deu certo ou False caso contrário
+    &#34;&#34;&#34;
+    # -----------------------------------------------------------
+    timens = time_ns()
+    agora = timens_to_datetime(timens)
+
+    # -----------------------------------------------------------
+    img = ImageGrab.grabclipboard()
+
+    # -----------------------------------------------------------
+    # Código de Barras ?
+    try:
+        results = decode(img)
+    except (TypeError, Exception):
+        raise NoImageException
+
+    if len(results) &gt;= 1:
+        logging.info(&#34;Código de barras encontrado&#34;)
+
+        if len(results) &gt; 1:
+            logging.error(f&#34;Imagem só deve conter 1 código de barras e foram encontrados {len(results)}.&#34;)
+            messagebox.showerror(&#34;Ops!&#34;, &#34;O seu print só deve conter apenas 1 código de barras&#34;)
+            return False
+
+        d = results[0]
+        text = d.data.decode(&#34;utf-8&#34;)
+
+        if d.type == &#34;I25&#34;:         # Boletos de Cobraça e Arrecadação
+            logging.debug(&#34;Código de barrras do tipo I25 (boletos de cobrança e arrecadação)&#34;)
+            try:
+                boleto   = new_boleto(cod_barras=text)
+                cod_conv = boleto.linha_digitavel
+                m_type   = 1
+            except BoletoInvalidoException:
+                logging.error(f&#34;Boleto Inválido: |{text}|&#34;)
+                return False
+        elif d.type == &#34;CODE128&#34;:   # Código de Nota Fiscal
+            logging.debug(&#34;Código de barras do tipo CODE128 (notas fiscais)&#34;)
+            cod_conv = text
+            m_type   = 2
+        elif d.type == &#34;QRCODE&#34;:
+            logging.debug(&#34;Código de barras do tipo QRCODE&#34;)
+            cod_conv = text
+            m_type   = 3
+        else:
+            logging.warning(f&#34;Código de barras do tipo {d.type} que ainda não é suportado&#34;)
+            messagebox.showerror(&#34;Ainda não&#34;, &#34;Código de barras não suportado&#34;)
+            return False
+
+        x, y, wi, h = d.rect.left, d.rect.top, d.rect.width, d.rect.height
+        imgdraw = ImageDraw.Draw(img)
+        imgdraw.rectangle(xy=(x, y, x+wi, y+h), outline=&#34;#FF0000&#34;, width=2,)
+        logging.debug(f&#34;Imagem encontrada em ({x},{y}) -&gt; ({x+wi},{y+h})&#34;)
+
+        result = {
+            f&#34;{timens}&#34;: {
+                &#34;data&#34;: agora.strftime(&#34;%d/%m/%Y %H:%M:%S&#34;),
+                &#34;type&#34;: m_type,
+                &#34;cod_lido&#34;: text,
+                &#34;cod_conv&#34;: cod_conv    # TODO: Alterar &#34;cod_conv&#34; para leitura, mas preserver a compatibilidade com as versões anteriores
+            }
+        }
+
+        save_result(result, img)
+
+    # -----------------------------------------------------------
+    # Linha Digitável:
+    else:
+        logging.info(&#34;Nenhum código de barras encontrado, programa tentará fazer OCR.&#34;)
+
+        try:
+            text = pytesseract.image_to_string(img, lang=&#34;por&#34;,).strip(&#34;\n&#34;)     # TODO: Tesseract está tendo dificuldades em ler números com mais de dois 0 seguidos
+        except TypeError:
+            raise NoImageException
+
+        if len(text) &gt; 1:
+            logging.debug(f&#34;OCR realizado com sucesso |{text}|&#34;)
+
+            boleto = new_boleto(linha_digitavel=text)
+
+            result = {
+                f&#34;{timens}&#34;: {
+                    &#34;data&#34;: agora.strftime(&#34;%d/%m/%Y %H:%M:%S&#34;),
+                    &#34;type&#34;: 0,
+                    &#34;cod_lido&#34;: text,
+                    &#34;cod_conv&#34;: boleto.linha_digitavel if boleto else text    # TODO: Alterar &#34;cod_conv&#34; para leitura, mas preserver a compatibilidade com as versões anteriores # TODO: Instanciar_boleto pode retornar nulo...
+                }
+            }
+
+            save_result(result, img)
+        else:
+            # messagebox.showwarning(&#34;Ops!&#34;, &#34;Nada encontrado&#34;)
+            logging.warning(&#34;OCR não encontrou nada&#34;)
+            return False
+
+    return True
+
+def retrieve_leitura(timens: str) -&gt; dict:
+    &#34;&#34;&#34;
+    Retorna o resultado da leitura salvo no arquivos de resultados.
+
+    Args:
+        timens (str): Identificação da leitura, que no caso é a data e hora da leitura em milissegundos.
+
+    Returns:
+        dict: Leitura
+    &#34;&#34;&#34;
+    check_history_path()
+
+    with open(&#34;./history/results.json&#34;, &#39;r&#39;, encoding=&#39;UTF8&#39;) as jsonfile:
+        try:
+            data = json.load(jsonfile)
+            return data.get(timens)
+
+        except json.decoder.JSONDecodeError as e:
+            pass  # Arquivo vazio, apenas isso!
+
+# ======================================================================================================================
+if __name__ == &#39;__main__&#39;:
+    initial_config()
+
+    # -------------------------------------
+    w = MainWindow()
+    w.mainloop()</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="app.check_config_path"><code class="name flex">
+<span>def <span class="ident">check_config_path</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Verifica a existência do arquivo de configurações.
+Caso o arquivo não exista, ele será criado e com o nome padrão (.config)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def check_config_path():
+    &#34;&#34;&#34;Verifica a existência do arquivo de configurações.
+    Caso o arquivo não exista, ele será criado e com o nome padrão (.config)
+    &#34;&#34;&#34;
+
+    if not os.path.exists(&#34;.config&#34;):
+        logging.warning(&#34;Arquivo de configuração inexistente, criando um novo:&#34;)
+        with open(&#34;.config&#34;, &#34;w&#34;, encoding=&#34;UTF-8&#34;) as file:
+            json.dump({&#34;TESSERACT_CMD&#34;: r&#39;C:/Program Files/Tesseract-OCR/tesseract.exe&#39;}, file)
+            logging.info(&#34;Arquivo de configuração criado com sucesso&#34;)</code></pre>
+</details>
+</dd>
+<dt id="app.check_history_path"><code class="name flex">
+<span>def <span class="ident">check_history_path</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Verifica a existência do arquivo de resultados.
+Caso o arquivo não exista, ele será criado e com o nome padrão (results.json)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def check_history_path():
+    &#34;&#34;&#34;Verifica a existência do arquivo de resultados.
+    Caso o arquivo não exista, ele será criado e com o nome padrão (results.json)
+    &#34;&#34;&#34;
+
+    if not os.path.exists(&#34;./history&#34;):
+        os.mkdir(&#34;./history&#34;)
+        logging.info(&#34;Pasta HISTORY criada com sucesso&#34;)
+    if not os.path.exists(RESULTS_PATH):
+        open(RESULTS_PATH, &#39;w&#39;).close()
+        logging.info(&#34;Arquivo |results.json| criado com sucesso&#34;)</code></pre>
+</details>
+</dd>
+<dt id="app.initial_config"><code class="name flex">
+<span>def <span class="ident">initial_config</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Realiza as configurações inicias da aplicação.</p>
+<ul>
+<li>Configurações iniciais do logging</li>
+<li>Conferência do arquivo de resultados</li>
+<li>Conferência do arquivo de configurações</li>
+<li>Configuração do Tesseract</li>
+</ul></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def initial_config():
+    &#34;&#34;&#34;Realiza as configurações inicias da aplicação.
+
+    - Configurações iniciais do logging
+    - Conferência do arquivo de resultados
+    - Conferência do arquivo de configurações
+    - Configuração do Tesseract
+    &#34;&#34;&#34;
+    logging.basicConfig(
+        stream  = open(f&#39;app.log&#39;, &#39;a&#39;, encoding=&#39;utf-8&#39;)   ,
+        level   = logging.INFO, datefmt=&#39;%Y-%m-%d %H:%M:%S&#39; ,
+        format  = &#39;%(asctime)s %(levelname)-8s %(message)s&#39; ,
+    )
+
+    check_history_path()
+
+    check_config_path()
+
+    while True:
+        try:
+            with open(&#34;.config&#34;, &#34;r&#34;, encoding=&#34;UTF-8&#34;) as file:
+                configs = json.load(file)
+                pytesseract.pytesseract.tesseract_cmd = configs.get(&#34;TESSERACT_CMD&#34;, &#34;&#34;)
+
+            pytesseract.get_languages()                                  # Apenas para testar se o Tesseract está no PATH
+            break
+
+        except pytesseract.pytesseract.TesseractNotFoundError:
+            logging.error(&#34;Tesseract não encontrado&#34;)
+
+            messagebox.showerror(&#34;EITA!&#34;, &#34;Tesseract não encontrado!&#34;)
+            tesseract_path = filedialog.askopenfilename(title=&#34;Onde está tesseract.exe ?&#34;)
+
+            logging.info(f&#34;Usuário informou |{tesseract_path}| como path para o Tesseract&#34;)
+
+            if tesseract_path:
+                with open(&#34;.config&#34;, &#34;w&#34;, encoding=&#34;UTF-8&#34;) as file:
+                    json.dump({&#34;TESSERACT_CMD&#34;: tesseract_path}, file)
+                    logging.info(&#34;Path do Tesseract salvo com sucesso&#34;)
+            else:
+                logging.error(&#34;Path inexistente, encerrando programa&#34;)
+                exit(1)</code></pre>
+</details>
+</dd>
+<dt id="app.ler_e_salvar"><code class="name flex">
+<span>def <span class="ident">ler_e_salvar</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A função mais importante do módulo.</p>
+<ul>
+<li>Realiza a leitura da Área de Transferência</li>
+<li>Realiza a leitura dos Códigos de Barra</li>
+<li>Realiza OCR</li>
+<li>Armazena a imagem no diretório específico</li>
+<li>Solicita a inclusão do resultado da leitura no arquivo de resultados</li>
+</ul>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code><a title="app.NoImageException" href="#app.NoImageException">NoImageException</a></code></dt>
+<dd>Caso não seja encontrado nenhuma imagem na Área de Transferência</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>bool</code></dt>
+<dd>True se tudo deu certo ou False caso contrário</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def ler_e_salvar():
+    &#34;&#34;&#34;A função mais importante do módulo.
+
+    - Realiza a leitura da Área de Transferência
+    - Realiza a leitura dos Códigos de Barra
+    - Realiza OCR
+    - Armazena a imagem no diretório específico
+    - Solicita a inclusão do resultado da leitura no arquivo de resultados
+
+    Raises:
+        NoImageException: Caso não seja encontrado nenhuma imagem na Área de Transferência
+
+    Returns:
+        bool: True se tudo deu certo ou False caso contrário
+    &#34;&#34;&#34;
+    # -----------------------------------------------------------
+    timens = time_ns()
+    agora = timens_to_datetime(timens)
+
+    # -----------------------------------------------------------
+    img = ImageGrab.grabclipboard()
+
+    # -----------------------------------------------------------
+    # Código de Barras ?
+    try:
+        results = decode(img)
+    except (TypeError, Exception):
+        raise NoImageException
+
+    if len(results) &gt;= 1:
+        logging.info(&#34;Código de barras encontrado&#34;)
+
+        if len(results) &gt; 1:
+            logging.error(f&#34;Imagem só deve conter 1 código de barras e foram encontrados {len(results)}.&#34;)
+            messagebox.showerror(&#34;Ops!&#34;, &#34;O seu print só deve conter apenas 1 código de barras&#34;)
+            return False
+
+        d = results[0]
+        text = d.data.decode(&#34;utf-8&#34;)
+
+        if d.type == &#34;I25&#34;:         # Boletos de Cobraça e Arrecadação
+            logging.debug(&#34;Código de barrras do tipo I25 (boletos de cobrança e arrecadação)&#34;)
+            try:
+                boleto   = new_boleto(cod_barras=text)
+                cod_conv = boleto.linha_digitavel
+                m_type   = 1
+            except BoletoInvalidoException:
+                logging.error(f&#34;Boleto Inválido: |{text}|&#34;)
+                return False
+        elif d.type == &#34;CODE128&#34;:   # Código de Nota Fiscal
+            logging.debug(&#34;Código de barras do tipo CODE128 (notas fiscais)&#34;)
+            cod_conv = text
+            m_type   = 2
+        elif d.type == &#34;QRCODE&#34;:
+            logging.debug(&#34;Código de barras do tipo QRCODE&#34;)
+            cod_conv = text
+            m_type   = 3
+        else:
+            logging.warning(f&#34;Código de barras do tipo {d.type} que ainda não é suportado&#34;)
+            messagebox.showerror(&#34;Ainda não&#34;, &#34;Código de barras não suportado&#34;)
+            return False
+
+        x, y, wi, h = d.rect.left, d.rect.top, d.rect.width, d.rect.height
+        imgdraw = ImageDraw.Draw(img)
+        imgdraw.rectangle(xy=(x, y, x+wi, y+h), outline=&#34;#FF0000&#34;, width=2,)
+        logging.debug(f&#34;Imagem encontrada em ({x},{y}) -&gt; ({x+wi},{y+h})&#34;)
+
+        result = {
+            f&#34;{timens}&#34;: {
+                &#34;data&#34;: agora.strftime(&#34;%d/%m/%Y %H:%M:%S&#34;),
+                &#34;type&#34;: m_type,
+                &#34;cod_lido&#34;: text,
+                &#34;cod_conv&#34;: cod_conv    # TODO: Alterar &#34;cod_conv&#34; para leitura, mas preserver a compatibilidade com as versões anteriores
+            }
+        }
+
+        save_result(result, img)
+
+    # -----------------------------------------------------------
+    # Linha Digitável:
+    else:
+        logging.info(&#34;Nenhum código de barras encontrado, programa tentará fazer OCR.&#34;)
+
+        try:
+            text = pytesseract.image_to_string(img, lang=&#34;por&#34;,).strip(&#34;\n&#34;)     # TODO: Tesseract está tendo dificuldades em ler números com mais de dois 0 seguidos
+        except TypeError:
+            raise NoImageException
+
+        if len(text) &gt; 1:
+            logging.debug(f&#34;OCR realizado com sucesso |{text}|&#34;)
+
+            boleto = new_boleto(linha_digitavel=text)
+
+            result = {
+                f&#34;{timens}&#34;: {
+                    &#34;data&#34;: agora.strftime(&#34;%d/%m/%Y %H:%M:%S&#34;),
+                    &#34;type&#34;: 0,
+                    &#34;cod_lido&#34;: text,
+                    &#34;cod_conv&#34;: boleto.linha_digitavel if boleto else text    # TODO: Alterar &#34;cod_conv&#34; para leitura, mas preserver a compatibilidade com as versões anteriores # TODO: Instanciar_boleto pode retornar nulo...
+                }
+            }
+
+            save_result(result, img)
+        else:
+            # messagebox.showwarning(&#34;Ops!&#34;, &#34;Nada encontrado&#34;)
+            logging.warning(&#34;OCR não encontrou nada&#34;)
+            return False
+
+    return True</code></pre>
+</details>
+</dd>
+<dt id="app.retrieve_leitura"><code class="name flex">
+<span>def <span class="ident">retrieve_leitura</span></span>(<span>timens: str) ‑> dict</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Retorna o resultado da leitura salvo no arquivos de resultados.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>timens</code></strong> :&ensp;<code>str</code></dt>
+<dd>Identificação da leitura, que no caso é a data e hora da leitura em milissegundos.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>dict</code></dt>
+<dd>Leitura</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def retrieve_leitura(timens: str) -&gt; dict:
+    &#34;&#34;&#34;
+    Retorna o resultado da leitura salvo no arquivos de resultados.
+
+    Args:
+        timens (str): Identificação da leitura, que no caso é a data e hora da leitura em milissegundos.
+
+    Returns:
+        dict: Leitura
+    &#34;&#34;&#34;
+    check_history_path()
+
+    with open(&#34;./history/results.json&#34;, &#39;r&#39;, encoding=&#39;UTF8&#39;) as jsonfile:
+        try:
+            data = json.load(jsonfile)
+            return data.get(timens)
+
+        except json.decoder.JSONDecodeError as e:
+            pass  # Arquivo vazio, apenas isso!</code></pre>
+</details>
+</dd>
+<dt id="app.save_result"><code class="name flex">
+<span>def <span class="ident">save_result</span></span>(<span>result: dict, img: PIL.PngImagePlugin.PngImageFile)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Inclui uma leitura ao arquivo de resultados.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>result</code></strong> :&ensp;<code>dict</code></dt>
+<dd>Dicionário com os dados da leitura
+{
+"data": str ("%d/%m/%Y %H:%M:%S"),<br>
+"type": str,<br>
+"cod_lido": str,<br>
+"cod_conv": str,<br>
+}</dd>
+<dt><strong><code>img</code></strong> :&ensp;<code>PngImageFile</code></dt>
+<dd>Print em si</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def save_result(result: dict, img:PngImageFile):
+    &#34;&#34;&#34;Inclui uma leitura ao arquivo de resultados.
+
+    Args:
+        result (dict): Dicionário com os dados da leitura
+            {
+                &#34;data&#34;: str (&#34;%d/%m/%Y %H:%M:%S&#34;),  
+                &#34;type&#34;: str,  
+                &#34;cod_lido&#34;: str,  
+                &#34;cod_conv&#34;: str,  
+            }
+
+        img (PngImageFile): Print em si
+    &#34;&#34;&#34;
+    check_history_path()
+
+    # Salvando a imagem primeiro:
+    for k, v in result.items():
+        img.save(f&#39;./history/{k}.png&#39;)
+        logging.info(f&#34;{k}.png salvo com sucesso na pasta History&#34;)
+
+    # Incluíndo a leitura no arquivo de resultados:
+    lista_atual = {}
+    with open(&#34;./history/results.json&#34;, &#39;r&#39;, encoding=&#39;UTF8&#39;) as jsonfile:
+        try:
+            lista_atual = json.load(jsonfile)
+        except json.decoder.JSONDecodeError:
+            pass    # Arquivo está vazio, apenas isso!
+
+    with open(&#34;./history/results.json&#34;, &#39;w&#39;, encoding=&#39;UTF8&#39;) as jsonfile:
+        for k, v in result.items():        
+            lista_atual[k] = v
+        json.dump(lista_atual, jsonfile, ensure_ascii=False)
+        logging.info(&#34;Leiturada adicionada ao arquivo |results.json| com sucesso&#34;)</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="app.MainWindow"><code class="flex name class">
+<span>class <span class="ident">MainWindow</span></span>
+<span>(</span><span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class MainWindow:
+    def __init__(self, *args, **kwargs):
+        # TODO: Uma forma de excluir os registros salvos.
+
+        super().__init__(*args, **kwargs)
+
+        self.root = tk.Tk()
+        self.root.title(&#34;Clip Barcode&#34;)
+        self.root.geometry(&#34;1280x720&#34;)
+        self.root.iconbitmap(&#34;icon.ico&#34;)
+        self.root.bind(&#39;&lt;Configure&gt;&#39;, self._configure_callback)
+
+        self.last_width = 0
+        self.last_height = 0
+
+        # -------------------------------------
+        # Frames:
+        tk.Button(self.root, text=&#34;Ler Print&#34;, font=(&#34;Consolas&#34;, 16), command=self._lerprint_pressed).grid(pady=10)
+
+        self.f1 = tk.Frame(self.root, )
+        self.f1.grid(row=1, column=0, padx=5, pady=(0, 10), sticky=&#34;nswe&#34;)
+
+        self.f2 = tk.Frame(self.root, )        
+        self.f2.grid(row=1, column=1, columnspan=2, padx=5, pady=(0, 15), sticky=&#34;nswe&#34;)
+
+        self.root.columnconfigure(index=1, weight=1)
+        self.root.rowconfigure(index=1, weight=1)
+
+        # -------------------------------------
+        # List Frame:
+        self.listbox = tk.Listbox(self.f1, font=(&#34;Consolas&#34;, 14), selectmode=&#34;SINGLE&#34;, activestyle=tk.NONE)
+        self.listbox.bind(&#39;&lt;&lt;ListboxSelect&gt;&gt;&#39;, self._item_selected)
+        self.listbox.bind(&#34;&lt;Down&gt;&#34;, self._arrow_down)
+        self.listbox.bind(&#34;&lt;Up&gt;&#34;, self._arrow_up)
+        self.listbox.grid(sticky=&#34;nsew&#34;, )
+
+        self._fill_list()
+
+        cols, rows = self.f1.grid_size()
+        for r in range(rows):
+            self.f1.rowconfigure(index=r, weight=1)
+        for c in range(cols):
+            self.f1.columnconfigure(index=c, weight=1)
+
+        # -------------------------------------
+        # Detail Frame:
+        self.canvas = tk.Label(self.f2, bg=&#34;gray&#34;)
+        self.canvas.grid(row=0, column=1, sticky=&#34;nsew&#34;)
+
+        self.lbl_date = tk.StringVar()
+        tk.Label(self.f2, textvariable=self.lbl_date, font=(&#34;Consolas&#34;, 16)).grid(row=2, column=1, sticky=&#34;nswe&#34;, pady=(15, 0))
+
+        self.var_tipo = tk.StringVar()
+        tk.Label(self.f2, textvariable=self.var_tipo, font=(&#34;Consolas&#34;, 16),).grid(row=3, column=1, sticky=&#34;nsew&#34;, pady=5)
+
+        self.var_leitura = tk.StringVar()
+        tk.Label(self.f2, text=&#34;Leitura:&#34;, font=(&#34;Consolas&#34;, 16), ).grid(row=4, sticky=&#34;nswe&#34;, pady=(15, 15))
+        tk.Entry(self.f2, font=(&#34;Consolas&#34;, 16), state=tk.DISABLED, textvariable=self.var_leitura).grid(row=4, column=1, sticky=&#34;we&#34;)
+        tk.Button(self.f2, text=&#34;Copiar&#34;, font=(&#34;Consolas&#34;, 12), command=self.copiar_leitura).grid(row=4, column=2, sticky=&#34;ew&#34;)
+
+        self.f2.rowconfigure(index=0, weight=1)
+        self.f2.columnconfigure(index=1, weight=1)
+
+        # -------------------------------------
+        self.cur_img = None
+        self.cur_img_resized = None
+        self.photoimage = None
+
+        self._lerprint_pressed(init=True)
+
+        # -------------------------------------
+
+    def _fill_list(self, *args, **kwargs):
+        self.listbox.delete(0, &#34;end&#34;)
+
+        with open(&#34;./history/results.json&#34;, &#39;r&#39;, encoding=&#39;UTF-8&#39;) as jsonfile:
+            try:
+                data = json.load(jsonfile)
+                for k, v in data.items():
+                    self.listbox.insert(&#34;0&#34;, f&#39;{k}&#39;)
+            except json.decoder.JSONDecodeError:
+                pass    # TODO: Handle it
+
+    def _lerprint_pressed(self, init:bool=False, *args, **kwargs):
+        try:
+            if ler_e_salvar():
+                # Caso 1: Abriu o programa e tinha um print no &#34;CTRL V&#34; e Caso 3: Apertou &#34;Ler Print&#34; e tinha um print no &#34;CTRL V&#34;
+                self._fill_list()
+                self.listbox.selection_clear(0, tk.END)
+                self.listbox.selection_set(0)
+                self.listbox.event_generate(&#34;&lt;&lt;ListboxSelect&gt;&gt;&#34;)    # Simulando um &#34;item selecionado&#34;
+            else:
+                self.clear()
+
+        except NoImageException:
+            if not init:
+                # Caso 4: Apertou &#34;Ler Print&#34;, mas não tinha um print no &#34;CTRL V&#34;
+                messagebox.showwarning(&#34;Sem Imagem&#34;, &#34;Tire um print antes&#34;)
+
+            # Caso 2: Abriu o programa, mas não tinha um print no &#34;CTRL V&#34; = Simplesmente não fazer nada
+
+    def _item_selected(self, *args, **kwargs):
+        index = self.listbox.curselection()
+
+        if index:
+            timens = self.listbox.get(index)
+            cdb = retrieve_leitura(timens)
+
+            self.update_frame_detail(timens, cdb)
+
+    def _arrow_up(self, *args, **kwargs):
+        self.selection = self.listbox.curselection()[0]
+
+        if self.selection &gt; 0:
+            self.listbox.select_clear(self.selection)
+            self.selection -= 1
+            self.listbox.select_set(self.selection)
+            self._item_selected(None)   # TODO: Não curti passar esse None...
+
+    def _arrow_down(self, *args, **kwargs):
+        self.selection = self.listbox.curselection()[0]
+
+        if self.selection &lt; self.listbox.size() - 1:
+            self.listbox.select_clear(self.selection)
+            self.selection += 1
+            self.listbox.select_set(self.selection)
+            self._item_selected(None)   # TODO: Não curti passar esse None...
+
+    def _configure_callback(self, event, *args, **kwargs):
+        if event.widget == self.canvas:                                                                 # Houve uma alteração no Canvas:
+            if abs(event.width - self.last_width) &gt; 50 or abs(event.height - self.last_height) &gt; 50:    # Foi uma alteração de tamanho (usuário aumentou/diminui a janela ou simplesmente foi a inicialiação do GUI)
+                if self.last_width != 0 and self.last_height != 0:                                      # Ignorando a inicialização do GUI
+                    try:
+                        res_img = self.resize_image(self.cur_img)
+                        self.update_canvas(img_resized=res_img)
+                    except NoImageException:
+                        pass
+                self.last_width  = event.width
+                self.last_height = event.height
+
+    def mainloop(self, *args, **kwargs):
+        self.root.mainloop()
+
+    def copiar_leitura(self, *args, **kwargs):
+        &#34;&#34;&#34;Envia para a Área de Transferência o que tiver no widget Leitura.
+        &#34;&#34;&#34;
+        # TODO: Lidar com exceções
+        pyperclip.copy(self.var_leitura.get())
+        # TODO: Alterar texto do botão para &#34;Copiado&#34;
+
+    def update_frame_detail(self, timens:str, cdb:dict, *args, **kwargs):
+        &#34;&#34;&#34;Atualiza todos os widgets presentes no frame &#34;Detail&#34;
+
+        Args:
+            timens (str): Identificação da leitura
+            cdb (dict): Leitura
+        &#34;&#34;&#34;
+        # TODO: Alterar texto dos botões para os originais
+
+        if cdb:
+            self.update_canvas(filename=f&#34;./history/{timens}.png&#34;)
+            self.update_date(cdb.get(&#34;data&#34;))
+            self.update_tipo(cdb.get(&#34;type&#34;))
+            self.update_leitura(cdb.get(&#34;cod_conv&#34;, &#34;&#34;))    # TODO: Alterar &#34;cod_conv&#34; para leitura, mas preserver a compatibilidade com as versões anteriores
+        else:
+            messagebox.showerror(&#34;EITA!&#34;, &#34;Código de barras não localizado.&#34;)
+
+    def update_tipo(self, value:str|None, *args, **kwargs):
+        &#34;&#34;&#34;Insere um valor no widget &#34;Tipo&#34;.
+
+        Args:
+            value (str | None): Valor a ser inserido no widget
+        &#34;&#34;&#34;
+        tipo = &#34;&#34;
+        if value is not None:
+            tipo = TYPES.get(value)
+        self.var_tipo.set(tipo)
+
+    def update_date(self, value:str, *args, **kwargs):
+        &#34;&#34;&#34;Insere um valor no widget &#34;Date&#34;.
+
+        Args:
+            new_text (str): Valor a ser inserido no widget
+        &#34;&#34;&#34;
+        self.lbl_date.set(value)
+
+    def update_leitura(self, new_text:str, *args, **kwargs):
+        &#34;&#34;&#34;Insere um valor no widget &#34;Leitura&#34;.
+
+        Args:
+            new_text (str): Valor a ser inserido no widget
+        &#34;&#34;&#34;
+        self.var_leitura.set(new_text)
+
+    def resize_image(self, img:PngImageFile, *args, **kwargs) -&gt; Image.Image:
+        &#34;&#34;&#34;Realiza o redimensionamento de uma imagem, mantendo as suas proporções, conforme o tamanho do Canvas.
+
+        Args:
+            img (PngImageFile): Imagem a ser redimensionada
+
+        Raises:
+            NoImageException: Caso não haja uma imagem
+
+        Returns:
+            Image.Image: Imagem redimensionada.
+        &#34;&#34;&#34;
+        if img:
+            cur_width, cur_height   = img.size
+            ratio                   = min(self.canvas.winfo_width() / cur_width, self.canvas.winfo_height() / cur_height)
+            new_width               = int(cur_width * ratio)
+            new_height              = int(cur_height * ratio)
+
+            return img.resize((new_width, new_height), Resampling.LANCZOS)
+        else:
+            raise NoImageException
+
+    def update_canvas(self, filename:str=None, img_resized:Image.Image=None, *args, **kwargs):
+        &#34;&#34;&#34;Insere uma nova imagem ao canvas:
+            Ou através do nome do arquivo da imagem
+            Ou através de um objeto Image.
+
+        Args:
+            filename (str, optional): Nome do arquivo de imagem da leitura salva em history/. Defaults to None.
+            img_resized (Image.Image, optional): Imagem já redimensionada. Defaults to None.
+        &#34;&#34;&#34;
+        self.canvas.update()
+
+        if filename:
+            try:
+                self.cur_img         = Image.open(filename)
+                self.cur_img_resized = self.resize_image(self.cur_img)          # Vamos redimensionar a imagem e deixar a função calcular automaticamente o tamanho
+                self.photoimage      = ImageTk.PhotoImage(self.cur_img_resized)
+                self.canvas[&#34;image&#34;] = self.photoimage
+            except (FileNotFoundError, FileExistsError, NoImageException):
+                logging.error(&#34;Imagem não encontrada&#34;)
+                messagebox.showerror(&#34;Imagem&#34;, &#34;Imagem não encontrada&#34;)
+            except ValueError:
+                pass
+
+        elif img_resized:
+            self.cur_img_resized = img_resized
+            self.photoimage      = ImageTk.PhotoImage(self.cur_img_resized)
+            self.canvas[&#34;image&#34;] = self.photoimage
+
+        else:
+            self.canvas[&#34;image&#34;] = &#34;&#34;
+
+    def raise_above_all(self, *args, **kwargs):
+        &#34;&#34;&#34;Coloca a janela do aplicativo por cima das outras janelas
+        &#34;&#34;&#34;
+        self.root.attributes(&#39;-topmost&#39;, 1)
+        self.root.attributes(&#39;-topmost&#39;, 0)
+
+    def clear(self, *args, **kwargs):
+        &#34;&#34;&#34;Limpa todos os widgets.
+        &#34;&#34;&#34;
+        self.listbox.selection_clear(0, tk.END)
+        self.update_canvas()
+        self.update_date(&#34;&#34;)
+        self.update_tipo()
+        self.update_leitura(&#34;&#34;)</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="app.MainWindow.clear"><code class="name flex">
+<span>def <span class="ident">clear</span></span>(<span>self, *args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Limpa todos os widgets.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def clear(self, *args, **kwargs):
+    &#34;&#34;&#34;Limpa todos os widgets.
+    &#34;&#34;&#34;
+    self.listbox.selection_clear(0, tk.END)
+    self.update_canvas()
+    self.update_date(&#34;&#34;)
+    self.update_tipo()
+    self.update_leitura(&#34;&#34;)</code></pre>
+</details>
+</dd>
+<dt id="app.MainWindow.copiar_leitura"><code class="name flex">
+<span>def <span class="ident">copiar_leitura</span></span>(<span>self, *args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Envia para a Área de Transferência o que tiver no widget Leitura.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def copiar_leitura(self, *args, **kwargs):
+    &#34;&#34;&#34;Envia para a Área de Transferência o que tiver no widget Leitura.
+    &#34;&#34;&#34;
+    # TODO: Lidar com exceções
+    pyperclip.copy(self.var_leitura.get())
+    # TODO: Alterar texto do botão para &#34;Copiado&#34;</code></pre>
+</details>
+</dd>
+<dt id="app.MainWindow.mainloop"><code class="name flex">
+<span>def <span class="ident">mainloop</span></span>(<span>self, *args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def mainloop(self, *args, **kwargs):
+    self.root.mainloop()</code></pre>
+</details>
+</dd>
+<dt id="app.MainWindow.raise_above_all"><code class="name flex">
+<span>def <span class="ident">raise_above_all</span></span>(<span>self, *args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Coloca a janela do aplicativo por cima das outras janelas</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def raise_above_all(self, *args, **kwargs):
+    &#34;&#34;&#34;Coloca a janela do aplicativo por cima das outras janelas
+    &#34;&#34;&#34;
+    self.root.attributes(&#39;-topmost&#39;, 1)
+    self.root.attributes(&#39;-topmost&#39;, 0)</code></pre>
+</details>
+</dd>
+<dt id="app.MainWindow.resize_image"><code class="name flex">
+<span>def <span class="ident">resize_image</span></span>(<span>self, img: PIL.PngImagePlugin.PngImageFile, *args, **kwargs) ‑> PIL.Image.Image</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Realiza o redimensionamento de uma imagem, mantendo as suas proporções, conforme o tamanho do Canvas.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>img</code></strong> :&ensp;<code>PngImageFile</code></dt>
+<dd>Imagem a ser redimensionada</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code><a title="app.NoImageException" href="#app.NoImageException">NoImageException</a></code></dt>
+<dd>Caso não haja uma imagem</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Image.Image</code></dt>
+<dd>Imagem redimensionada.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def resize_image(self, img:PngImageFile, *args, **kwargs) -&gt; Image.Image:
+    &#34;&#34;&#34;Realiza o redimensionamento de uma imagem, mantendo as suas proporções, conforme o tamanho do Canvas.
+
+    Args:
+        img (PngImageFile): Imagem a ser redimensionada
+
+    Raises:
+        NoImageException: Caso não haja uma imagem
+
+    Returns:
+        Image.Image: Imagem redimensionada.
+    &#34;&#34;&#34;
+    if img:
+        cur_width, cur_height   = img.size
+        ratio                   = min(self.canvas.winfo_width() / cur_width, self.canvas.winfo_height() / cur_height)
+        new_width               = int(cur_width * ratio)
+        new_height              = int(cur_height * ratio)
+
+        return img.resize((new_width, new_height), Resampling.LANCZOS)
+    else:
+        raise NoImageException</code></pre>
+</details>
+</dd>
+<dt id="app.MainWindow.update_canvas"><code class="name flex">
+<span>def <span class="ident">update_canvas</span></span>(<span>self, filename: str = None, img_resized: PIL.Image.Image = None, *args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Insere uma nova imagem ao canvas:
+Ou através do nome do arquivo da imagem
+Ou através de um objeto Image.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>filename</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>Nome do arquivo de imagem da leitura salva em history/. Defaults to None.</dd>
+<dt><strong><code>img_resized</code></strong> :&ensp;<code>Image.Image</code>, optional</dt>
+<dd>Imagem já redimensionada. Defaults to None.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def update_canvas(self, filename:str=None, img_resized:Image.Image=None, *args, **kwargs):
+    &#34;&#34;&#34;Insere uma nova imagem ao canvas:
+        Ou através do nome do arquivo da imagem
+        Ou através de um objeto Image.
+
+    Args:
+        filename (str, optional): Nome do arquivo de imagem da leitura salva em history/. Defaults to None.
+        img_resized (Image.Image, optional): Imagem já redimensionada. Defaults to None.
+    &#34;&#34;&#34;
+    self.canvas.update()
+
+    if filename:
+        try:
+            self.cur_img         = Image.open(filename)
+            self.cur_img_resized = self.resize_image(self.cur_img)          # Vamos redimensionar a imagem e deixar a função calcular automaticamente o tamanho
+            self.photoimage      = ImageTk.PhotoImage(self.cur_img_resized)
+            self.canvas[&#34;image&#34;] = self.photoimage
+        except (FileNotFoundError, FileExistsError, NoImageException):
+            logging.error(&#34;Imagem não encontrada&#34;)
+            messagebox.showerror(&#34;Imagem&#34;, &#34;Imagem não encontrada&#34;)
+        except ValueError:
+            pass
+
+    elif img_resized:
+        self.cur_img_resized = img_resized
+        self.photoimage      = ImageTk.PhotoImage(self.cur_img_resized)
+        self.canvas[&#34;image&#34;] = self.photoimage
+
+    else:
+        self.canvas[&#34;image&#34;] = &#34;&#34;</code></pre>
+</details>
+</dd>
+<dt id="app.MainWindow.update_date"><code class="name flex">
+<span>def <span class="ident">update_date</span></span>(<span>self, value: str, *args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Insere um valor no widget "Date".</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>new_text</code></strong> :&ensp;<code>str</code></dt>
+<dd>Valor a ser inserido no widget</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def update_date(self, value:str, *args, **kwargs):
+    &#34;&#34;&#34;Insere um valor no widget &#34;Date&#34;.
+
+    Args:
+        new_text (str): Valor a ser inserido no widget
+    &#34;&#34;&#34;
+    self.lbl_date.set(value)</code></pre>
+</details>
+</dd>
+<dt id="app.MainWindow.update_frame_detail"><code class="name flex">
+<span>def <span class="ident">update_frame_detail</span></span>(<span>self, timens: str, cdb: dict, *args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Atualiza todos os widgets presentes no frame "Detail"</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>timens</code></strong> :&ensp;<code>str</code></dt>
+<dd>Identificação da leitura</dd>
+<dt><strong><code>cdb</code></strong> :&ensp;<code>dict</code></dt>
+<dd>Leitura</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def update_frame_detail(self, timens:str, cdb:dict, *args, **kwargs):
+    &#34;&#34;&#34;Atualiza todos os widgets presentes no frame &#34;Detail&#34;
+
+    Args:
+        timens (str): Identificação da leitura
+        cdb (dict): Leitura
+    &#34;&#34;&#34;
+    # TODO: Alterar texto dos botões para os originais
+
+    if cdb:
+        self.update_canvas(filename=f&#34;./history/{timens}.png&#34;)
+        self.update_date(cdb.get(&#34;data&#34;))
+        self.update_tipo(cdb.get(&#34;type&#34;))
+        self.update_leitura(cdb.get(&#34;cod_conv&#34;, &#34;&#34;))    # TODO: Alterar &#34;cod_conv&#34; para leitura, mas preserver a compatibilidade com as versões anteriores
+    else:
+        messagebox.showerror(&#34;EITA!&#34;, &#34;Código de barras não localizado.&#34;)</code></pre>
+</details>
+</dd>
+<dt id="app.MainWindow.update_leitura"><code class="name flex">
+<span>def <span class="ident">update_leitura</span></span>(<span>self, new_text: str, *args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Insere um valor no widget "Leitura".</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>new_text</code></strong> :&ensp;<code>str</code></dt>
+<dd>Valor a ser inserido no widget</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def update_leitura(self, new_text:str, *args, **kwargs):
+    &#34;&#34;&#34;Insere um valor no widget &#34;Leitura&#34;.
+
+    Args:
+        new_text (str): Valor a ser inserido no widget
+    &#34;&#34;&#34;
+    self.var_leitura.set(new_text)</code></pre>
+</details>
+</dd>
+<dt id="app.MainWindow.update_tipo"><code class="name flex">
+<span>def <span class="ident">update_tipo</span></span>(<span>self, value: str | None, *args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Insere um valor no widget "Tipo".</p>
+<h2 id="args">Args</h2>
+<p>value (str | None): Valor a ser inserido no widget</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def update_tipo(self, value:str|None, *args, **kwargs):
+    &#34;&#34;&#34;Insere um valor no widget &#34;Tipo&#34;.
+
+    Args:
+        value (str | None): Valor a ser inserido no widget
+    &#34;&#34;&#34;
+    tipo = &#34;&#34;
+    if value is not None:
+        tipo = TYPES.get(value)
+    self.var_tipo.set(tipo)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="app.NoImageException"><code class="flex name class">
+<span>class <span class="ident">NoImageException</span></span>
+<span>(</span><span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Common base class for all non-exit exceptions.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class NoImageException(Exception):
+    pass</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>builtins.Exception</li>
+<li>builtins.BaseException</li>
+</ul>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="two-column">
+<li><code><a title="app.check_config_path" href="#app.check_config_path">check_config_path</a></code></li>
+<li><code><a title="app.check_history_path" href="#app.check_history_path">check_history_path</a></code></li>
+<li><code><a title="app.initial_config" href="#app.initial_config">initial_config</a></code></li>
+<li><code><a title="app.ler_e_salvar" href="#app.ler_e_salvar">ler_e_salvar</a></code></li>
+<li><code><a title="app.retrieve_leitura" href="#app.retrieve_leitura">retrieve_leitura</a></code></li>
+<li><code><a title="app.save_result" href="#app.save_result">save_result</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="app.MainWindow" href="#app.MainWindow">MainWindow</a></code></h4>
+<ul class="two-column">
+<li><code><a title="app.MainWindow.clear" href="#app.MainWindow.clear">clear</a></code></li>
+<li><code><a title="app.MainWindow.copiar_leitura" href="#app.MainWindow.copiar_leitura">copiar_leitura</a></code></li>
+<li><code><a title="app.MainWindow.mainloop" href="#app.MainWindow.mainloop">mainloop</a></code></li>
+<li><code><a title="app.MainWindow.raise_above_all" href="#app.MainWindow.raise_above_all">raise_above_all</a></code></li>
+<li><code><a title="app.MainWindow.resize_image" href="#app.MainWindow.resize_image">resize_image</a></code></li>
+<li><code><a title="app.MainWindow.update_canvas" href="#app.MainWindow.update_canvas">update_canvas</a></code></li>
+<li><code><a title="app.MainWindow.update_date" href="#app.MainWindow.update_date">update_date</a></code></li>
+<li><code><a title="app.MainWindow.update_frame_detail" href="#app.MainWindow.update_frame_detail">update_frame_detail</a></code></li>
+<li><code><a title="app.MainWindow.update_leitura" href="#app.MainWindow.update_leitura">update_leitura</a></code></li>
+<li><code><a title="app.MainWindow.update_tipo" href="#app.MainWindow.update_tipo">update_tipo</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="app.NoImageException" href="#app.NoImageException">NoImageException</a></code></h4>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>
