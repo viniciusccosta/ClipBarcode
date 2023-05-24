@@ -51,6 +51,7 @@ Aqui estão algumas informações adicionais sobre o **ClipBarcode**:
 - **Histórico de Leituras**: O programa salvará todas as capturas de tela localmente no seu computador e fornecerá um histórico para acessar suas leituras anteriores. Isso permite que você tenha acesso fácil às suas capturas anteriores de uma forma conveniente.
 - **Contorno Vermelho**: Um contorno vermelho será adicionado ao redor do código de barras lido, facilitando a identificação visual da captura correta da imagem fornecida pelo usuário.
 - **Tipo de Leitura**: O programa exibirá na tela o tipo de leitura realizada, identificando se é um QR Code, Boleto, Nota Fiscal ou simplesmente Texto. Isso oferece uma visão clara do tipo de dado que foi extraído da imagem.
+- **Campo de Descrição**: O programa oferece um campo de texto livre para adicionar uma descrição personalizada a cada leitura, facilitando a identificação dos registros.
 
 Essas informações adicionais fornecem uma visão mais detalhada sobre o funcionamento do **ClipBarcode** e seus recursos, permitindo uma utilização mais completa e eficiente do programa.
 
@@ -62,7 +63,6 @@ Se você encontrar algum problema ao utilizar o **ClipBarcode**, aqui estão alg
 ## Possíveis Atualizações
 
 Abaixo estão algumas possíveis atualizações que podem ser implementadas no futuro:
-- **Descrição Personalizada**: Adicionar a capacidade para os usuários inserirem uma descrição personalizada para cada leitura. Isso permitirá que os usuários identifiquem e rotulem facilmente cada leitura para referência posterior.
 - **Atualização Automática**: Implementar um sistema de atualização automática para garantir que os usuários sempre tenham acesso às últimas melhorias e correções de bugs. O programa fará o download e instalará automaticamente as atualizações disponíveis, proporcionando uma experiência contínua e atualizada.
 - **Leitura Automática**: Adicionar a funcionalidade de leitura automática caso o **ClipBarcode** já esteja aberto. Isso permitirá que os usuários capturem uma imagem do código de barras ou linha digitável e a leitura seja realizada automaticamente, sem a necessidade de clicar no botão "Ler Print".
 
