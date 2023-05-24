@@ -43,7 +43,7 @@ class MainWindow:
 
         # -------------------------------------
         # Frames:
-        tk.Button(self.root, text="Ler Print", font=("Consolas", 16), command=self._lerprint_pressed).grid(pady=10)
+        tk.Button(self.root, text="Ler Print", font=("Consolas", 16), command=self._on_ler_print_click).grid(pady=10)
 
         self.f1 = tk.Frame(self.root, )
         self.f1.grid(row=1, column=0, padx=5, pady=(0, 10), sticky="nswe")
@@ -58,8 +58,9 @@ class MainWindow:
         # List Frame:
         self.listbox = tk.Listbox(self.f1, font=("Consolas", 14), selectmode="SINGLE", activestyle=tk.NONE)
         self.listbox.bind('<<ListboxSelect>>', self._item_selected)
-        self.listbox.bind("<Down>", self._arrow_down)
-        self.listbox.bind("<Up>", self._arrow_up)
+        self.listbox.bind("<Down>", self._on_arrow_down_click)
+        self.listbox.bind("<Up>", self._on_arrow_up_click)
+        self.listbox.bind("<Delete>", self._on_del_click)
         self.listbox.grid(sticky="nsew", )
 
         self._fill_list()
@@ -90,7 +91,7 @@ class MainWindow:
         tk.Label(self.f2, text="Descrição:", font=("Consolas", 16), ).grid(row=5, sticky="nsew", pady=(15,15))
         self.entry_descricao = tk.Entry(self.f2, font=("Consolas", 16), state=tk.DISABLED, textvariable=self.var_descricao)
         self.entry_descricao.grid(row=5, column=1, sticky="we")
-        self.btn_descricao = tk.Button(self.f2, text="Editar", font=("Consolas", 12), command=self.on_btn_descricao_click)
+        self.btn_descricao = tk.Button(self.f2, text="Editar", font=("Consolas", 12), command=self._on_btn_descricao_click)
         self.btn_descricao.grid(row=5, column=2, sticky="ew")
         
         self.f2.rowconfigure(index=0, weight=1)
@@ -101,7 +102,7 @@ class MainWindow:
         self.cur_img_resized = None
         self.photoimage = None
 
-        self._lerprint_pressed(init=True)
+        self._on_ler_print_click(init=True)
 
         # -------------------------------------
 
@@ -116,7 +117,7 @@ class MainWindow:
             except json.decoder.JSONDecodeError:
                 pass    # TODO: Handle it
 
-    def _lerprint_pressed(self, init:bool=False, *args, **kwargs):
+    def _on_ler_print_click(self, init:bool=False, *args, **kwargs):
         try:
             if ler_e_salvar():
                 # Caso 1: Abriu o programa e tinha um print no "CTRL V" e Caso 3: Apertou "Ler Print" e tinha um print no "CTRL V"
@@ -133,6 +134,8 @@ class MainWindow:
                 messagebox.showwarning("Sem Imagem", "Tire um print antes")
 
             # Caso 2: Abriu o programa, mas não tinha um print no "CTRL V" = Simplesmente não fazer nada
+        
+        self.listbox.focus()
 
     def _item_selected(self, *args, **kwargs):
         self.btn_descricao.configure(text="Editar")
@@ -146,7 +149,7 @@ class MainWindow:
 
             self.update_frame_detail(timens, cdb)
 
-    def _arrow_up(self, *args, **kwargs):
+    def _on_arrow_up_click(self, *args, **kwargs):
         self.selection = self.listbox.curselection()[0]
 
         if self.selection > 0:
@@ -155,7 +158,7 @@ class MainWindow:
             self.listbox.select_set(self.selection)
             self._item_selected(None)   # TODO: Não curti passar esse None...
 
-    def _arrow_down(self, *args, **kwargs):
+    def _on_arrow_down_click(self, *args, **kwargs):
         self.selection = self.listbox.curselection()[0]
 
         if self.selection < self.listbox.size() - 1:
@@ -163,6 +166,18 @@ class MainWindow:
             self.selection += 1
             self.listbox.select_set(self.selection)
             self._item_selected(None)   # TODO: Não curti passar esse None...
+
+    def _on_del_click(self, *args, **kwargs):
+        ans = messagebox.askyesno(title="Excluir", message="Excluir registro ?")
+        if ans:
+            index = self.listbox.curselection()
+            if index:
+                timens = self.listbox.get(index)
+                delete_result(timens)
+                self.listbox.delete(index)
+                self.clear()
+            else:
+                messagebox.showerror("Erro", "Não foi possível excluir o registro")
 
     def _configure_callback(self, event, *args, **kwargs):
         if event.widget == self.canvas:                                                                 # Houve uma alteração no Canvas:
@@ -176,7 +191,7 @@ class MainWindow:
                 self.last_width  = event.width
                 self.last_height = event.height
 
-    def on_btn_descricao_click(self, *args, **kwargs):
+    def _on_btn_descricao_click(self, *args, **kwargs):
         if self.btn_descricao.cget("text") == "Editar":
             self.btn_descricao.configure(text="Salvar")
             self.entry_descricao.config(state="normal")
@@ -314,7 +329,7 @@ class MainWindow:
         self.listbox.selection_clear(0, tk.END)
         self.update_canvas()
         self.update_date("")
-        self.update_tipo()
+        self.update_tipo(None)
         self.update_leitura("")
 
 # ======================================================================================================================
@@ -422,7 +437,7 @@ def save_result(result: dict, img:PngImageFile):
 def update_value(timens, key, value):
     check_history_path()
 
-    # Incluíndo a leitura no arquivo de resultados:
+    # Recuperando estado atual:
     lista_atual = {}
     with open("./history/results.json", 'r', encoding='UTF8') as jsonfile:
         try:
@@ -431,12 +446,30 @@ def update_value(timens, key, value):
             pass    # Arquivo está vazio, apenas isso!
 
     # Atualizando item
-    lista_atual[timens][key] = value
+    lista_atual[timens][key] = value    # TODO: Pode dar problema...
     
     # Salvando resultado
     with open("./history/results.json", 'w', encoding='UTF8') as jsonfile:
         json.dump(lista_atual, jsonfile, ensure_ascii=False)
         logging.info(f"Sucesso ao atualizar o campo |{key}| da leitura |{timens}| com o novo valor: |{value}|")
+
+def delete_result(timens):
+    check_history_path()
+
+    # Recuperando estado atual:
+    lista_atual = {}
+    with open("./history/results.json", 'r', encoding='UTF8') as jsonfile:
+        try:
+            lista_atual = json.load(jsonfile)
+        except json.decoder.JSONDecodeError:
+            pass    # Arquivo está vazio, apenas isso!
+
+    del lista_atual[timens]             # TODO: Pode dar problema...
+
+    # Salvando resultado
+    with open("./history/results.json", 'w', encoding='UTF8') as jsonfile:
+        json.dump(lista_atual, jsonfile, ensure_ascii=False)
+        logging.info(f"Leitura |{timens}| excluída com sucesso.")
 
 def ler_e_salvar():
     """A função mais importante do módulo.

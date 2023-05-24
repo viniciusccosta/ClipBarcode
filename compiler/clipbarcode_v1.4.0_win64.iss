@@ -1,7 +1,7 @@
 #define MyAppName "ClipBarcode"
-#define MyAppVersion "1.3.0"
-#define MyOutputBaseFilename "clipbarcode_v1.3.0_win64"
-#define MyAppPublisher "Vinícius Costa"
+#define MyAppVersion "1.4.0"
+#define MyOutputBaseFilename "clipbarcode_v1.4.0_win64"
+#define MyAppPublisher "Vinï¿½cius Costa"
 #define MyAppURL "https://github.com/viniciusccosta"
 #define MyAppExeName "ClipBarcode.exe"
 

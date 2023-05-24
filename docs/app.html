@@ -71,7 +71,7 @@ class MainWindow:
 
         # -------------------------------------
         # Frames:
-        tk.Button(self.root, text=&#34;Ler Print&#34;, font=(&#34;Consolas&#34;, 16), command=self._lerprint_pressed).grid(pady=10)
+        tk.Button(self.root, text=&#34;Ler Print&#34;, font=(&#34;Consolas&#34;, 16), command=self._on_ler_print_click).grid(pady=10)
 
         self.f1 = tk.Frame(self.root, )
         self.f1.grid(row=1, column=0, padx=5, pady=(0, 10), sticky=&#34;nswe&#34;)
@@ -86,8 +86,9 @@ class MainWindow:
         # List Frame:
         self.listbox = tk.Listbox(self.f1, font=(&#34;Consolas&#34;, 14), selectmode=&#34;SINGLE&#34;, activestyle=tk.NONE)
         self.listbox.bind(&#39;&lt;&lt;ListboxSelect&gt;&gt;&#39;, self._item_selected)
-        self.listbox.bind(&#34;&lt;Down&gt;&#34;, self._arrow_down)
-        self.listbox.bind(&#34;&lt;Up&gt;&#34;, self._arrow_up)
+        self.listbox.bind(&#34;&lt;Down&gt;&#34;, self._on_arrow_down_click)
+        self.listbox.bind(&#34;&lt;Up&gt;&#34;, self._on_arrow_up_click)
+        self.listbox.bind(&#34;&lt;Delete&gt;&#34;, self._on_del_click)
         self.listbox.grid(sticky=&#34;nsew&#34;, )
 
         self._fill_list()
@@ -114,6 +115,13 @@ class MainWindow:
         tk.Entry(self.f2, font=(&#34;Consolas&#34;, 16), state=tk.DISABLED, textvariable=self.var_leitura).grid(row=4, column=1, sticky=&#34;we&#34;)
         tk.Button(self.f2, text=&#34;Copiar&#34;, font=(&#34;Consolas&#34;, 12), command=self.copiar_leitura).grid(row=4, column=2, sticky=&#34;ew&#34;)
 
+        self.var_descricao = tk.StringVar()
+        tk.Label(self.f2, text=&#34;Descrição:&#34;, font=(&#34;Consolas&#34;, 16), ).grid(row=5, sticky=&#34;nsew&#34;, pady=(15,15))
+        self.entry_descricao = tk.Entry(self.f2, font=(&#34;Consolas&#34;, 16), state=tk.DISABLED, textvariable=self.var_descricao)
+        self.entry_descricao.grid(row=5, column=1, sticky=&#34;we&#34;)
+        self.btn_descricao = tk.Button(self.f2, text=&#34;Editar&#34;, font=(&#34;Consolas&#34;, 12), command=self._on_btn_descricao_click)
+        self.btn_descricao.grid(row=5, column=2, sticky=&#34;ew&#34;)
+        
         self.f2.rowconfigure(index=0, weight=1)
         self.f2.columnconfigure(index=1, weight=1)
 
@@ -122,7 +130,7 @@ class MainWindow:
         self.cur_img_resized = None
         self.photoimage = None
 
-        self._lerprint_pressed(init=True)
+        self._on_ler_print_click(init=True)
 
         # -------------------------------------
 
@@ -137,7 +145,7 @@ class MainWindow:
             except json.decoder.JSONDecodeError:
                 pass    # TODO: Handle it
 
-    def _lerprint_pressed(self, init:bool=False, *args, **kwargs):
+    def _on_ler_print_click(self, init:bool=False, *args, **kwargs):
         try:
             if ler_e_salvar():
                 # Caso 1: Abriu o programa e tinha um print no &#34;CTRL V&#34; e Caso 3: Apertou &#34;Ler Print&#34; e tinha um print no &#34;CTRL V&#34;
@@ -154,8 +162,13 @@ class MainWindow:
                 messagebox.showwarning(&#34;Sem Imagem&#34;, &#34;Tire um print antes&#34;)
 
             # Caso 2: Abriu o programa, mas não tinha um print no &#34;CTRL V&#34; = Simplesmente não fazer nada
+        
+        self.listbox.focus()
 
     def _item_selected(self, *args, **kwargs):
+        self.btn_descricao.configure(text=&#34;Editar&#34;)
+        self.entry_descricao.config(state=&#34;disabled&#34;)
+
         index = self.listbox.curselection()
 
         if index:
@@ -164,7 +177,7 @@ class MainWindow:
 
             self.update_frame_detail(timens, cdb)
 
-    def _arrow_up(self, *args, **kwargs):
+    def _on_arrow_up_click(self, *args, **kwargs):
         self.selection = self.listbox.curselection()[0]
 
         if self.selection &gt; 0:
@@ -173,7 +186,7 @@ class MainWindow:
             self.listbox.select_set(self.selection)
             self._item_selected(None)   # TODO: Não curti passar esse None...
 
-    def _arrow_down(self, *args, **kwargs):
+    def _on_arrow_down_click(self, *args, **kwargs):
         self.selection = self.listbox.curselection()[0]
 
         if self.selection &lt; self.listbox.size() - 1:
@@ -181,6 +194,18 @@ class MainWindow:
             self.selection += 1
             self.listbox.select_set(self.selection)
             self._item_selected(None)   # TODO: Não curti passar esse None...
+
+    def _on_del_click(self, *args, **kwargs):
+        ans = messagebox.askyesno(title=&#34;Excluir&#34;, message=&#34;Excluir registro ?&#34;)
+        if ans:
+            index = self.listbox.curselection()
+            if index:
+                timens = self.listbox.get(index)
+                delete_result(timens)
+                self.listbox.delete(index)
+                self.clear()
+            else:
+                messagebox.showerror(&#34;Erro&#34;, &#34;Não foi possível excluir o registro&#34;)
 
     def _configure_callback(self, event, *args, **kwargs):
         if event.widget == self.canvas:                                                                 # Houve uma alteração no Canvas:
@@ -193,6 +218,21 @@ class MainWindow:
                         pass
                 self.last_width  = event.width
                 self.last_height = event.height
+
+    def _on_btn_descricao_click(self, *args, **kwargs):
+        if self.btn_descricao.cget(&#34;text&#34;) == &#34;Editar&#34;:
+            self.btn_descricao.configure(text=&#34;Salvar&#34;)
+            self.entry_descricao.config(state=&#34;normal&#34;)
+        elif self.btn_descricao.cget(&#34;text&#34;) == &#34;Salvar&#34;:
+            self.btn_descricao.configure(text=&#34;Editar&#34;)
+            self.entry_descricao.config(state=&#34;disabled&#34;)
+            
+            index = self.listbox.curselection()
+            if index:
+                timens = self.listbox.get(index)
+                update_value(timens, &#34;descricao&#34;, self.var_descricao.get())
+            else:
+                messagebox.showerror(&#34;Erro&#34;, &#34;Não foi possível salvar a descrição&#34;)
 
     def mainloop(self, *args, **kwargs):
         self.root.mainloop()
@@ -218,6 +258,7 @@ class MainWindow:
             self.update_date(cdb.get(&#34;data&#34;))
             self.update_tipo(cdb.get(&#34;type&#34;))
             self.update_leitura(cdb.get(&#34;cod_conv&#34;, &#34;&#34;))    # TODO: Alterar &#34;cod_conv&#34; para leitura, mas preserver a compatibilidade com as versões anteriores
+            self.update_descricao(cdb.get(&#34;descricao&#34;, &#34;&#34;))
         else:
             messagebox.showerror(&#34;EITA!&#34;, &#34;Código de barras não localizado.&#34;)
 
@@ -247,6 +288,9 @@ class MainWindow:
             new_text (str): Valor a ser inserido no widget
         &#34;&#34;&#34;
         self.var_leitura.set(new_text)
+
+    def update_descricao(self, new_text:str, *args, **kwargs):
+        self.var_descricao.set(new_text)
 
     def resize_image(self, img:PngImageFile, *args, **kwargs) -&gt; Image.Image:
         &#34;&#34;&#34;Realiza o redimensionamento de uma imagem, mantendo as suas proporções, conforme o tamanho do Canvas.
@@ -313,7 +357,7 @@ class MainWindow:
         self.listbox.selection_clear(0, tk.END)
         self.update_canvas()
         self.update_date(&#34;&#34;)
-        self.update_tipo()
+        self.update_tipo(None)
         self.update_leitura(&#34;&#34;)
 
 # ======================================================================================================================
@@ -417,6 +461,43 @@ def save_result(result: dict, img:PngImageFile):
             lista_atual[k] = v
         json.dump(lista_atual, jsonfile, ensure_ascii=False)
         logging.info(&#34;Leiturada adicionada ao arquivo |results.json| com sucesso&#34;)
+
+def update_value(timens, key, value):
+    check_history_path()
+
+    # Recuperando estado atual:
+    lista_atual = {}
+    with open(&#34;./history/results.json&#34;, &#39;r&#39;, encoding=&#39;UTF8&#39;) as jsonfile:
+        try:
+            lista_atual = json.load(jsonfile)
+        except json.decoder.JSONDecodeError:
+            pass    # Arquivo está vazio, apenas isso!
+
+    # Atualizando item
+    lista_atual[timens][key] = value    # TODO: Pode dar problema...
+    
+    # Salvando resultado
+    with open(&#34;./history/results.json&#34;, &#39;w&#39;, encoding=&#39;UTF8&#39;) as jsonfile:
+        json.dump(lista_atual, jsonfile, ensure_ascii=False)
+        logging.info(f&#34;Sucesso ao atualizar o campo |{key}| da leitura |{timens}| com o novo valor: |{value}|&#34;)
+
+def delete_result(timens):
+    check_history_path()
+
+    # Recuperando estado atual:
+    lista_atual = {}
+    with open(&#34;./history/results.json&#34;, &#39;r&#39;, encoding=&#39;UTF8&#39;) as jsonfile:
+        try:
+            lista_atual = json.load(jsonfile)
+        except json.decoder.JSONDecodeError:
+            pass    # Arquivo está vazio, apenas isso!
+
+    del lista_atual[timens]             # TODO: Pode dar problema...
+
+    # Salvando resultado
+    with open(&#34;./history/results.json&#34;, &#39;w&#39;, encoding=&#39;UTF8&#39;) as jsonfile:
+        json.dump(lista_atual, jsonfile, ensure_ascii=False)
+        logging.info(f&#34;Leitura |{timens}| excluída com sucesso.&#34;)
 
 def ler_e_salvar():
     &#34;&#34;&#34;A função mais importante do módulo.
@@ -607,6 +688,34 @@ Caso o arquivo não exista, ele será criado e com o nome padrão (results.json)
     if not os.path.exists(RESULTS_PATH):
         open(RESULTS_PATH, &#39;w&#39;).close()
         logging.info(&#34;Arquivo |results.json| criado com sucesso&#34;)</code></pre>
+</details>
+</dd>
+<dt id="app.delete_result"><code class="name flex">
+<span>def <span class="ident">delete_result</span></span>(<span>timens)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def delete_result(timens):
+    check_history_path()
+
+    # Recuperando estado atual:
+    lista_atual = {}
+    with open(&#34;./history/results.json&#34;, &#39;r&#39;, encoding=&#39;UTF8&#39;) as jsonfile:
+        try:
+            lista_atual = json.load(jsonfile)
+        except json.decoder.JSONDecodeError:
+            pass    # Arquivo está vazio, apenas isso!
+
+    del lista_atual[timens]             # TODO: Pode dar problema...
+
+    # Salvando resultado
+    with open(&#34;./history/results.json&#34;, &#39;w&#39;, encoding=&#39;UTF8&#39;) as jsonfile:
+        json.dump(lista_atual, jsonfile, ensure_ascii=False)
+        logging.info(f&#34;Leitura |{timens}| excluída com sucesso.&#34;)</code></pre>
 </details>
 </dd>
 <dt id="app.initial_config"><code class="name flex">
@@ -903,6 +1012,35 @@ Caso o arquivo não exista, ele será criado e com o nome padrão (results.json)
         logging.info(&#34;Leiturada adicionada ao arquivo |results.json| com sucesso&#34;)</code></pre>
 </details>
 </dd>
+<dt id="app.update_value"><code class="name flex">
+<span>def <span class="ident">update_value</span></span>(<span>timens, key, value)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def update_value(timens, key, value):
+    check_history_path()
+
+    # Recuperando estado atual:
+    lista_atual = {}
+    with open(&#34;./history/results.json&#34;, &#39;r&#39;, encoding=&#39;UTF8&#39;) as jsonfile:
+        try:
+            lista_atual = json.load(jsonfile)
+        except json.decoder.JSONDecodeError:
+            pass    # Arquivo está vazio, apenas isso!
+
+    # Atualizando item
+    lista_atual[timens][key] = value    # TODO: Pode dar problema...
+    
+    # Salvando resultado
+    with open(&#34;./history/results.json&#34;, &#39;w&#39;, encoding=&#39;UTF8&#39;) as jsonfile:
+        json.dump(lista_atual, jsonfile, ensure_ascii=False)
+        logging.info(f&#34;Sucesso ao atualizar o campo |{key}| da leitura |{timens}| com o novo valor: |{value}|&#34;)</code></pre>
+</details>
+</dd>
 </dl>
 </section>
 <section>
@@ -935,7 +1073,7 @@ Caso o arquivo não exista, ele será criado e com o nome padrão (results.json)
 
         # -------------------------------------
         # Frames:
-        tk.Button(self.root, text=&#34;Ler Print&#34;, font=(&#34;Consolas&#34;, 16), command=self._lerprint_pressed).grid(pady=10)
+        tk.Button(self.root, text=&#34;Ler Print&#34;, font=(&#34;Consolas&#34;, 16), command=self._on_ler_print_click).grid(pady=10)
 
         self.f1 = tk.Frame(self.root, )
         self.f1.grid(row=1, column=0, padx=5, pady=(0, 10), sticky=&#34;nswe&#34;)
@@ -950,8 +1088,9 @@ Caso o arquivo não exista, ele será criado e com o nome padrão (results.json)
         # List Frame:
         self.listbox = tk.Listbox(self.f1, font=(&#34;Consolas&#34;, 14), selectmode=&#34;SINGLE&#34;, activestyle=tk.NONE)
         self.listbox.bind(&#39;&lt;&lt;ListboxSelect&gt;&gt;&#39;, self._item_selected)
-        self.listbox.bind(&#34;&lt;Down&gt;&#34;, self._arrow_down)
-        self.listbox.bind(&#34;&lt;Up&gt;&#34;, self._arrow_up)
+        self.listbox.bind(&#34;&lt;Down&gt;&#34;, self._on_arrow_down_click)
+        self.listbox.bind(&#34;&lt;Up&gt;&#34;, self._on_arrow_up_click)
+        self.listbox.bind(&#34;&lt;Delete&gt;&#34;, self._on_del_click)
         self.listbox.grid(sticky=&#34;nsew&#34;, )
 
         self._fill_list()
@@ -978,6 +1117,13 @@ Caso o arquivo não exista, ele será criado e com o nome padrão (results.json)
         tk.Entry(self.f2, font=(&#34;Consolas&#34;, 16), state=tk.DISABLED, textvariable=self.var_leitura).grid(row=4, column=1, sticky=&#34;we&#34;)
         tk.Button(self.f2, text=&#34;Copiar&#34;, font=(&#34;Consolas&#34;, 12), command=self.copiar_leitura).grid(row=4, column=2, sticky=&#34;ew&#34;)
 
+        self.var_descricao = tk.StringVar()
+        tk.Label(self.f2, text=&#34;Descrição:&#34;, font=(&#34;Consolas&#34;, 16), ).grid(row=5, sticky=&#34;nsew&#34;, pady=(15,15))
+        self.entry_descricao = tk.Entry(self.f2, font=(&#34;Consolas&#34;, 16), state=tk.DISABLED, textvariable=self.var_descricao)
+        self.entry_descricao.grid(row=5, column=1, sticky=&#34;we&#34;)
+        self.btn_descricao = tk.Button(self.f2, text=&#34;Editar&#34;, font=(&#34;Consolas&#34;, 12), command=self._on_btn_descricao_click)
+        self.btn_descricao.grid(row=5, column=2, sticky=&#34;ew&#34;)
+        
         self.f2.rowconfigure(index=0, weight=1)
         self.f2.columnconfigure(index=1, weight=1)
 
@@ -986,7 +1132,7 @@ Caso o arquivo não exista, ele será criado e com o nome padrão (results.json)
         self.cur_img_resized = None
         self.photoimage = None
 
-        self._lerprint_pressed(init=True)
+        self._on_ler_print_click(init=True)
 
         # -------------------------------------
 
@@ -1001,7 +1147,7 @@ Caso o arquivo não exista, ele será criado e com o nome padrão (results.json)
             except json.decoder.JSONDecodeError:
                 pass    # TODO: Handle it
 
-    def _lerprint_pressed(self, init:bool=False, *args, **kwargs):
+    def _on_ler_print_click(self, init:bool=False, *args, **kwargs):
         try:
             if ler_e_salvar():
                 # Caso 1: Abriu o programa e tinha um print no &#34;CTRL V&#34; e Caso 3: Apertou &#34;Ler Print&#34; e tinha um print no &#34;CTRL V&#34;
@@ -1018,8 +1164,13 @@ Caso o arquivo não exista, ele será criado e com o nome padrão (results.json)
                 messagebox.showwarning(&#34;Sem Imagem&#34;, &#34;Tire um print antes&#34;)
 
             # Caso 2: Abriu o programa, mas não tinha um print no &#34;CTRL V&#34; = Simplesmente não fazer nada
+        
+        self.listbox.focus()
 
     def _item_selected(self, *args, **kwargs):
+        self.btn_descricao.configure(text=&#34;Editar&#34;)
+        self.entry_descricao.config(state=&#34;disabled&#34;)
+
         index = self.listbox.curselection()
 
         if index:
@@ -1028,7 +1179,7 @@ Caso o arquivo não exista, ele será criado e com o nome padrão (results.json)
 
             self.update_frame_detail(timens, cdb)
 
-    def _arrow_up(self, *args, **kwargs):
+    def _on_arrow_up_click(self, *args, **kwargs):
         self.selection = self.listbox.curselection()[0]
 
         if self.selection &gt; 0:
@@ -1037,7 +1188,7 @@ Caso o arquivo não exista, ele será criado e com o nome padrão (results.json)
             self.listbox.select_set(self.selection)
             self._item_selected(None)   # TODO: Não curti passar esse None...
 
-    def _arrow_down(self, *args, **kwargs):
+    def _on_arrow_down_click(self, *args, **kwargs):
         self.selection = self.listbox.curselection()[0]
 
         if self.selection &lt; self.listbox.size() - 1:
@@ -1045,6 +1196,18 @@ Caso o arquivo não exista, ele será criado e com o nome padrão (results.json)
             self.selection += 1
             self.listbox.select_set(self.selection)
             self._item_selected(None)   # TODO: Não curti passar esse None...
+
+    def _on_del_click(self, *args, **kwargs):
+        ans = messagebox.askyesno(title=&#34;Excluir&#34;, message=&#34;Excluir registro ?&#34;)
+        if ans:
+            index = self.listbox.curselection()
+            if index:
+                timens = self.listbox.get(index)
+                delete_result(timens)
+                self.listbox.delete(index)
+                self.clear()
+            else:
+                messagebox.showerror(&#34;Erro&#34;, &#34;Não foi possível excluir o registro&#34;)
 
     def _configure_callback(self, event, *args, **kwargs):
         if event.widget == self.canvas:                                                                 # Houve uma alteração no Canvas:
@@ -1057,6 +1220,21 @@ Caso o arquivo não exista, ele será criado e com o nome padrão (results.json)
                         pass
                 self.last_width  = event.width
                 self.last_height = event.height
+
+    def _on_btn_descricao_click(self, *args, **kwargs):
+        if self.btn_descricao.cget(&#34;text&#34;) == &#34;Editar&#34;:
+            self.btn_descricao.configure(text=&#34;Salvar&#34;)
+            self.entry_descricao.config(state=&#34;normal&#34;)
+        elif self.btn_descricao.cget(&#34;text&#34;) == &#34;Salvar&#34;:
+            self.btn_descricao.configure(text=&#34;Editar&#34;)
+            self.entry_descricao.config(state=&#34;disabled&#34;)
+            
+            index = self.listbox.curselection()
+            if index:
+                timens = self.listbox.get(index)
+                update_value(timens, &#34;descricao&#34;, self.var_descricao.get())
+            else:
+                messagebox.showerror(&#34;Erro&#34;, &#34;Não foi possível salvar a descrição&#34;)
 
     def mainloop(self, *args, **kwargs):
         self.root.mainloop()
@@ -1082,6 +1260,7 @@ Caso o arquivo não exista, ele será criado e com o nome padrão (results.json)
             self.update_date(cdb.get(&#34;data&#34;))
             self.update_tipo(cdb.get(&#34;type&#34;))
             self.update_leitura(cdb.get(&#34;cod_conv&#34;, &#34;&#34;))    # TODO: Alterar &#34;cod_conv&#34; para leitura, mas preserver a compatibilidade com as versões anteriores
+            self.update_descricao(cdb.get(&#34;descricao&#34;, &#34;&#34;))
         else:
             messagebox.showerror(&#34;EITA!&#34;, &#34;Código de barras não localizado.&#34;)
 
@@ -1111,6 +1290,9 @@ Caso o arquivo não exista, ele será criado e com o nome padrão (results.json)
             new_text (str): Valor a ser inserido no widget
         &#34;&#34;&#34;
         self.var_leitura.set(new_text)
+
+    def update_descricao(self, new_text:str, *args, **kwargs):
+        self.var_descricao.set(new_text)
 
     def resize_image(self, img:PngImageFile, *args, **kwargs) -&gt; Image.Image:
         &#34;&#34;&#34;Realiza o redimensionamento de uma imagem, mantendo as suas proporções, conforme o tamanho do Canvas.
@@ -1177,7 +1359,7 @@ Caso o arquivo não exista, ele será criado e com o nome padrão (results.json)
         self.listbox.selection_clear(0, tk.END)
         self.update_canvas()
         self.update_date(&#34;&#34;)
-        self.update_tipo()
+        self.update_tipo(None)
         self.update_leitura(&#34;&#34;)</code></pre>
 </details>
 <h3>Methods</h3>
@@ -1197,7 +1379,7 @@ Caso o arquivo não exista, ele será criado e com o nome padrão (results.json)
     self.listbox.selection_clear(0, tk.END)
     self.update_canvas()
     self.update_date(&#34;&#34;)
-    self.update_tipo()
+    self.update_tipo(None)
     self.update_leitura(&#34;&#34;)</code></pre>
 </details>
 </dd>
@@ -1367,6 +1549,19 @@ Ou através de um objeto Image.</p>
     self.lbl_date.set(value)</code></pre>
 </details>
 </dd>
+<dt id="app.MainWindow.update_descricao"><code class="name flex">
+<span>def <span class="ident">update_descricao</span></span>(<span>self, new_text: str, *args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def update_descricao(self, new_text:str, *args, **kwargs):
+    self.var_descricao.set(new_text)</code></pre>
+</details>
+</dd>
 <dt id="app.MainWindow.update_frame_detail"><code class="name flex">
 <span>def <span class="ident">update_frame_detail</span></span>(<span>self, timens: str, cdb: dict, *args, **kwargs)</span>
 </code></dt>
@@ -1397,6 +1592,7 @@ Ou através de um objeto Image.</p>
         self.update_date(cdb.get(&#34;data&#34;))
         self.update_tipo(cdb.get(&#34;type&#34;))
         self.update_leitura(cdb.get(&#34;cod_conv&#34;, &#34;&#34;))    # TODO: Alterar &#34;cod_conv&#34; para leitura, mas preserver a compatibilidade com as versões anteriores
+        self.update_descricao(cdb.get(&#34;descricao&#34;, &#34;&#34;))
     else:
         messagebox.showerror(&#34;EITA!&#34;, &#34;Código de barras não localizado.&#34;)</code></pre>
 </details>
@@ -1481,10 +1677,12 @@ Ou através de um objeto Image.</p>
 <ul class="two-column">
 <li><code><a title="app.check_config_path" href="#app.check_config_path">check_config_path</a></code></li>
 <li><code><a title="app.check_history_path" href="#app.check_history_path">check_history_path</a></code></li>
+<li><code><a title="app.delete_result" href="#app.delete_result">delete_result</a></code></li>
 <li><code><a title="app.initial_config" href="#app.initial_config">initial_config</a></code></li>
 <li><code><a title="app.ler_e_salvar" href="#app.ler_e_salvar">ler_e_salvar</a></code></li>
 <li><code><a title="app.retrieve_leitura" href="#app.retrieve_leitura">retrieve_leitura</a></code></li>
 <li><code><a title="app.save_result" href="#app.save_result">save_result</a></code></li>
+<li><code><a title="app.update_value" href="#app.update_value">update_value</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
@@ -1499,6 +1697,7 @@ Ou através de um objeto Image.</p>
 <li><code><a title="app.MainWindow.resize_image" href="#app.MainWindow.resize_image">resize_image</a></code></li>
 <li><code><a title="app.MainWindow.update_canvas" href="#app.MainWindow.update_canvas">update_canvas</a></code></li>
 <li><code><a title="app.MainWindow.update_date" href="#app.MainWindow.update_date">update_date</a></code></li>
+<li><code><a title="app.MainWindow.update_descricao" href="#app.MainWindow.update_descricao">update_descricao</a></code></li>
 <li><code><a title="app.MainWindow.update_frame_detail" href="#app.MainWindow.update_frame_detail">update_frame_detail</a></code></li>
 <li><code><a title="app.MainWindow.update_leitura" href="#app.MainWindow.update_leitura">update_leitura</a></code></li>
 <li><code><a title="app.MainWindow.update_tipo" href="#app.MainWindow.update_tipo">update_tipo</a></code></li>
