@@ -86,6 +86,13 @@ class MainWindow:
         tk.Entry(self.f2, font=("Consolas", 16), state=tk.DISABLED, textvariable=self.var_leitura).grid(row=4, column=1, sticky="we")
         tk.Button(self.f2, text="Copiar", font=("Consolas", 12), command=self.copiar_leitura).grid(row=4, column=2, sticky="ew")
 
+        self.var_descricao = tk.StringVar()
+        tk.Label(self.f2, text="Descrição:", font=("Consolas", 16), ).grid(row=5, sticky="nsew", pady=(15,15))
+        self.entry_descricao = tk.Entry(self.f2, font=("Consolas", 16), state=tk.DISABLED, textvariable=self.var_descricao)
+        self.entry_descricao.grid(row=5, column=1, sticky="we")
+        self.btn_descricao = tk.Button(self.f2, text="Editar", font=("Consolas", 12), command=self.on_btn_descricao_click)
+        self.btn_descricao.grid(row=5, column=2, sticky="ew")
+        
         self.f2.rowconfigure(index=0, weight=1)
         self.f2.columnconfigure(index=1, weight=1)
 
@@ -128,6 +135,9 @@ class MainWindow:
             # Caso 2: Abriu o programa, mas não tinha um print no "CTRL V" = Simplesmente não fazer nada
 
     def _item_selected(self, *args, **kwargs):
+        self.btn_descricao.configure(text="Editar")
+        self.entry_descricao.config(state="disabled")
+
         index = self.listbox.curselection()
 
         if index:
@@ -166,6 +176,21 @@ class MainWindow:
                 self.last_width  = event.width
                 self.last_height = event.height
 
+    def on_btn_descricao_click(self, *args, **kwargs):
+        if self.btn_descricao.cget("text") == "Editar":
+            self.btn_descricao.configure(text="Salvar")
+            self.entry_descricao.config(state="normal")
+        elif self.btn_descricao.cget("text") == "Salvar":
+            self.btn_descricao.configure(text="Editar")
+            self.entry_descricao.config(state="disabled")
+            
+            index = self.listbox.curselection()
+            if index:
+                timens = self.listbox.get(index)
+                update_value(timens, "descricao", self.var_descricao.get())
+            else:
+                messagebox.showerror("Erro", "Não foi possível salvar a descrição")
+
     def mainloop(self, *args, **kwargs):
         self.root.mainloop()
 
@@ -190,6 +215,7 @@ class MainWindow:
             self.update_date(cdb.get("data"))
             self.update_tipo(cdb.get("type"))
             self.update_leitura(cdb.get("cod_conv", ""))    # TODO: Alterar "cod_conv" para leitura, mas preserver a compatibilidade com as versões anteriores
+            self.update_descricao(cdb.get("descricao", ""))
         else:
             messagebox.showerror("EITA!", "Código de barras não localizado.")
 
@@ -219,6 +245,9 @@ class MainWindow:
             new_text (str): Valor a ser inserido no widget
         """
         self.var_leitura.set(new_text)
+
+    def update_descricao(self, new_text:str, *args, **kwargs):
+        self.var_descricao.set(new_text)
 
     def resize_image(self, img:PngImageFile, *args, **kwargs) -> Image.Image:
         """Realiza o redimensionamento de uma imagem, mantendo as suas proporções, conforme o tamanho do Canvas.
@@ -389,6 +418,25 @@ def save_result(result: dict, img:PngImageFile):
             lista_atual[k] = v
         json.dump(lista_atual, jsonfile, ensure_ascii=False)
         logging.info("Leiturada adicionada ao arquivo |results.json| com sucesso")
+
+def update_value(timens, key, value):
+    check_history_path()
+
+    # Incluíndo a leitura no arquivo de resultados:
+    lista_atual = {}
+    with open("./history/results.json", 'r', encoding='UTF8') as jsonfile:
+        try:
+            lista_atual = json.load(jsonfile)
+        except json.decoder.JSONDecodeError:
+            pass    # Arquivo está vazio, apenas isso!
+
+    # Atualizando item
+    lista_atual[timens][key] = value
+    
+    # Salvando resultado
+    with open("./history/results.json", 'w', encoding='UTF8') as jsonfile:
+        json.dump(lista_atual, jsonfile, ensure_ascii=False)
+        logging.info(f"Sucesso ao atualizar o campo |{key}| da leitura |{timens}| com o novo valor: |{value}|")
 
 def ler_e_salvar():
     """A função mais importante do módulo.
