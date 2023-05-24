@@ -13,8 +13,8 @@ from PIL.PngImagePlugin import PngImageFile
 from PIL.Image          import Resampling                               # NOQA
 from time               import time_ns
 from pyzbar.pyzbar      import decode
-from datetime_tools     import timens_to_datetime
 
+from datetime_tools     import timens_to_datetime
 from boleto             import new_boleto, BoletoInvalidoException
 
 # ======================================================================================================================

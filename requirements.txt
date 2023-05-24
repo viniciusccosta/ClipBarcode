@@ -1,6 +1,5 @@
 packaging==22.0
 Pillow==9.3.0
-pipdeptree==2.3.3
 pyparsing==3.0.9
 pyperclip==1.8.2
 pytesseract==0.3.10
