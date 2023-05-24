@@ -134,6 +134,8 @@ class MainWindow:
                 messagebox.showwarning("Sem Imagem", "Tire um print antes")
 
             # Caso 2: Abriu o programa, mas não tinha um print no "CTRL V" = Simplesmente não fazer nada
+        
+        self.listbox.focus()
 
     def _item_selected(self, *args, **kwargs):
         self.btn_descricao.configure(text="Editar")
