@@ -44,7 +44,7 @@ def create_tables():
     db.create_tables([Leitura,])
     db.close()
     
-def from_json_to_sqlite(json_path="./history/results.json"):
+def from_json_to_sqlite(json_path):
     try:
         with open(json_path, 'r', encoding='UTF8') as jsonfile:
             data = json.load(jsonfile)
@@ -66,6 +66,8 @@ def from_json_to_sqlite(json_path="./history/results.json"):
                     leitura.save()
                 except IntegrityError as e:
                     pass
+    except FileNotFoundError:
+        pass
     except Exception as e:
         print(e)
 
@@ -110,7 +112,7 @@ def get_leituras(reverse=True):
 if __name__ == "__main__":
     create_tables()
     
-    from_json_to_sqlite()
+    from_json_to_sqlite("./history/results.json")
     
     update_leitura(1, cod_lido="ALTERADO")
     

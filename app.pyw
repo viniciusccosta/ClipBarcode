@@ -1,7 +1,6 @@
 # ======================================================================================================================
 import pytesseract
 import os
-import json
 import logging
 import pyperclip
 import datetime
@@ -14,6 +13,7 @@ from PIL.PngImagePlugin import PngImageFile
 from PIL.Image          import Resampling                               # NOQA
 from time               import time_ns
 from pyzbar.pyzbar      import decode
+from dotenv             import load_dotenv, set_key
 
 from datetime_tools     import timens_to_datetime
 from boleto             import new_boleto, BoletoInvalidoException
@@ -25,6 +25,7 @@ HISTORY_PATH = "./history"
 
 # ======================================================================================================================
 class NoImageException(Exception): pass
+
 class LeituraFalhaException(Exception):
     def __init__(self, message):
         self.message = message
@@ -32,8 +33,6 @@ class LeituraFalhaException(Exception):
 # ======================================================================================================================
 class MainWindow:
     def __init__(self, *args, **kwargs):
-        # TODO: Uma forma de excluir os registros salvos.
-
         super().__init__(*args, **kwargs)
 
         self.root = tk.Tk()
@@ -368,26 +367,6 @@ class MainWindow:
         self.update_wdiget_leitura('')
 
 # ======================================================================================================================
-def check_history_path():
-    """Verifica a existência do arquivo de resultados.
-    Caso o arquivo não exista, ele será criado e com o nome padrão (results.json)
-    """
-
-    if not os.path.exists(HISTORY_PATH):
-        os.mkdir(HISTORY_PATH)
-        logging.info("Pasta HISTORY criada com sucesso")
-
-def check_config_path():
-    """Verifica a existência do arquivo de configurações.
-    Caso o arquivo não exista, ele será criado e com o nome padrão (.config)
-    """
-
-    if not os.path.exists(".config"):
-        logging.warning("Arquivo de configuração inexistente, criando um novo:")
-        with open(".config", "w", encoding="UTF-8") as file:
-            json.dump({"TESSERACT_CMD": r'C:/Program Files/Tesseract-OCR/tesseract.exe'}, file)
-            logging.info("Arquivo de configuração criado com sucesso")
-
 def initial_config():
     """Realiza as configurações inicias da aplicação.
 
@@ -398,9 +377,12 @@ def initial_config():
     """
 
     # ------------------------------------------
+    load_dotenv()
+    
+    # ------------------------------------------
     # Logging:
     logging.basicConfig(
-        stream  = open(f'app.log', 'a', encoding='utf-8')   ,
+        stream  = open(f'.log', 'a', encoding='utf-8')   ,
         level   = logging.INFO, datefmt='%Y-%m-%d %H:%M:%S' ,
         format  = '%(asctime)s %(levelname)-8s %(message)s' ,
     )
@@ -408,38 +390,36 @@ def initial_config():
     # ------------------------------------------
     # Banco de Dados:
     database.create_tables()
-    database.from_json_to_sqlite()
+    database.from_json_to_sqlite(os.path.join(HISTORY_PATH, "results.json"))
     
-    check_history_path()
+    # ------------------------------------------
+    # Diretório de Imagens:
+    if not os.path.exists(HISTORY_PATH):
+        os.mkdir(HISTORY_PATH)
+        logging.info("Pasta HISTORY criada com sucesso")
 
     # ------------------------------------------
-    # Tesseract:
-    check_config_path()
-
+    # Tesseract:  
     while True:
         try:
-            with open(".config", "r", encoding="UTF-8") as file:
-                configs = json.load(file)
-                pytesseract.pytesseract.tesseract_cmd = configs.get("TESSERACT_CMD", "")
-
+            pytesseract.pytesseract.tesseract_cmd = os.environ.get('TESSERACT_CMD', r'C:/Program Files/Tesseract-OCR/tesseract.exe')
             pytesseract.get_languages()                                  # Apenas para testar se o Tesseract está no PATH
             break
-
         except pytesseract.pytesseract.TesseractNotFoundError:
-            logging.error("Tesseract não encontrado")
+            pass
+        
+        logging.error("Tesseract não encontrado")
+        messagebox.showerror("Erro", "Tesseract não encontrado!")
 
-            messagebox.showerror("EITA!", "Tesseract não encontrado!")
-            tesseract_path = filedialog.askopenfilename(title="Onde está tesseract.exe ?")
+        tesseract_path = filedialog.askopenfilename(title="Onde está tesseract.exe ?")
+        logging.info(f"Usuário informou |{tesseract_path}| como path para o Tesseract")
 
-            logging.info(f"Usuário informou |{tesseract_path}| como path para o Tesseract")
-
-            if tesseract_path:
-                with open(".config", "w", encoding="UTF-8") as file:
-                    json.dump({"TESSERACT_CMD": tesseract_path}, file)
-                    logging.info("Path do Tesseract salvo com sucesso")
-            else:
-                logging.error("Path inexistente, encerrando programa")
-                exit(1)
+        if tesseract_path:
+            set_key('.env', 'TESSERACT_CMD', tesseract_path)
+            logging.info("Path do Tesseract salvo com sucesso")
+        else:
+            logging.error("Encerrando programa pois o usuário não informou um path!")
+            exit(1)
 
 def salvar_leitura(leitura: database.Leitura, img:PngImageFile):
     """Salva a leitura no banco de dados juntamente com o print.
@@ -450,21 +430,16 @@ def salvar_leitura(leitura: database.Leitura, img:PngImageFile):
     """
     
     # Salvando a imagem:
-    check_history_path()
     img.save(os.path.join(HISTORY_PATH, f"{leitura.mili}.png"))
     logging.info(f"{leitura.mili}.png salvo com sucesso na pasta History")
 
     # Incluíndo a leitura no arquivo de resultados:
     database.create_leitura(leitura)
 
-def update_value(leitura, **kwargs):
-    check_history_path()
-
+def update_value(leitura: database.Leitura, **kwargs):
     database.update_leitura(leitura.id, **kwargs)
 
-def delete_leitura(leitura):
-    check_history_path()
-
+def delete_leitura(leitura: database.Leitura):
     os.remove(os.path.join(HISTORY_PATH, f"{leitura.mili}.png"))
     database.delete_leitura(leitura)
 
