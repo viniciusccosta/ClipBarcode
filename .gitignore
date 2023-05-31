@@ -176,10 +176,11 @@ pyrightconfig.json
 # End of https://www.toptal.com/developers/gitignore/api/python
 
 
-/history/
+/history/*
 /build/
 /dist/
 /.config
 /venv/
 /*.log
 *.exe
+*.db
