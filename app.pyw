@@ -112,6 +112,8 @@ class MainWindow:
         # -------------------------------------
 
     def _fill_list(self, *args, **kwargs):
+        """Método responsável por atualiza a lista com as leituras e atualiza o listbox.
+        """
         self.leituras = database.get_leituras()
         
         self.listbox.delete(0, tk.END)
@@ -120,6 +122,8 @@ class MainWindow:
             self.listbox.insert(tk.END, str(leitura))
 
     def _hot_read(self):
+        """Método responsável por tentar realizar uma leitura logo na inicialização da aplicação.
+        """
         try:
             leitura, img = realizar_leitura()
             salvar_leitura(leitura, img)
@@ -134,7 +138,9 @@ class MainWindow:
                 
         self.listbox.focus()
     
-    def _on_ler_print_click(self, *args, **kwargs):        
+    def _on_ler_print_click(self, *args, **kwargs):
+        """Método responsável por lidar com o evento do Botão "Ler Print" ao ser pressionado.
+        """
         try:
             leitura, img = realizar_leitura()
             salvar_leitura(leitura, img)
@@ -153,7 +159,7 @@ class MainWindow:
         self.listbox.focus()
 
     def _on_item_selected(self, *args, **kwargs):
-        """Função responsável por lidar com os eventos de um item selecionado na Listbox.
+        """Método responsável por lidar com os eventos de um item selecionado na Listbox.
         
         Esse evento também é chamado caso o TkInter entenda que nenhum item foi selecionado.
         """
@@ -170,6 +176,8 @@ class MainWindow:
             self.entry_descricao.config(state="disabled")
 
     def _on_arrow_up_click(self, *args, **kwargs):
+        """Método responsável por lidar com o evento do botão "Setinha Para Cima" pressionado no Lisbox
+        """
         cur_selection = self.listbox.curselection()
         
         if cur_selection:
@@ -182,6 +190,8 @@ class MainWindow:
                 self.listbox.event_generate("<<ListboxSelect>>")    # Simulando um "item selecionado"
 
     def _on_arrow_down_click(self, *args, **kwargs):
+        """Método responsável por lidar com o evento do botão "Setinha Para Baixo" pressionado no Lisbox
+        """
         cur_selection = self.listbox.curselection()
         
         if cur_selection:
@@ -194,6 +204,8 @@ class MainWindow:
                 self.listbox.event_generate("<<ListboxSelect>>")    # Simulando um "item selecionado"
 
     def _on_del_click(self, *args, **kwargs):
+        """Método responsável por lidar com o evento do botão "Delete" pressionado no Lisbox
+        """
         ans = messagebox.askyesno(title="Excluir", message="Excluir registro ?")
         
         if ans:
@@ -209,14 +221,18 @@ class MainWindow:
                 messagebox.showerror("Erro", "Não foi possível excluir o registro")
                 
     def on_copiar_leitura_click(self, *args, **kwargs):
-        """Envia para a Área de Transferência o que tiver no widget Leitura.
+        """Método responsável por lidar com o evento do botão "Copiar" pressionado.
+        No caso, envia para a Área de Transferência o que tiver no widget Leitura.
         """
         pyperclip.copy(self.var_leitura.get())
         self.btn_copiar_leitura.config(text="Copiado")
         self.root.after(1000, lambda : self.btn_copiar_leitura.config(text="Copiar"))
 
     def _on_btn_descricao_click(self, *args, **kwargs):
-        """O mesmo botão tem 2 funções:
+        """
+        Método responsável por lidar com o evento do botão "Editar/Salvar" pressionado.
+        
+        O mesmo botão tem 2 funções:
         1) Quando está com "Editar" e o usuário clicou, iremos habilitar os campos para que o usuário possa editar o EditText
         2) Quando está com "Salvar", iremos salvar as informações e desabilitar o EditText.
         """
@@ -259,6 +275,8 @@ class MainWindow:
                 self.last_height = event.height
     
     def mainloop(self, *args, **kwargs):
+        """Mainloop do TkInter
+        """
         self.root.mainloop()
 
     def update_frame_detail(self, leitura: database.Leitura, *args, **kwargs):
@@ -302,6 +320,11 @@ class MainWindow:
         self.var_leitura.set(new_text)
 
     def update_widget_descricao(self, new_text:str, *args, **kwargs):
+        """Insere um valor no widget "Descrição".
+
+        Args:
+            new_text (str): Valor a ser inserido no widget
+        """
         self.var_descricao.set(new_text if new_text else "")
 
     def resize_image_to_canvas(self, img:PngImageFile, *args, **kwargs) -> Image.Image:
@@ -370,10 +393,11 @@ class MainWindow:
 def initial_config():
     """Realiza as configurações inicias da aplicação.
 
-    - Configurações iniciais do logging
-    - Conferência do arquivo de resultados
-    - Conferência do arquivo de configurações
-    - Configuração do Tesseract
+    - Logging
+    - SQLite
+    - Diretório de Imagens
+    - Tesseract
+    - Variáveis de Ambiente
     """
 
     # ------------------------------------------
@@ -437,26 +461,32 @@ def salvar_leitura(leitura: database.Leitura, img:PngImageFile):
     database.create_leitura(leitura)
 
 def update_value(leitura: database.Leitura, **kwargs):
+    """Faz uma requisição ao banco de dados para atualizar determinada leitura.
+
+    Args:
+        leitura (database.Leitura):
+        **kwargs (dict): Dicionário com os campos e valores a serem atualizados
+    """
     database.update_leitura(leitura.id, **kwargs)
 
 def delete_leitura(leitura: database.Leitura):
+    """Faz a exclusão do print do diretório de imagens e faz uma requisição ao banco de dados para a exclusão da leitura.
+
+    Args:
+        leitura (database.Leitura): 
+    """
     os.remove(os.path.join(HISTORY_PATH, f"{leitura.mili}.png"))
     database.delete_leitura(leitura)
 
 def realizar_leitura():
-    """A função mais importante do módulo.
+    """Faz a leitura da imagem que estiver na Área de Transferência.
 
-    - Realiza a leitura da Área de Transferência
-    - Realiza a leitura dos Códigos de Barra
-    - Realiza OCR
-    - Armazena a imagem no diretório específico
-    - Solicita a inclusão do resultado da leitura no arquivo de resultados
+    - Procura inicialmente por um Códigos de Barra
+    - Caso não identifique nenhum código de barras, realiza OCR
 
     Raises:
         NoImageException: Caso não seja encontrado nenhuma imagem na Área de Transferência
-
-    Returns:
-        bool: True se tudo deu certo ou False caso contrário
+        LeituraFalhaException: Caso qualquer problema ocorra ao realizar a leitura
     """
     
     # -----------------------------------------------------------
