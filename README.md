@@ -3,6 +3,8 @@ ClipBarcode
 ===============
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
+[![Python 3.11](https://img.shields.io/badge/Python-3.11-blue)](https://www.python.org/downloads/release/python-3110/)
+
 
 O **ClipBarcode** é um projeto open source que tem como objetivo oferecer praticidade na leitura de códigos de barras e obtenção da linha digitável. Com o **ClipBarcode**, os usuários podem capturar uma imagem de um código de barras usando um print screen e o programa realizará a leitura do código de barras, fornecendo a linha digitável pronta para copiar e colar.
 
