@@ -211,7 +211,7 @@ class MainWindow:
                 leitura        = self.leituras[selected_index]
                 delete_leitura(leitura)
                 self._fill_list()
-                # TODO: Selecionar algum item da listbox (o anterior, o próximo, o primeiro...)
+                self.clear()
             else:
                 messagebox.showerror("Erro", "Não foi possível excluir o registro")
                 
