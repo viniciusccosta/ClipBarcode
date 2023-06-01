@@ -17,7 +17,7 @@ Com esses recursos, o **ClipBarcode** simplifica o processo de leitura de códig
 
 Para instalar o **ClipBarcode**, siga as etapas abaixo:
 
-1. Baixe o arquivo de Instalação: [**clipbarcode_v1.5.0_win64.exe**](https://github.com/viniciusccosta/ClipBarcode/releases/download/v1.5.0/clipbarcode_v1.5.0_win64.exe)
+1. Baixe o arquivo de Instalação: [**clipbarcode_v1.6.0_win64.exe**](https://github.com/viniciusccosta/ClipBarcode/releases/download/v1.6.0/clipbarcode_v1.6.0_win64.exe)
 2. Execute o instalador como Administrador e siga as instruções fornecidas.
 3. Se você já possui o Tesseract OCR v5.2.0 e/ou o Microsoft Visual C++ v12.0.40664 instalados em seu sistema, você pode simplesmente cancelar a instalação desses componentes durante o processo de instalação do ClipBarcode.
 4. Durante a instalação do Tesseract, certifique-se de selecionar "Portuguese" dentre as opções de "Additional language data (download)":
