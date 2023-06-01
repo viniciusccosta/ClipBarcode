@@ -4,7 +4,8 @@ ClipBarcode
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
 [![Python 3.11](https://img.shields.io/badge/Python-3.11-blue)](https://www.python.org/downloads/release/python-3110/)
-
+[![Tesseract 5.2.0](https://img.shields.io/badge/Tesseract-5.2.0-red)](https://github.com/tesseract-ocr/tesseract)
+[![Microsoft Visual C++ 12.0.40664](https://img.shields.io/badge/Microsoft%20Visual%20C%2B%2B-12.0.40664-red)](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170)
 
 O **ClipBarcode** é um projeto open source que tem como objetivo oferecer praticidade na leitura de códigos de barras e obtenção da linha digitável. Com o **ClipBarcode**, os usuários podem capturar uma imagem de um código de barras usando um print screen e o programa realizará a leitura do código de barras, fornecendo a linha digitável pronta para copiar e colar.
 
