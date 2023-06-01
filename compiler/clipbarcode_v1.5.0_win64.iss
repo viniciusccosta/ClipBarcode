@@ -54,10 +54,24 @@ SetupWindowTitle = {#MyAppName} {#MyAppVersion}
 function PrepareToInstall(var NeedsRestart: Boolean): String;
 var
   ResultCode: Integer;
+  TesseractInstalled: Boolean;
+  VCRedistInstalled: Boolean;
 begin
-  ExtractTemporaryFile('tesseract-ocr-w64-setup-v5.2.0.20220712.exe');
-  Exec(ExpandConstant('{tmp}\tesseract-ocr-w64-setup-v5.2.0.20220712.exe'), '', '', SW_SHOWNORMAL, ewWaitUntilTerminated, ResultCode);
+  // Check if Tesseract OCR is installed
+  TesseractInstalled := RegKeyExists(HKLM64, 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Tesseract-OCR');
 
-  ExtractTemporaryFile('vcredist_x64.exe');
-  Exec(ExpandConstant('{tmp}\vcredist_x64.exe'), '', '', SW_SHOWNORMAL, ewWaitUntilTerminated, ResultCode);
+  // Check if VCRedist is installed
+  VCRedistInstalled := RegKeyExists(HKLM64, 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{010792BA-551A-3AC0-A7EF-0FAB4156C382}');
+
+  if not TesseractInstalled then
+  begin
+    ExtractTemporaryFile('tesseract-ocr-w64-setup-v5.2.0.20220712.exe');
+    Exec(ExpandConstant('{tmp}\tesseract-ocr-w64-setup-v5.2.0.20220712.exe'), '', '', SW_SHOWNORMAL, ewWaitUntilTerminated, ResultCode);
+  end;
+
+  if not VCRedistInstalled then
+  begin
+    ExtractTemporaryFile('vcredist_x64.exe');
+    Exec(ExpandConstant('{tmp}\vcredist_x64.exe'), '', '', SW_SHOWNORMAL, ewWaitUntilTerminated, ResultCode);
+  end;
 end;
