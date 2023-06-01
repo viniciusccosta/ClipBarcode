@@ -50,11 +50,12 @@ class MainWindow:
 
         self.f1 = tk.Frame(self.root, )
         self.f1.grid(row=1, column=0, padx=5, pady=(0, 10), sticky="nswe")
+        self.root.columnconfigure(index=0, weight=0, minsize=410)
 
-        self.f2 = tk.Frame(self.root, )        
-        self.f2.grid(row=1, column=1, columnspan=2, padx=5, pady=(0, 15), sticky="nswe")
-
+        self.f2 = tk.Frame(self.root)
+        self.f2.grid(row=1, column=1, padx=5, pady=(0, 15), sticky="nswe")
         self.root.columnconfigure(index=1, weight=1)
+        
         self.root.rowconfigure(index=1, weight=1)
 
         # -------------------------------------
@@ -64,17 +65,11 @@ class MainWindow:
         self.listbox.bind("<Down>", self._on_arrow_down_click)
         self.listbox.bind("<Up>", self._on_arrow_up_click)
         self.listbox.bind("<Delete>", self._on_del_click)
-        self.listbox.grid(sticky="nsew", )
+        self.listbox.pack(fill="both", expand=True)
 
         self.leituras  = None
         self.cur_index = None
         self._fill_list()
-
-        cols, rows = self.f1.grid_size()
-        for r in range(rows):
-            self.f1.rowconfigure(index=r, weight=1)
-        for c in range(cols):
-            self.f1.columnconfigure(index=c, weight=1)
 
         # -------------------------------------
         # Detail Frame:
@@ -289,7 +284,7 @@ class MainWindow:
         self.update_canvas(filename=os.path.join(HISTORY_PATH, f"{leitura.mili}.png"))
         self.update_widget_data(leitura.data)
         self.update_tipo(leitura.get_type_display())
-        self.update_wdiget_leitura(leitura.cod_conv)
+        self.update_widget_leitura(leitura.cod_conv)
         self.update_widget_descricao(leitura.descricao)
 
     def update_tipo(self, tipo:str, *args, **kwargs):
@@ -311,7 +306,7 @@ class MainWindow:
         else:
             self.lbl_date.set('')
 
-    def update_wdiget_leitura(self, new_text:str, *args, **kwargs):
+    def update_widget_leitura(self, new_text:str, *args, **kwargs):
         """Insere um valor no widget "Leitura".
 
         Args:
@@ -387,7 +382,7 @@ class MainWindow:
         self.update_canvas()
         self.update_widget_data()
         self.update_tipo('')
-        self.update_wdiget_leitura('')
+        self.update_widget_leitura('')
 
 # ======================================================================================================================
 def initial_config():

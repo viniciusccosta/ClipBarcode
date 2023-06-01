@@ -29,14 +29,10 @@ class Leitura(Model):
         return dict(self.TYPES)[self.type]
     
     def __str__(self):
-        max_len = 10
+        max_len = 32
+        campo = self.descricao if self.descricao else self.cod_lido
         
-        if self.descricao:
-            texto = f'{self.id}): {self.descricao[0:max_len]} {"..." if len(self.descricao) > max_len else ""}'
-        else:
-            texto = f'{self.id}): |({self.cod_lido[0:max_len]})|'
-        
-        return texto
+        return f'{self.id}): {campo[0:max_len]}{"..." if len(campo) > max_len else ""}'
 
 # =====================================================================
 def create_tables():
