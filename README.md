@@ -3,6 +3,9 @@ ClipBarcode
 ===============
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
+[![Python 3.11](https://img.shields.io/badge/Python-3.11-blue)](https://www.python.org/downloads/release/python-3110/)
+[![Tesseract 5.2.0](https://img.shields.io/badge/Tesseract-5.2.0-orange)](https://github.com/tesseract-ocr/tesseract)
+[![Microsoft Visual C++ 12.0.40664](https://img.shields.io/badge/Microsoft%20Visual%20C%2B%2B-12.0.40664-orange)](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170)
 
 O **ClipBarcode** é um projeto open source que tem como objetivo oferecer praticidade na leitura de códigos de barras e obtenção da linha digitável. Com o **ClipBarcode**, os usuários podem capturar uma imagem de um código de barras usando um print screen e o programa realizará a leitura do código de barras, fornecendo a linha digitável pronta para copiar e colar.
 
@@ -19,11 +22,11 @@ Para instalar o **ClipBarcode**, siga as etapas abaixo:
 
 1. Baixe o arquivo de Instalação: [**clipbarcode_v1.6.1_win64.exe**](https://github.com/viniciusccosta/ClipBarcode/releases/download/v1.6.1/clipbarcode_v1.6.1_win64.exe)
 2. Execute o instalador como Administrador e siga as instruções fornecidas.
-3. Se você já possui o Tesseract OCR v5.2.0 e/ou o Microsoft Visual C++ v12.0.40664 instalados em seu sistema, você pode simplesmente cancelar a instalação desses componentes durante o processo de instalação do ClipBarcode.
-4. Durante a instalação do Tesseract, certifique-se de selecionar "Portuguese" dentre as opções de "Additional language data (download)":
+3. Caso o Tesseract na versão 5.2.0 e/ou o Microsoft Visual C++ na versão 12.0.40664 não estejam instalados em seu sistema, os instaladores correspondentes serão abertos automaticamente durante o processo de instalação do ClipBarcode.
+    - Durante a instalação do Tesseract, certifique-se de selecionar "Portuguese" dentre as opções de "Additional language data (download)":
 
-    ![Screenshot](./readme/tesseract_install_additional_language_1.png)  
-    ![Screenshot](./readme/tesseract_install_additional_language_2.png)  
+        ![Screenshot](./readme/tesseract_install_additional_language_1.png)  
+        ![Screenshot](./readme/tesseract_install_additional_language_2.png)  
 
 ## Como Usar
 
