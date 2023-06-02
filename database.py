@@ -2,6 +2,7 @@
 import json
 from peewee import *
 from dateutil import parser
+import os
 
 # =====================================================================
 db = SqliteDatabase('database.db')
@@ -41,31 +42,26 @@ def create_tables():
     db.close()
     
 def from_json_to_sqlite(json_path):
-    try:
-        with open(json_path, 'r', encoding='UTF8') as jsonfile:
-            data = json.load(jsonfile)
-            
-        leituras = [ 
-            Leitura(
-                mili=mili, 
-                data=parser.parse(dic['data'], dayfirst=True), 
-                type=dic['type'], 
-                cod_lido=dic['cod_lido'], 
-                cod_conv=dic['cod_conv'], 
-                descricao=dic.get('descricao')
-            ) for mili, dic in data.items()
-        ]
+    with open(json_path, 'r', encoding='UTF8') as jsonfile:
+        data = json.load(jsonfile)
         
-        with db.atomic():
-            for leitura in leituras:
-                try:
-                    leitura.save()
-                except IntegrityError as e:
-                    pass
-    except FileNotFoundError:
-        pass
-    except Exception as e:
-        print(e)
+    leituras = [ 
+        Leitura(
+            mili=mili, 
+            data=parser.parse(dic['data'], dayfirst=True), 
+            type=dic['type'], 
+            cod_lido=dic['cod_lido'], 
+            cod_conv=dic['cod_conv'], 
+            descricao=dic.get('descricao')
+        ) for mili, dic in data.items()
+    ]
+    
+    with db.atomic():
+        for leitura in leituras:
+            try:
+                leitura.save()
+            except IntegrityError as e:
+                pass
 
 def create_leitura(leitura):
     try:
@@ -108,7 +104,9 @@ def get_leituras(reverse=True):
 if __name__ == "__main__":
     create_tables()
     
-    from_json_to_sqlite("./history/results.json")
+    json_path = "./history/results.json"
+    from_json_to_sqlite(json_path)
+    os.remove(json_path)
     
     update_leitura(1, cod_lido="ALTERADO")
     
