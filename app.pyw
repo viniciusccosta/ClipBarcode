@@ -408,8 +408,16 @@ def initial_config():
 
     # ------------------------------------------
     # Banco de Dados:
+    json_path = os.path.join(HISTORY_PATH, "results.json")
+    
     database.create_tables()
-    database.from_json_to_sqlite(os.path.join(HISTORY_PATH, "results.json"))
+    try:
+        database.from_json_to_sqlite(json_path)
+        os.remove(json_path)    # Excluindo json após transferir as leituras para DB
+    except FileNotFoundError:
+        pass
+    except Exception as e:
+        print(e)
     
     # ------------------------------------------
     # Diretório de Imagens:
