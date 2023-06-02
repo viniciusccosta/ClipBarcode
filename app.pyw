@@ -36,7 +36,7 @@ class MainWindow:
         super().__init__(*args, **kwargs)
 
         self.root = tk.Tk()
-        self.root.title("Clip Barcode")
+        self.root.title("Clip Barcode 1.6.1")
         self.root.geometry("1280x720")
         self.root.iconbitmap("icon.ico")
         self.root.bind('<Configure>', self._on_configure_callback)
