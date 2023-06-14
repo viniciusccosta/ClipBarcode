@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>database API documentation</title>
+<title>clipbarcode.database API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
@@ -19,7 +19,7 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>database</code></h1>
+<h1 class="title">Module <code>clipbarcode.database</code></h1>
 </header>
 <section id="section-intro">
 <details class="source">
@@ -69,10 +69,7 @@ def create_tables():
     db.create_tables([Leitura,])
     db.close()
     
-def from_json_to_sqlite(json_path):
-    with open(json_path, &#39;r&#39;, encoding=&#39;UTF8&#39;) as jsonfile:
-        data = json.load(jsonfile)
-        
+def from_json_to_sqlite(json_content):
     leituras = [ 
         Leitura(
             mili=mili, 
@@ -81,7 +78,7 @@ def from_json_to_sqlite(json_path):
             cod_lido=dic[&#39;cod_lido&#39;], 
             cod_conv=dic[&#39;cod_conv&#39;], 
             descricao=dic.get(&#39;descricao&#39;)
-        ) for mili, dic in data.items()
+        ) for mili, dic in json_content.items()
     ]
     
     with db.atomic():
@@ -128,19 +125,6 @@ def get_leituras(reverse=True):
     except Exception as e:
         print(e)
 
-# =====================================================================
-if __name__ == &#34;__main__&#34;:
-    create_tables()
-    
-    json_path = &#34;./history/results.json&#34;
-    from_json_to_sqlite(json_path)
-    os.remove(json_path)
-    
-    update_leitura(1, cod_lido=&#34;ALTERADO&#34;)
-    
-    for i, leitura in enumerate(get_leituras(True)):
-        print(leitura)
-
 # =====================================================================</code></pre>
 </details>
 </section>
@@ -151,7 +135,7 @@ if __name__ == &#34;__main__&#34;:
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="database.create_leitura"><code class="name flex">
+<dt id="clipbarcode.database.create_leitura"><code class="name flex">
 <span>def <span class="ident">create_leitura</span></span>(<span>leitura)</span>
 </code></dt>
 <dd>
@@ -168,7 +152,7 @@ if __name__ == &#34;__main__&#34;:
         print(e)</code></pre>
 </details>
 </dd>
-<dt id="database.create_tables"><code class="name flex">
+<dt id="clipbarcode.database.create_tables"><code class="name flex">
 <span>def <span class="ident">create_tables</span></span>(<span>)</span>
 </code></dt>
 <dd>
@@ -183,7 +167,7 @@ if __name__ == &#34;__main__&#34;:
     db.close()</code></pre>
 </details>
 </dd>
-<dt id="database.delete_leitura"><code class="name flex">
+<dt id="clipbarcode.database.delete_leitura"><code class="name flex">
 <span>def <span class="ident">delete_leitura</span></span>(<span>leitura)</span>
 </code></dt>
 <dd>
@@ -200,8 +184,8 @@ if __name__ == &#34;__main__&#34;:
         print(e)</code></pre>
 </details>
 </dd>
-<dt id="database.from_json_to_sqlite"><code class="name flex">
-<span>def <span class="ident">from_json_to_sqlite</span></span>(<span>json_path)</span>
+<dt id="clipbarcode.database.from_json_to_sqlite"><code class="name flex">
+<span>def <span class="ident">from_json_to_sqlite</span></span>(<span>json_content)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -209,10 +193,7 @@ if __name__ == &#34;__main__&#34;:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def from_json_to_sqlite(json_path):
-    with open(json_path, &#39;r&#39;, encoding=&#39;UTF8&#39;) as jsonfile:
-        data = json.load(jsonfile)
-        
+<pre><code class="python">def from_json_to_sqlite(json_content):
     leituras = [ 
         Leitura(
             mili=mili, 
@@ -221,7 +202,7 @@ if __name__ == &#34;__main__&#34;:
             cod_lido=dic[&#39;cod_lido&#39;], 
             cod_conv=dic[&#39;cod_conv&#39;], 
             descricao=dic.get(&#39;descricao&#39;)
-        ) for mili, dic in data.items()
+        ) for mili, dic in json_content.items()
     ]
     
     with db.atomic():
@@ -232,7 +213,7 @@ if __name__ == &#34;__main__&#34;:
                 pass</code></pre>
 </details>
 </dd>
-<dt id="database.get_leituras"><code class="name flex">
+<dt id="clipbarcode.database.get_leituras"><code class="name flex">
 <span>def <span class="ident">get_leituras</span></span>(<span>reverse=True)</span>
 </code></dt>
 <dd>
@@ -252,7 +233,7 @@ if __name__ == &#34;__main__&#34;:
         print(e)</code></pre>
 </details>
 </dd>
-<dt id="database.update_leitura"><code class="name flex">
+<dt id="clipbarcode.database.update_leitura"><code class="name flex">
 <span>def <span class="ident">update_leitura</span></span>(<span>leitura_id, **kwargs)</span>
 </code></dt>
 <dd>
@@ -280,7 +261,7 @@ if __name__ == &#34;__main__&#34;:
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="database.Leitura"><code class="flex name class">
+<dt id="clipbarcode.database.Leitura"><code class="flex name class">
 <span>class <span class="ident">Leitura</span></span>
 <span>(</span><span>*args, **kwargs)</span>
 </code></dt>
@@ -325,46 +306,46 @@ if __name__ == &#34;__main__&#34;:
 </ul>
 <h3>Class variables</h3>
 <dl>
-<dt id="database.Leitura.DoesNotExist"><code class="name">var <span class="ident">DoesNotExist</span></code></dt>
+<dt id="clipbarcode.database.Leitura.DoesNotExist"><code class="name">var <span class="ident">DoesNotExist</span></code></dt>
 <dd>
 <div class="desc"><p>Common base class for all non-exit exceptions.</p></div>
 </dd>
-<dt id="database.Leitura.TYPES"><code class="name">var <span class="ident">TYPES</span></code></dt>
+<dt id="clipbarcode.database.Leitura.TYPES"><code class="name">var <span class="ident">TYPES</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="database.Leitura.cod_conv"><code class="name">var <span class="ident">cod_conv</span></code></dt>
+<dt id="clipbarcode.database.Leitura.cod_conv"><code class="name">var <span class="ident">cod_conv</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="database.Leitura.cod_lido"><code class="name">var <span class="ident">cod_lido</span></code></dt>
+<dt id="clipbarcode.database.Leitura.cod_lido"><code class="name">var <span class="ident">cod_lido</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="database.Leitura.data"><code class="name">var <span class="ident">data</span></code></dt>
+<dt id="clipbarcode.database.Leitura.data"><code class="name">var <span class="ident">data</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="database.Leitura.descricao"><code class="name">var <span class="ident">descricao</span></code></dt>
+<dt id="clipbarcode.database.Leitura.descricao"><code class="name">var <span class="ident">descricao</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="database.Leitura.id"><code class="name">var <span class="ident">id</span></code></dt>
+<dt id="clipbarcode.database.Leitura.id"><code class="name">var <span class="ident">id</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="database.Leitura.mili"><code class="name">var <span class="ident">mili</span></code></dt>
+<dt id="clipbarcode.database.Leitura.mili"><code class="name">var <span class="ident">mili</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="database.Leitura.type"><code class="name">var <span class="ident">type</span></code></dt>
+<dt id="clipbarcode.database.Leitura.type"><code class="name">var <span class="ident">type</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
 </dl>
 <h3>Methods</h3>
 <dl>
-<dt id="database.Leitura.get_type_display"><code class="name flex">
+<dt id="clipbarcode.database.Leitura.get_type_display"><code class="name flex">
 <span>def <span class="ident">get_type_display</span></span>(<span>self)</span>
 </code></dt>
 <dd>
@@ -388,31 +369,36 @@ if __name__ == &#34;__main__&#34;:
 <ul></ul>
 </div>
 <ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="clipbarcode" href="index.html">clipbarcode</a></code></li>
+</ul>
+</li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="two-column">
-<li><code><a title="database.create_leitura" href="#database.create_leitura">create_leitura</a></code></li>
-<li><code><a title="database.create_tables" href="#database.create_tables">create_tables</a></code></li>
-<li><code><a title="database.delete_leitura" href="#database.delete_leitura">delete_leitura</a></code></li>
-<li><code><a title="database.from_json_to_sqlite" href="#database.from_json_to_sqlite">from_json_to_sqlite</a></code></li>
-<li><code><a title="database.get_leituras" href="#database.get_leituras">get_leituras</a></code></li>
-<li><code><a title="database.update_leitura" href="#database.update_leitura">update_leitura</a></code></li>
+<li><code><a title="clipbarcode.database.create_leitura" href="#clipbarcode.database.create_leitura">create_leitura</a></code></li>
+<li><code><a title="clipbarcode.database.create_tables" href="#clipbarcode.database.create_tables">create_tables</a></code></li>
+<li><code><a title="clipbarcode.database.delete_leitura" href="#clipbarcode.database.delete_leitura">delete_leitura</a></code></li>
+<li><code><a title="clipbarcode.database.from_json_to_sqlite" href="#clipbarcode.database.from_json_to_sqlite">from_json_to_sqlite</a></code></li>
+<li><code><a title="clipbarcode.database.get_leituras" href="#clipbarcode.database.get_leituras">get_leituras</a></code></li>
+<li><code><a title="clipbarcode.database.update_leitura" href="#clipbarcode.database.update_leitura">update_leitura</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="database.Leitura" href="#database.Leitura">Leitura</a></code></h4>
+<h4><code><a title="clipbarcode.database.Leitura" href="#clipbarcode.database.Leitura">Leitura</a></code></h4>
 <ul class="two-column">
-<li><code><a title="database.Leitura.DoesNotExist" href="#database.Leitura.DoesNotExist">DoesNotExist</a></code></li>
-<li><code><a title="database.Leitura.TYPES" href="#database.Leitura.TYPES">TYPES</a></code></li>
-<li><code><a title="database.Leitura.cod_conv" href="#database.Leitura.cod_conv">cod_conv</a></code></li>
-<li><code><a title="database.Leitura.cod_lido" href="#database.Leitura.cod_lido">cod_lido</a></code></li>
-<li><code><a title="database.Leitura.data" href="#database.Leitura.data">data</a></code></li>
-<li><code><a title="database.Leitura.descricao" href="#database.Leitura.descricao">descricao</a></code></li>
-<li><code><a title="database.Leitura.get_type_display" href="#database.Leitura.get_type_display">get_type_display</a></code></li>
-<li><code><a title="database.Leitura.id" href="#database.Leitura.id">id</a></code></li>
-<li><code><a title="database.Leitura.mili" href="#database.Leitura.mili">mili</a></code></li>
-<li><code><a title="database.Leitura.type" href="#database.Leitura.type">type</a></code></li>
+<li><code><a title="clipbarcode.database.Leitura.DoesNotExist" href="#clipbarcode.database.Leitura.DoesNotExist">DoesNotExist</a></code></li>
+<li><code><a title="clipbarcode.database.Leitura.TYPES" href="#clipbarcode.database.Leitura.TYPES">TYPES</a></code></li>
+<li><code><a title="clipbarcode.database.Leitura.cod_conv" href="#clipbarcode.database.Leitura.cod_conv">cod_conv</a></code></li>
+<li><code><a title="clipbarcode.database.Leitura.cod_lido" href="#clipbarcode.database.Leitura.cod_lido">cod_lido</a></code></li>
+<li><code><a title="clipbarcode.database.Leitura.data" href="#clipbarcode.database.Leitura.data">data</a></code></li>
+<li><code><a title="clipbarcode.database.Leitura.descricao" href="#clipbarcode.database.Leitura.descricao">descricao</a></code></li>
+<li><code><a title="clipbarcode.database.Leitura.get_type_display" href="#clipbarcode.database.Leitura.get_type_display">get_type_display</a></code></li>
+<li><code><a title="clipbarcode.database.Leitura.id" href="#clipbarcode.database.Leitura.id">id</a></code></li>
+<li><code><a title="clipbarcode.database.Leitura.mili" href="#clipbarcode.database.Leitura.mili">mili</a></code></li>
+<li><code><a title="clipbarcode.database.Leitura.type" href="#clipbarcode.database.Leitura.type">type</a></code></li>
 </ul>
 </li>
 </ul>
