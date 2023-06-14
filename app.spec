@@ -7,7 +7,7 @@ block_cipher = None
 a = Analysis(
     ['app.pyw'],
     pathex=[],
-    binaries=[("venv\Lib\site-packages\pyzbar\libiconv.dll", "."), ("venv\Lib\site-packages\pyzbar\libzbar-64.dll", ".")],
+    binaries=[(".venv\Lib\site-packages\pyzbar\libiconv.dll", "."), (".venv\Lib\site-packages\pyzbar\libzbar-64.dll", ".")],
     datas=[],
     hiddenimports=[],
     hookspath=[],
