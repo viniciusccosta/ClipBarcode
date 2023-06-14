@@ -4,24 +4,30 @@ import os
 import logging
 import pyperclip
 import datetime
+import requests
+import urllib.request
+import subprocess
 
 import tkinter as tk
 
 from tkinter            import messagebox, filedialog
 from PIL                import ImageGrab, ImageTk, Image, ImageDraw
 from PIL.PngImagePlugin import PngImageFile
-from PIL.Image          import Resampling                               # NOQA
+from PIL.Image          import Resampling
 from time               import time_ns
 from pyzbar.pyzbar      import decode
 from dotenv             import load_dotenv, set_key
+from packaging          import version
 
 from datetime_tools     import timens_to_datetime
 from boleto             import new_boleto, BoletoInvalidoException
+from version            import __version__
 
 import database
 
 # ======================================================================================================================
 HISTORY_PATH = "./history"
+CUR_VERSION = version.parse(__version__)
 
 # ======================================================================================================================
 class NoImageException(Exception): pass
@@ -36,7 +42,7 @@ class MainWindow:
         super().__init__(*args, **kwargs)
 
         self.root = tk.Tk()
-        self.root.title("Clip Barcode 1.6.1")
+        self.root.title(f"Clip Barcode {CUR_VERSION}")
         self.root.geometry("1280x720")
         self.root.iconbitmap("icon.ico")
         self.root.bind('<Configure>', self._on_configure_callback)
@@ -448,6 +454,36 @@ def initial_config():
             logging.error("Encerrando programa pois o usuário não informou um path!")
             exit(1)
 
+def verificar_versao():
+    response = requests.get("https://api.github.com/repos/viniciusccosta/clipbarcode/releases", timeout=2)
+    
+    match response.status_code:
+        case 200:
+            try:
+                json_data = response.json()
+                
+                if len(json_data) > 0:
+                    release         = json_data[0]
+                    latest_version  = version.parse(release["tag_name"])
+                    assets          = release["assets"]
+                    
+                    if latest_version > CUR_VERSION and len(assets) > 0:
+                        atualizar = messagebox.askyesno("Atualização", "Uma nova versão está disponível, deseja baixá-la?")
+                        if atualizar:
+                            for asset in assets:
+                                url      = asset['browser_download_url']
+                                filename = asset['name']
+                                
+                                if url.endswith(".exe"):
+                                    urllib.request.urlretrieve(url, filename)
+                                    subprocess.run([filename])
+                                    messagebox.showinfo("Fim da Atualização", "Abra o programa novamente!")
+                                    exit(0)
+            except Exception:
+                pass
+        case _:
+            pass
+
 def salvar_leitura(leitura: database.Leitura, img:PngImageFile):
     """Salva a leitura no banco de dados juntamente com o print.
 
@@ -587,7 +623,11 @@ def realizar_leitura():
 
 # ======================================================================================================================
 if __name__ == '__main__':
+    # -------------------------------------
     initial_config()
+
+    # -------------------------------------
+    verificar_versao()
 
     # -------------------------------------
     w = MainWindow()
