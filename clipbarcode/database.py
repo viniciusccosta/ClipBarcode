@@ -41,10 +41,7 @@ def create_tables():
     db.create_tables([Leitura,])
     db.close()
     
-def from_json_to_sqlite(json_path):
-    with open(json_path, 'r', encoding='UTF8') as jsonfile:
-        data = json.load(jsonfile)
-        
+def from_json_to_sqlite(json_content):
     leituras = [ 
         Leitura(
             mili=mili, 
@@ -53,7 +50,7 @@ def from_json_to_sqlite(json_path):
             cod_lido=dic['cod_lido'], 
             cod_conv=dic['cod_conv'], 
             descricao=dic.get('descricao')
-        ) for mili, dic in data.items()
+        ) for mili, dic in json_content.items()
     ]
     
     with db.atomic():
@@ -99,18 +96,5 @@ def get_leituras(reverse=True):
         return list( leituras )
     except Exception as e:
         print(e)
-
-# =====================================================================
-if __name__ == "__main__":
-    create_tables()
-    
-    json_path = "./history/results.json"
-    from_json_to_sqlite(json_path)
-    os.remove(json_path)
-    
-    update_leitura(1, cod_lido="ALTERADO")
-    
-    for i, leitura in enumerate(get_leituras(True)):
-        print(leitura)
 
 # =====================================================================
