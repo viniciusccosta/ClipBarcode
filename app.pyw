@@ -19,11 +19,11 @@ from pyzbar.pyzbar      import decode
 from dotenv             import load_dotenv, set_key
 from packaging          import version
 
-from datetime_tools     import timens_to_datetime
-from boleto             import new_boleto, BoletoInvalidoException
-from version            import __version__
+from clipbarcode.datetime_tools     import timens_to_datetime
+from clipbarcode.boleto             import new_boleto, BoletoInvalidoException
+from clipbarcode.version            import __version__
 
-import database
+import clipbarcode.database as database
 
 # ======================================================================================================================
 HISTORY_PATH = "./history"
