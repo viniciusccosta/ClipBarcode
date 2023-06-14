@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "clipbarcode"
-version = "1.6.1"
+version = "null"
 description = ""
 authors = ["Vinícius Costa <viniciusccosta95@gmail.com>"]
 license = "MIT"
@@ -15,6 +15,7 @@ peewee = "^3.16.2"
 pyzbar = "^0.1.9"
 pyparsing = "^3.0.9"
 pyperclip = "^1.8.2"
+requests = "^2.31.0"
 
 
 [tool.poetry.group.dev.dependencies]
