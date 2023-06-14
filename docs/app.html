@@ -64,7 +64,7 @@ class MainWindow:
         super().__init__(*args, **kwargs)
 
         self.root = tk.Tk()
-        self.root.title(&#34;Clip Barcode&#34;)
+        self.root.title(&#34;Clip Barcode 1.6.1&#34;)
         self.root.geometry(&#34;1280x720&#34;)
         self.root.iconbitmap(&#34;icon.ico&#34;)
         self.root.bind(&#39;&lt;Configure&gt;&#39;, self._on_configure_callback)
@@ -78,11 +78,12 @@ class MainWindow:
 
         self.f1 = tk.Frame(self.root, )
         self.f1.grid(row=1, column=0, padx=5, pady=(0, 10), sticky=&#34;nswe&#34;)
+        self.root.columnconfigure(index=0, weight=0, minsize=410)
 
-        self.f2 = tk.Frame(self.root, )        
-        self.f2.grid(row=1, column=1, columnspan=2, padx=5, pady=(0, 15), sticky=&#34;nswe&#34;)
-
+        self.f2 = tk.Frame(self.root)
+        self.f2.grid(row=1, column=1, padx=5, pady=(0, 15), sticky=&#34;nswe&#34;)
         self.root.columnconfigure(index=1, weight=1)
+        
         self.root.rowconfigure(index=1, weight=1)
 
         # -------------------------------------
@@ -92,17 +93,11 @@ class MainWindow:
         self.listbox.bind(&#34;&lt;Down&gt;&#34;, self._on_arrow_down_click)
         self.listbox.bind(&#34;&lt;Up&gt;&#34;, self._on_arrow_up_click)
         self.listbox.bind(&#34;&lt;Delete&gt;&#34;, self._on_del_click)
-        self.listbox.grid(sticky=&#34;nsew&#34;, )
+        self.listbox.pack(fill=&#34;both&#34;, expand=True)
 
         self.leituras  = None
         self.cur_index = None
         self._fill_list()
-
-        cols, rows = self.f1.grid_size()
-        for r in range(rows):
-            self.f1.rowconfigure(index=r, weight=1)
-        for c in range(cols):
-            self.f1.columnconfigure(index=c, weight=1)
 
         # -------------------------------------
         # Detail Frame:
@@ -244,7 +239,7 @@ class MainWindow:
                 leitura        = self.leituras[selected_index]
                 delete_leitura(leitura)
                 self._fill_list()
-                # TODO: Selecionar algum item da listbox (o anterior, o próximo, o primeiro...)
+                self.clear()
             else:
                 messagebox.showerror(&#34;Erro&#34;, &#34;Não foi possível excluir o registro&#34;)
                 
@@ -317,7 +312,7 @@ class MainWindow:
         self.update_canvas(filename=os.path.join(HISTORY_PATH, f&#34;{leitura.mili}.png&#34;))
         self.update_widget_data(leitura.data)
         self.update_tipo(leitura.get_type_display())
-        self.update_wdiget_leitura(leitura.cod_conv)
+        self.update_widget_leitura(leitura.cod_conv)
         self.update_widget_descricao(leitura.descricao)
 
     def update_tipo(self, tipo:str, *args, **kwargs):
@@ -339,7 +334,7 @@ class MainWindow:
         else:
             self.lbl_date.set(&#39;&#39;)
 
-    def update_wdiget_leitura(self, new_text:str, *args, **kwargs):
+    def update_widget_leitura(self, new_text:str, *args, **kwargs):
         &#34;&#34;&#34;Insere um valor no widget &#34;Leitura&#34;.
 
         Args:
@@ -415,7 +410,7 @@ class MainWindow:
         self.update_canvas()
         self.update_widget_data()
         self.update_tipo(&#39;&#39;)
-        self.update_wdiget_leitura(&#39;&#39;)
+        self.update_widget_leitura(&#39;&#39;)
 
 # ======================================================================================================================
 def initial_config():
@@ -441,8 +436,16 @@ def initial_config():
 
     # ------------------------------------------
     # Banco de Dados:
+    json_path = os.path.join(HISTORY_PATH, &#34;results.json&#34;)
+    
     database.create_tables()
-    database.from_json_to_sqlite(os.path.join(HISTORY_PATH, &#34;results.json&#34;))
+    try:
+        database.from_json_to_sqlite(json_path)
+        os.remove(json_path)    # Excluindo json após transferir as leituras para DB
+    except FileNotFoundError:
+        pass
+    except Exception as e:
+        print(e)
     
     # ------------------------------------------
     # Diretório de Imagens:
@@ -627,7 +630,7 @@ if __name__ == &#39;__main__&#39;:
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="app.delete_leitura"><code class="name flex">
-<span>def <span class="ident">delete_leitura</span></span>(<span>leitura: <a title="database.Leitura" href="database.html#database.Leitura">Leitura</a>)</span>
+<span>def <span class="ident">delete_leitura</span></span>(<span>leitura: database.Leitura)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Faz a exclusão do print do diretório de imagens e faz uma requisição ao banco de dados para a exclusão da leitura.</p>
@@ -686,8 +689,16 @@ if __name__ == &#39;__main__&#39;:
 
     # ------------------------------------------
     # Banco de Dados:
+    json_path = os.path.join(HISTORY_PATH, &#34;results.json&#34;)
+    
     database.create_tables()
-    database.from_json_to_sqlite(os.path.join(HISTORY_PATH, &#34;results.json&#34;))
+    try:
+        database.from_json_to_sqlite(json_path)
+        os.remove(json_path)    # Excluindo json após transferir as leituras para DB
+    except FileNotFoundError:
+        pass
+    except Exception as e:
+        print(e)
     
     # ------------------------------------------
     # Diretório de Imagens:
@@ -845,13 +856,13 @@ if __name__ == &#39;__main__&#39;:
 </details>
 </dd>
 <dt id="app.salvar_leitura"><code class="name flex">
-<span>def <span class="ident">salvar_leitura</span></span>(<span>leitura: <a title="database.Leitura" href="database.html#database.Leitura">Leitura</a>, img: PIL.PngImagePlugin.PngImageFile)</span>
+<span>def <span class="ident">salvar_leitura</span></span>(<span>leitura: database.Leitura, img: PIL.PngImagePlugin.PngImageFile)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Salva a leitura no banco de dados juntamente com o print.</p>
 <h2 id="args">Args</h2>
 <dl>
-<dt><strong><code>result</code></strong> :&ensp;<code><a title="database.Leitura" href="database.html#database.Leitura">Leitura</a></code></dt>
+<dt><strong><code>result</code></strong> :&ensp;<code>database.Leitura</code></dt>
 <dd>Instância da classe Leitura com os dados da leitura</dd>
 <dt><strong><code>img</code></strong> :&ensp;<code>PngImageFile</code></dt>
 <dd>Print em si</dd>
@@ -877,7 +888,7 @@ if __name__ == &#39;__main__&#39;:
 </details>
 </dd>
 <dt id="app.update_value"><code class="name flex">
-<span>def <span class="ident">update_value</span></span>(<span>leitura: <a title="database.Leitura" href="database.html#database.Leitura">Leitura</a>, **kwargs)</span>
+<span>def <span class="ident">update_value</span></span>(<span>leitura: database.Leitura, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Faz uma requisição ao banco de dados para atualizar determinada leitura.</p>
@@ -941,7 +952,7 @@ if __name__ == &#39;__main__&#39;:
         super().__init__(*args, **kwargs)
 
         self.root = tk.Tk()
-        self.root.title(&#34;Clip Barcode&#34;)
+        self.root.title(&#34;Clip Barcode 1.6.1&#34;)
         self.root.geometry(&#34;1280x720&#34;)
         self.root.iconbitmap(&#34;icon.ico&#34;)
         self.root.bind(&#39;&lt;Configure&gt;&#39;, self._on_configure_callback)
@@ -955,11 +966,12 @@ if __name__ == &#39;__main__&#39;:
 
         self.f1 = tk.Frame(self.root, )
         self.f1.grid(row=1, column=0, padx=5, pady=(0, 10), sticky=&#34;nswe&#34;)
+        self.root.columnconfigure(index=0, weight=0, minsize=410)
 
-        self.f2 = tk.Frame(self.root, )        
-        self.f2.grid(row=1, column=1, columnspan=2, padx=5, pady=(0, 15), sticky=&#34;nswe&#34;)
-
+        self.f2 = tk.Frame(self.root)
+        self.f2.grid(row=1, column=1, padx=5, pady=(0, 15), sticky=&#34;nswe&#34;)
         self.root.columnconfigure(index=1, weight=1)
+        
         self.root.rowconfigure(index=1, weight=1)
 
         # -------------------------------------
@@ -969,17 +981,11 @@ if __name__ == &#39;__main__&#39;:
         self.listbox.bind(&#34;&lt;Down&gt;&#34;, self._on_arrow_down_click)
         self.listbox.bind(&#34;&lt;Up&gt;&#34;, self._on_arrow_up_click)
         self.listbox.bind(&#34;&lt;Delete&gt;&#34;, self._on_del_click)
-        self.listbox.grid(sticky=&#34;nsew&#34;, )
+        self.listbox.pack(fill=&#34;both&#34;, expand=True)
 
         self.leituras  = None
         self.cur_index = None
         self._fill_list()
-
-        cols, rows = self.f1.grid_size()
-        for r in range(rows):
-            self.f1.rowconfigure(index=r, weight=1)
-        for c in range(cols):
-            self.f1.columnconfigure(index=c, weight=1)
 
         # -------------------------------------
         # Detail Frame:
@@ -1121,7 +1127,7 @@ if __name__ == &#39;__main__&#39;:
                 leitura        = self.leituras[selected_index]
                 delete_leitura(leitura)
                 self._fill_list()
-                # TODO: Selecionar algum item da listbox (o anterior, o próximo, o primeiro...)
+                self.clear()
             else:
                 messagebox.showerror(&#34;Erro&#34;, &#34;Não foi possível excluir o registro&#34;)
                 
@@ -1194,7 +1200,7 @@ if __name__ == &#39;__main__&#39;:
         self.update_canvas(filename=os.path.join(HISTORY_PATH, f&#34;{leitura.mili}.png&#34;))
         self.update_widget_data(leitura.data)
         self.update_tipo(leitura.get_type_display())
-        self.update_wdiget_leitura(leitura.cod_conv)
+        self.update_widget_leitura(leitura.cod_conv)
         self.update_widget_descricao(leitura.descricao)
 
     def update_tipo(self, tipo:str, *args, **kwargs):
@@ -1216,7 +1222,7 @@ if __name__ == &#39;__main__&#39;:
         else:
             self.lbl_date.set(&#39;&#39;)
 
-    def update_wdiget_leitura(self, new_text:str, *args, **kwargs):
+    def update_widget_leitura(self, new_text:str, *args, **kwargs):
         &#34;&#34;&#34;Insere um valor no widget &#34;Leitura&#34;.
 
         Args:
@@ -1292,7 +1298,7 @@ if __name__ == &#39;__main__&#39;:
         self.update_canvas()
         self.update_widget_data()
         self.update_tipo(&#39;&#39;)
-        self.update_wdiget_leitura(&#39;&#39;)</code></pre>
+        self.update_widget_leitura(&#39;&#39;)</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
@@ -1312,7 +1318,7 @@ if __name__ == &#39;__main__&#39;:
     self.update_canvas()
     self.update_widget_data()
     self.update_tipo(&#39;&#39;)
-    self.update_wdiget_leitura(&#39;&#39;)</code></pre>
+    self.update_widget_leitura(&#39;&#39;)</code></pre>
 </details>
 </dd>
 <dt id="app.MainWindow.mainloop"><code class="name flex">
@@ -1447,7 +1453,7 @@ Ou através de um objeto Image.</p>
 </details>
 </dd>
 <dt id="app.MainWindow.update_frame_detail"><code class="name flex">
-<span>def <span class="ident">update_frame_detail</span></span>(<span>self, leitura: <a title="database.Leitura" href="database.html#database.Leitura">Leitura</a>, *args, **kwargs)</span>
+<span>def <span class="ident">update_frame_detail</span></span>(<span>self, leitura: database.Leitura, *args, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Atualiza todos os widgets presentes no frame "Detail"</p>
@@ -1467,7 +1473,7 @@ Ou através de um objeto Image.</p>
     self.update_canvas(filename=os.path.join(HISTORY_PATH, f&#34;{leitura.mili}.png&#34;))
     self.update_widget_data(leitura.data)
     self.update_tipo(leitura.get_type_display())
-    self.update_wdiget_leitura(leitura.cod_conv)
+    self.update_widget_leitura(leitura.cod_conv)
     self.update_widget_descricao(leitura.descricao)</code></pre>
 </details>
 </dd>
@@ -1492,29 +1498,6 @@ Ou através de um objeto Image.</p>
         tipo (str): Valor a ser inserido no widget
     &#34;&#34;&#34;
     self.var_tipo.set(tipo)</code></pre>
-</details>
-</dd>
-<dt id="app.MainWindow.update_wdiget_leitura"><code class="name flex">
-<span>def <span class="ident">update_wdiget_leitura</span></span>(<span>self, new_text: str, *args, **kwargs)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Insere um valor no widget "Leitura".</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>new_text</code></strong> :&ensp;<code>str</code></dt>
-<dd>Valor a ser inserido no widget</dd>
-</dl></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def update_wdiget_leitura(self, new_text:str, *args, **kwargs):
-    &#34;&#34;&#34;Insere um valor no widget &#34;Leitura&#34;.
-
-    Args:
-        new_text (str): Valor a ser inserido no widget
-    &#34;&#34;&#34;
-    self.var_leitura.set(new_text)</code></pre>
 </details>
 </dd>
 <dt id="app.MainWindow.update_widget_data"><code class="name flex">
@@ -1564,6 +1547,29 @@ Ou através de um objeto Image.</p>
         new_text (str): Valor a ser inserido no widget
     &#34;&#34;&#34;
     self.var_descricao.set(new_text if new_text else &#34;&#34;)</code></pre>
+</details>
+</dd>
+<dt id="app.MainWindow.update_widget_leitura"><code class="name flex">
+<span>def <span class="ident">update_widget_leitura</span></span>(<span>self, new_text: str, *args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Insere um valor no widget "Leitura".</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>new_text</code></strong> :&ensp;<code>str</code></dt>
+<dd>Valor a ser inserido no widget</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def update_widget_leitura(self, new_text:str, *args, **kwargs):
+    &#34;&#34;&#34;Insere um valor no widget &#34;Leitura&#34;.
+
+    Args:
+        new_text (str): Valor a ser inserido no widget
+    &#34;&#34;&#34;
+    self.var_leitura.set(new_text)</code></pre>
 </details>
 </dd>
 </dl>
@@ -1619,9 +1625,9 @@ Ou através de um objeto Image.</p>
 <li><code><a title="app.MainWindow.update_canvas" href="#app.MainWindow.update_canvas">update_canvas</a></code></li>
 <li><code><a title="app.MainWindow.update_frame_detail" href="#app.MainWindow.update_frame_detail">update_frame_detail</a></code></li>
 <li><code><a title="app.MainWindow.update_tipo" href="#app.MainWindow.update_tipo">update_tipo</a></code></li>
-<li><code><a title="app.MainWindow.update_wdiget_leitura" href="#app.MainWindow.update_wdiget_leitura">update_wdiget_leitura</a></code></li>
 <li><code><a title="app.MainWindow.update_widget_data" href="#app.MainWindow.update_widget_data">update_widget_data</a></code></li>
 <li><code><a title="app.MainWindow.update_widget_descricao" href="#app.MainWindow.update_widget_descricao">update_widget_descricao</a></code></li>
+<li><code><a title="app.MainWindow.update_widget_leitura" href="#app.MainWindow.update_widget_leitura">update_widget_leitura</a></code></li>
 </ul>
 </li>
 <li>

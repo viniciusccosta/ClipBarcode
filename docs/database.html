@@ -30,6 +30,7 @@
 import json
 from peewee import *
 from dateutil import parser
+import os
 
 # =====================================================================
 db = SqliteDatabase(&#39;database.db&#39;)
@@ -57,14 +58,10 @@ class Leitura(Model):
         return dict(self.TYPES)[self.type]
     
     def __str__(self):
-        max_len = 10
+        max_len = 32
+        campo = self.descricao if self.descricao else self.cod_lido
         
-        if self.descricao:
-            texto = f&#39;{self.id}): {self.descricao[0:max_len]} {&#34;...&#34; if len(self.descricao) &gt; max_len else &#34;&#34;}&#39;
-        else:
-            texto = f&#39;{self.id}): |({self.cod_lido[0:max_len]})|&#39;
-        
-        return texto
+        return f&#39;{self.id}): {campo[0:max_len]}{&#34;...&#34; if len(campo) &gt; max_len else &#34;&#34;}&#39;
 
 # =====================================================================
 def create_tables():
@@ -73,31 +70,26 @@ def create_tables():
     db.close()
     
 def from_json_to_sqlite(json_path):
-    try:
-        with open(json_path, &#39;r&#39;, encoding=&#39;UTF8&#39;) as jsonfile:
-            data = json.load(jsonfile)
-            
-        leituras = [ 
-            Leitura(
-                mili=mili, 
-                data=parser.parse(dic[&#39;data&#39;], dayfirst=True), 
-                type=dic[&#39;type&#39;], 
-                cod_lido=dic[&#39;cod_lido&#39;], 
-                cod_conv=dic[&#39;cod_conv&#39;], 
-                descricao=dic.get(&#39;descricao&#39;)
-            ) for mili, dic in data.items()
-        ]
+    with open(json_path, &#39;r&#39;, encoding=&#39;UTF8&#39;) as jsonfile:
+        data = json.load(jsonfile)
         
-        with db.atomic():
-            for leitura in leituras:
-                try:
-                    leitura.save()
-                except IntegrityError as e:
-                    pass
-    except FileNotFoundError:
-        pass
-    except Exception as e:
-        print(e)
+    leituras = [ 
+        Leitura(
+            mili=mili, 
+            data=parser.parse(dic[&#39;data&#39;], dayfirst=True), 
+            type=dic[&#39;type&#39;], 
+            cod_lido=dic[&#39;cod_lido&#39;], 
+            cod_conv=dic[&#39;cod_conv&#39;], 
+            descricao=dic.get(&#39;descricao&#39;)
+        ) for mili, dic in data.items()
+    ]
+    
+    with db.atomic():
+        for leitura in leituras:
+            try:
+                leitura.save()
+            except IntegrityError as e:
+                pass
 
 def create_leitura(leitura):
     try:
@@ -140,7 +132,9 @@ def get_leituras(reverse=True):
 if __name__ == &#34;__main__&#34;:
     create_tables()
     
-    from_json_to_sqlite(&#34;./history/results.json&#34;)
+    json_path = &#34;./history/results.json&#34;
+    from_json_to_sqlite(json_path)
+    os.remove(json_path)
     
     update_leitura(1, cod_lido=&#34;ALTERADO&#34;)
     
@@ -216,31 +210,26 @@ if __name__ == &#34;__main__&#34;:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def from_json_to_sqlite(json_path):
-    try:
-        with open(json_path, &#39;r&#39;, encoding=&#39;UTF8&#39;) as jsonfile:
-            data = json.load(jsonfile)
-            
-        leituras = [ 
-            Leitura(
-                mili=mili, 
-                data=parser.parse(dic[&#39;data&#39;], dayfirst=True), 
-                type=dic[&#39;type&#39;], 
-                cod_lido=dic[&#39;cod_lido&#39;], 
-                cod_conv=dic[&#39;cod_conv&#39;], 
-                descricao=dic.get(&#39;descricao&#39;)
-            ) for mili, dic in data.items()
-        ]
+    with open(json_path, &#39;r&#39;, encoding=&#39;UTF8&#39;) as jsonfile:
+        data = json.load(jsonfile)
         
-        with db.atomic():
-            for leitura in leituras:
-                try:
-                    leitura.save()
-                except IntegrityError as e:
-                    pass
-    except FileNotFoundError:
-        pass
-    except Exception as e:
-        print(e)</code></pre>
+    leituras = [ 
+        Leitura(
+            mili=mili, 
+            data=parser.parse(dic[&#39;data&#39;], dayfirst=True), 
+            type=dic[&#39;type&#39;], 
+            cod_lido=dic[&#39;cod_lido&#39;], 
+            cod_conv=dic[&#39;cod_conv&#39;], 
+            descricao=dic.get(&#39;descricao&#39;)
+        ) for mili, dic in data.items()
+    ]
+    
+    with db.atomic():
+        for leitura in leituras:
+            try:
+                leitura.save()
+            except IntegrityError as e:
+                pass</code></pre>
 </details>
 </dd>
 <dt id="database.get_leituras"><code class="name flex">
@@ -323,14 +312,10 @@ if __name__ == &#34;__main__&#34;:
         return dict(self.TYPES)[self.type]
     
     def __str__(self):
-        max_len = 10
+        max_len = 32
+        campo = self.descricao if self.descricao else self.cod_lido
         
-        if self.descricao:
-            texto = f&#39;{self.id}): {self.descricao[0:max_len]} {&#34;...&#34; if len(self.descricao) &gt; max_len else &#34;&#34;}&#39;
-        else:
-            texto = f&#39;{self.id}): |({self.cod_lido[0:max_len]})|&#39;
-        
-        return texto</code></pre>
+        return f&#39;{self.id}): {campo[0:max_len]}{&#34;...&#34; if len(campo) &gt; max_len else &#34;&#34;}&#39;</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
