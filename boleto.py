@@ -70,13 +70,13 @@ class Arrecadacao(Boleto):
         “6”- Valor a ser cobrado efetivamente em reais com dígito verificador calculado pelo módulo 10 na quarta posição do Código de Barras e valor com 11 posições (versão 2 e posteriores) sem qualquer alteração;
 
         “7”- Quantidade de moeda:
-            Zeros– somente na impossibilidade de utilizar o valor;
+            Zeros- somente na impossibilidade de utilizar o valor;
             Valor a ser reajustado por um índice com dígito verificador calculado pelo módulo 10 na quarta posição do Código de Barras e valor com 11 posições (versão 2 e posteriores).
 
-        “8”– Valor a ser cobrado efetivamente em reais com dígito verificador calculado pelo módulo 11 na quarta posição do Código de Barras e valor com 11 posições (versão 2 e posteriores) sem qualquer alteração.
+        “8”- Valor a ser cobrado efetivamente em reais com dígito verificador calculado pelo módulo 11 na quarta posição do Código de Barras e valor com 11 posições (versão 2 e posteriores) sem qualquer alteração.
 
-        “9”– Quantidade de moeda
-            Zeros– somente na impossibilidade de utilizar o valor;
+        “9”- Quantidade de moeda
+            Zeros- somente na impossibilidade de utilizar o valor;
             Valor a ser reajustado por um índice com dígito verificador calculado pelo módulo 11 na quarta posição do Código de Barras e valor com 11 posições (versão 2 e posteriores).
     """
     
@@ -157,23 +157,23 @@ class Arrecadacao(Boleto):
             +---------+---------+--------------------------------------------+
             | POSIÇÃO | TAMANHO | CONTEÚDO                                   |
             +---------+---------+--------------------------------------------+
-            | 01 – 01 | 1       | Identificação do Produto                   |
+            | 01 - 01 | 1       | Identificação do Produto                   |
             +---------+---------+--------------------------------------------+
-            | 02 – 02 | 1       | Identificação do Segmento                  |
+            | 02 - 02 | 1       | Identificação do Segmento                  |
             +---------+---------+--------------------------------------------+
-            | 03 – 03 | 1       | Identificação do valor real ou referência  |
+            | 03 - 03 | 1       | Identificação do valor real ou referência  |
             +---------+---------+--------------------------------------------+
-            | 04 – 04 | 1       | Dígito verificador geral (módulo 10 ou 11) |
+            | 04 - 04 | 1       | Dígito verificador geral (módulo 10 ou 11) |
             +---------+---------+--------------------------------------------+
-            | 05 – 15 | 11      | Valor                                      |
+            | 05 - 15 | 11      | Valor                                      |
             +---------+---------+--------------------------------------------+
-            | 16 – 19 | 4       | Identificação da Empresa/Órgão             |
+            | 16 - 19 | 4       | Identificação da Empresa/Órgão             |
             +---------+---------+--------------------------------------------+
-            | 20 – 44 | 25      | Campo livre de utilização da Empresa/Orgão |
+            | 20 - 44 | 25      | Campo livre de utilização da Empresa/Orgão |
             +---------+---------+--------------------------------------------+
-            | 16 – 23 | 8       | CNPJ / MF                                  |
+            | 16 - 23 | 8       | CNPJ / MF                                  |
             +---------+---------+--------------------------------------------+
-            | 24 – 44 | 21      | Campo livre de utilização da Empresa/Órgão |
+            | 24 - 44 | 21      | Campo livre de utilização da Empresa/Órgão |
             +---------+---------+--------------------------------------------+
         """
 
@@ -293,14 +293,14 @@ class Cobranca(Boleto):
             dv1 = mod10(f'{self.id_banco}{self.cod_moeda}{self.campo_livre_1}')
             dv2 = mod10(f'{self.campo_livre_2}')
             dv3 = mod10(f'{self.campo_livre_3}')
-            dv = mod11(f'{self.id_banco}{self.cod_moeda}{self.fator_venc}{int(self.valor * 100):010}{self.campo_livre_1}{self.campo_livre_2}{self.campo_livre_3}')
+            dv = mod11(f'{self.id_banco}{self.cod_moeda}{self.fator_venc}{int(round(self.valor * 100)):010}{self.campo_livre_1}{self.campo_livre_2}{self.campo_livre_3}')
 
             return dv1 == self.dv1 and dv2 == self.dv2 and dv3 == self.dv3 and dv == self.dv_geral
 
         def preencher_cod_barras():
             self.campo_livre_cod_barras = f'{self.campo_livre_1}{self.campo_livre_2}{self.campo_livre_3}'
             self.dv_cod_barras          = self.dv_geral
-            self.cod_barras             = f'{self.id_banco}{self.cod_moeda}{self.dv_cod_barras}{self.fator_venc}{int(self.valor * 100):010}{self.campo_livre_cod_barras}'
+            self.cod_barras             = f'{self.id_banco}{self.cod_moeda}{self.dv_cod_barras}{self.fator_venc}{int(round(self.valor * 100)):010}{self.campo_livre_cod_barras}'
 
         linha_digitavel = re.sub('\D', '', linha_digitavel)
 
@@ -343,12 +343,12 @@ class Cobranca(Boleto):
                     +---------+---------+----------+--------------------------------------------------------------------------------+
                     | 10-19   | 10      | 9(08)v99 | Valor nominal do título                                                        |
                     +---------+---------+----------+--------------------------------------------------------------------------------+
-                    | 20-44   | 25      | 9(25)    | Campo livre – utilizado de acordo com a especificação interna do banco emissor |
+                    | 20-44   | 25      | 9(25)    | Campo livre - utilizado de acordo com a especificação interna do banco emissor |
                     +---------+---------+----------+--------------------------------------------------------------------------------+
                 """
 
         def validar_cod_barras():
-            dv = mod11(f'{self.id_banco}{self.cod_moeda}{self.fator_venc}{int(self.valor * 100):010}{self.campo_livre_cod_barras}')
+            dv = mod11(f'{self.id_banco}{self.cod_moeda}{self.fator_venc}{int(round(self.valor * 100)):010}{self.campo_livre_cod_barras}')
             return dv == self.dv_cod_barras
 
         def preencher_linha_digitavel():
