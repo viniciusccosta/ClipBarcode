@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "clipbarcode"
+version = "1.6.1"
+description = ""
+authors = ["Vinícius Costa <viniciusccosta95@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.11,<3.12"
+python-dotenv = "^1.0.0"
+python-dateutil = "^2.8.2"
+pytesseract = "^0.3.10"
+peewee = "^3.16.2"
+pyzbar = "^0.1.9"
+pyparsing = "^3.0.9"
+pyperclip = "^1.8.2"
+
+
+[tool.poetry.group.dev.dependencies]
+pdoc3 = "^0.10.0"
+pyinstaller = "^5.12.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
