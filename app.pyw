@@ -7,8 +7,10 @@ import datetime
 import requests
 import urllib.request
 import subprocess
+import markdown
 
 import tkinter as tk
+import ttkbootstrap as ttk
 
 from tkinter            import messagebox, filedialog
 from PIL                import ImageGrab, ImageTk, Image, ImageDraw
@@ -18,6 +20,7 @@ from time               import time_ns
 from pyzbar.pyzbar      import decode
 from dotenv             import load_dotenv, set_key
 from packaging          import version
+from tkhtmlview         import HTMLScrolledText
 
 from clipbarcode.datetime_tools     import timens_to_datetime
 from clipbarcode.boleto             import new_boleto, BoletoInvalidoException
@@ -26,8 +29,9 @@ from clipbarcode.version            import __version__
 import clipbarcode.database as database
 
 # ======================================================================================================================
-HISTORY_PATH = "./history"
-CUR_VERSION = version.parse(__version__)
+HISTORY_PATH   = "./history"
+CUR_VERSION    = version.parse(__version__)
+LABEL_FONTNAME = "Arial"
 
 # ======================================================================================================================
 class NoImageException(Exception): pass
@@ -38,35 +42,79 @@ class LeituraFalhaException(Exception):
 
 # ======================================================================================================================
 class MainWindow:
-    def __init__(self, *args, **kwargs):
+    def __init__(self, themename="darkly", *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.root = tk.Tk()
+        self.root = ttk.Window(alpha=0.99, iconphoto=None)
         self.root.title(f"Clip Barcode {CUR_VERSION}")
         self.root.geometry("1280x720")
         self.root.iconbitmap("icon.ico")
-        self.root.bind('<Configure>', self._on_configure_callback)
+        self.root.place_window_center()
+        self.root.position_center()
 
-        self.last_width = 0
+        self.last_width  = 0
         self.last_height = 0
+                
+        self._change_theme(themename)
+        
+        # -------------------------------------
+        menubar = ttk.Menu()
+        self.root.config(menu=menubar)
+        
+        # Themes:
+        theme_menu = ttk.Menu()
+        themes = ["darkly", "yeti", "superhero", "vapor", "cosmo", "journal", "sandstone"]
+        avaiable_themes = [t for t in self.root.style.theme_names() if t in themes]
+        for theme_name in sorted(avaiable_themes):
+                    
+            theme_menu.add_command(
+                label   = theme_name,
+                command = lambda t=theme_name: self._change_theme(t),
+            )
+            
+        menubar.add_cascade (
+            label = "Temas",
+            menu  = theme_menu,
+        )
+        
+        # Ajuda:
+        help_menu = ttk.Menu()
+        
+        help_menu.add_command(
+            label = "Ajuda",
+            command = self._on_ajuda_click,
+        )
+        
+        help_menu.add_separator()
+        
+        help_menu.add_command(
+            label = "Sobre",
+            command = self._on_sobre_click,
+        )
+        
+        menubar.add_cascade (
+            label = "Ajuda",
+            menu  = help_menu,
+        )
+        
 
         # -------------------------------------
         # Frames:
-        tk.Button(self.root, text="Ler Print", font=("Consolas", 16), command=self._on_ler_print_click).grid(pady=10)
+        ttk.Button(self.root, text="Ler Print", command=self._on_ler_print_click).grid(pady=10)
 
-        self.f1 = tk.Frame(self.root, )
-        self.f1.grid(row=1, column=0, padx=5, pady=(0, 10), sticky="nswe")
+        self.f1 = ttk.Frame(self.root, )
+        self.f1.grid(row=1, column=0, padx=(10, 5), pady=(0, 10), sticky="nswe")
         self.root.columnconfigure(index=0, weight=0, minsize=410)
 
-        self.f2 = tk.Frame(self.root)
-        self.f2.grid(row=1, column=1, padx=5, pady=(0, 15), sticky="nswe")
+        self.f2 = ttk.Frame(self.root)
+        self.f2.grid(row=1, column=1, padx=(5, 10), pady=(0, 10), sticky="nswe")
         self.root.columnconfigure(index=1, weight=1)
         
         self.root.rowconfigure(index=1, weight=1)
 
         # -------------------------------------
         # List Frame:
-        self.listbox = tk.Listbox(self.f1, font=("Consolas", 14), selectmode="SINGLE", activestyle=tk.NONE)
+        self.listbox = tk.Listbox(self.f1, font=(LABEL_FONTNAME, 16), selectmode="SINGLE", activestyle=tk.NONE)
         self.listbox.bind('<<ListboxSelect>>', self._on_item_selected)
         self.listbox.bind("<Down>", self._on_arrow_down_click)
         self.listbox.bind("<Up>", self._on_arrow_up_click)
@@ -79,39 +127,84 @@ class MainWindow:
 
         # -------------------------------------
         # Detail Frame:
-        self.canvas = tk.Label(self.f2, bg="gray")
-        self.canvas.grid(row=0, column=1, sticky="nsew")
-
-        self.lbl_date = tk.StringVar()
-        tk.Label(self.f2, textvariable=self.lbl_date, font=("Consolas", 16)).grid(row=2, column=1, sticky="nswe", pady=(15, 0))
-
-        self.var_tipo = tk.StringVar()
-        tk.Label(self.f2, textvariable=self.var_tipo, font=("Consolas", 16),).grid(row=3, column=1, sticky="nsew", pady=5)
-
-        self.var_leitura = tk.StringVar()
-        tk.Label(self.f2, text="Leitura:", font=("Consolas", 16), ).grid(row=4, sticky="nswe", pady=(15, 15))
-        tk.Entry(self.f2, font=("Consolas", 16), state=tk.DISABLED, textvariable=self.var_leitura).grid(row=4, column=1, sticky="we")
-        self.btn_copiar_leitura = tk.Button(self.f2, text="Copiar", font=("Consolas", 12), command=self.on_copiar_leitura_click)
-        self.btn_copiar_leitura.grid(row=4, column=2, sticky="ew")
-
-        self.var_descricao = tk.StringVar()
-        tk.Label(self.f2, text="Descrição:", font=("Consolas", 16), ).grid(row=5, sticky="nsew", pady=(15,15))
-        self.entry_descricao = tk.Entry(self.f2, font=("Consolas", 16), state=tk.DISABLED, textvariable=self.var_descricao)
-        self.entry_descricao.grid(row=5, column=1, sticky="we")
-        self.btn_descricao = tk.Button(self.f2, text="Editar", font=("Consolas", 12), command=self._on_btn_descricao_click)
-        self.btn_descricao.grid(row=5, column=2, sticky="ew")
+        lf_canvas = ttk.Labelframe(self.f2, text="Imagem", bootstyle='primary')
+        lf_canvas.grid(row=0, column=0, sticky="nsew")
         
-        self.f2.rowconfigure(index=0, weight=1)
-        self.f2.columnconfigure(index=1, weight=1)
+        self.canvas = ttk.Label(lf_canvas)
+        self.canvas.pack(fill='both', expand='true', padx=10, pady=10)
 
+        # Data:
+        self.lbl_date = tk.StringVar()
+        tk.Label(self.f2, textvariable=self.lbl_date, font=(LABEL_FONTNAME, 16),).grid(row=2, column=0, sticky="nswe", pady=(10, 0))
+
+        # Tipo:
+        self.var_tipo = tk.StringVar()
+        tk.Label(self.f2, textvariable=self.var_tipo, font=(LABEL_FONTNAME, 16),).grid(row=3, column=0, sticky="nsew", pady=(0, 10))
+
+        # Leitura:
+        lf_leitura = ttk.Labelframe(self.f2, text="Leitura", bootstyle='primary')
+        lf_leitura.grid(row=4, column=0, sticky="nsew")
+        
+        self.var_leitura = tk.StringVar()
+        
+        self.entry_leitura = ttk.Entry(lf_leitura, font=(LABEL_FONTNAME, 16), state='readonly', textvariable=self.var_leitura)
+        self.entry_leitura.grid(row=0, column=0, sticky="we", pady=10, padx=10)
+        
+        self.btn_copiar_leitura = ttk.Button(lf_leitura, text="Copiar", command=self.on_copiar_leitura_click, width=7)
+        self.btn_copiar_leitura.grid(row=0, column=1, sticky="ew", padx=(0,10))
+        
+        lf_leitura.columnconfigure(0, weight=1)
+
+        # Descrição:
+        lf_descricao = ttk.Labelframe(self.f2, text="Descrição", bootstyle='primary')
+        lf_descricao.grid(row=5, column=0, sticky="nsew", pady=(10,0))
+        
+        self.var_descricao = tk.StringVar()
+        
+        self.entry_descricao = ttk.Entry(lf_descricao, font=(LABEL_FONTNAME, 16), state='readonly', textvariable=self.var_descricao)
+        self.entry_descricao.grid(row=0, column=0, sticky="we", pady=10, padx=10)
+        self.entry_descricao.bind("<Return>", self._salvar_descricao)
+        
+        self.btn_descricao = ttk.Button(lf_descricao, text="Editar", command=self._on_btn_descricao_click, width=7)
+        self.btn_descricao.grid(row=0, column=1, sticky="ew", padx=(0,10))
+        
+        lf_descricao.columnconfigure(0, weight=1)
+        
+        # Frame:
+        self.f2.rowconfigure(index=0, weight=1)
+        self.f2.columnconfigure(index=0, weight=1,)
+
+        # -------------------------------------
+        self.root.bind('<Configure>', self._on_configure_callback)
+        
         # -------------------------------------
         self.cur_img         = None
         self.cur_img_resized = None
         self.photoimage      = None
-
+        
         self._hot_read()
         # -------------------------------------
 
+    def _change_theme(self, themename, *args, **kwargs):
+        self.root.style.theme_use(themename)
+        update_users_preferences(themename)
+        
+        self.root.style.configure (
+            "TButton",
+            font = (LABEL_FONTNAME, 12),
+        )
+        
+        self.root.style.configure (
+            'TLabelframe.Label',
+            font = (LABEL_FONTNAME, 10),
+        )
+    
+    def _on_sobre_click(self, *args, **kwargs):
+        SobreToplevel(title="Sobre", resizable=(False, False), alpha=0.99, topmost=True)
+        
+    def _on_ajuda_click(self, *args, **kwargs):
+        AjudaToplevel(title="Ajuda", minsize=(600,600), alpha=0.99, topmost=True)
+    
     def _fill_list(self, *args, **kwargs):
         """Método responsável por atualiza a lista com as leituras e atualiza o listbox.
         """
@@ -122,18 +215,30 @@ class MainWindow:
         for leitura in self.leituras:
             self.listbox.insert(tk.END, str(leitura))
 
+    def _ler_print(self):
+        """Método responsáel por realizar a leitura do print, verificar se é duplicado, e etc.
+        """
+        nova_leitura, img  = realizar_leitura()
+        duplicado, leitura = verifica_se_duplicado(nova_leitura)
+        
+        if duplicado:
+            salvar = messagebox.askyesno(title="Duplicado", message=f"Código de barras já lido.\nDeseja salvar mesmo assim ?")
+            if salvar:
+                index = 0
+                salvar_leitura(nova_leitura, img)
+            else:
+                index = self.leituras.index(leitura)
+                            
+        self._fill_list()
+        self.listbox.selection_clear(0, tk.END)
+        self.listbox.selection_set(index)
+        self.listbox.event_generate("<<ListboxSelect>>")    # Simulando um "item selecionado"
+    
     def _hot_read(self):
         """Método responsável por tentar realizar uma leitura logo na inicialização da aplicação.
         """
         try:
-            leitura, img = realizar_leitura()
-            salvar_leitura(leitura, img)
-            
-            self._fill_list()
-            self.listbox.selection_clear(0, tk.END)
-            self.listbox.selection_set(0)
-            self.listbox.event_generate("<<ListboxSelect>>")    # Simulando um "item selecionado"
-
+            self._ler_print()
         except Exception:
             pass
                 
@@ -143,17 +248,9 @@ class MainWindow:
         """Método responsável por lidar com o evento do Botão "Ler Print" ao ser pressionado.
         """
         try:
-            leitura, img = realizar_leitura()
-            salvar_leitura(leitura, img)
-            
-            self._fill_list()
-            self.listbox.selection_clear(0, tk.END)
-            self.listbox.selection_set(0)
-            self.listbox.event_generate("<<ListboxSelect>>")    # Simulando um "item selecionado"
-
+            self._ler_print()
         except NoImageException:
             messagebox.showwarning("Sem Imagem", "Tire um print antes")
-        
         except LeituraFalhaException as e:
             messagebox.showwarning("Ops", e.message)
                 
@@ -174,7 +271,7 @@ class MainWindow:
             self.update_frame_detail(leitura)
             
             self.btn_descricao.configure(text="Editar")
-            self.entry_descricao.config(state="disabled")
+            self.entry_descricao.config(state="readonly")
 
     def _on_arrow_up_click(self, *args, **kwargs):
         """Método responsável por lidar com o evento do botão "Setinha Para Cima" pressionado no Lisbox
@@ -226,8 +323,8 @@ class MainWindow:
         No caso, envia para a Área de Transferência o que tiver no widget Leitura.
         """
         pyperclip.copy(self.var_leitura.get())
-        self.btn_copiar_leitura.config(text="Copiado")
-        self.root.after(1000, lambda : self.btn_copiar_leitura.config(text="Copiar"))
+        self.btn_copiar_leitura.config(text="Copiado", bootstyle="success")
+        self.root.after(1000, lambda : self.btn_copiar_leitura.config(text="Copiar", bootstyle="default"))
 
     def _on_btn_descricao_click(self, *args, **kwargs):
         """
@@ -240,22 +337,11 @@ class MainWindow:
         
         match (self.btn_descricao.cget("text")):
             case "Editar":
-                self.btn_descricao.configure(text="Salvar")
+                self.btn_descricao.configure(text="Salvar", bootstyle="success")
                 self.entry_descricao.config(state="normal")
                 
             case "Salvar":
-                self.btn_descricao.configure(text="Editar")
-                self.entry_descricao.config(state="disabled")
-                
-                cur_selection = self.listbox.curselection()
-                if cur_selection:
-                    self.cur_index = cur_selection[0]
-                
-                leitura = self.leituras[self.cur_index]
-                
-                update_value(leitura, descricao=self.var_descricao.get())
-                self._fill_list()
-                # TODO: Selecionar algum item da listbox (o anterior, o próximo, o primeiro...)
+                self._salvar_descricao()
     
     def _on_configure_callback(self, event, *args, **kwargs):
         """Callback para qualquer evento de configuração da Janela.
@@ -274,6 +360,20 @@ class MainWindow:
                         pass
                 self.last_width  = event.width
                 self.last_height = event.height
+    
+    def _salvar_descricao(self, *args, **kwargs):
+        self.btn_descricao.configure(text="Editar",  bootstyle="default")
+        self.entry_descricao.config(state="readonly")
+        
+        cur_selection = self.listbox.curselection()
+        if cur_selection:
+            self.cur_index = cur_selection[0]
+        
+        leitura = self.leituras[self.cur_index]
+        
+        update_value(leitura, descricao=self.var_descricao.get())
+        self._fill_list()
+        # TODO: Selecionar algum item da listbox (o anterior, o próximo, o primeiro...)
     
     def mainloop(self, *args, **kwargs):
         """Mainloop do TkInter
@@ -390,8 +490,44 @@ class MainWindow:
         self.update_tipo('')
         self.update_widget_leitura('')
 
+class BaseToplevel(ttk.Toplevel):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        self.iconbitmap("icon.ico")
+        self.grab_set()
+        self.position_center()
+        self.place_window_center()
+
+class SobreToplevel(BaseToplevel):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        f = tk.Frame(self,)
+        f.pack(expand=True, fill='both', pady=10, padx=10)
+        
+        tk.Label(f, text="ClipBarcode", font=(LABEL_FONTNAME, 16))       .pack(expand=False, fill="both",)
+        tk.Label(f, text=f"Versão {CUR_VERSION}")                        .pack(expand=False, fill="both",)
+        tk.Label(f, text="Vinícius Costa")                               .pack(expand=False, fill="both",)
+        tk.Label(f, text="https://github.com/viniciusccosta/ClipBarcode").pack(expand=False, fill="both",)
+        
+class AjudaToplevel(BaseToplevel):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)        
+        html_content = self._get_html_content()
+        
+        self.html_label = HTMLScrolledText(self)
+        self.html_label.pack(expand=True, fill='both')
+        self.html_label.set_html(html_content)
+    
+    def _get_html_content(self):
+        with open('README.md', 'r', encoding='utf8') as file:
+            markdown_content = file.read()
+            
+        return markdown.markdown(markdown_content)
+
 # ======================================================================================================================
-def initial_config():
+def initial_config(*args, **kwargs):
     """Realiza as configurações inicias da aplicação.
 
     - Logging
@@ -417,13 +553,13 @@ def initial_config():
     json_path = os.path.join(HISTORY_PATH, "results.json")
     
     database.create_tables()
-    try:
-        database.from_json_to_sqlite(json_path)
-        os.remove(json_path)    # Excluindo json após transferir as leituras para DB
-    except FileNotFoundError:
-        pass
-    except Exception as e:
-        print(e)
+    if os.path.exists(json_path):
+        try:
+            database.from_json_to_sqlite(json_path)
+            os.remove(json_path)    # Excluindo json após transferir as leituras para DB
+        except Exception as e:
+            print(e)
+            logging.error(e)
     
     # ------------------------------------------
     # Diretório de Imagens:
@@ -453,13 +589,13 @@ def initial_config():
         else:
             logging.error("Encerrando programa pois o usuário não informou um path!")
             exit(1)
-
-def verificar_versao():
-    response = requests.get("https://api.github.com/repos/viniciusccosta/clipbarcode/releases", timeout=2)
     
-    match response.status_code:
-        case 200:
-            try:
+def verificar_versao(*args, **kwargs):
+    try:
+        response = requests.get("https://api.github.com/repos/viniciusccosta/clipbarcode/releases", timeout=(0.0, 2.0))
+    
+        match response.status_code:
+            case 200:
                 json_data = response.json()
                 
                 if len(json_data) > 0:
@@ -467,9 +603,15 @@ def verificar_versao():
                     latest_version  = version.parse(release["tag_name"])
                     assets          = release["assets"]
                     
+                    logging.info(f"Versão mais recente: {latest_version}")
+                    
                     if latest_version > CUR_VERSION and len(assets) > 0:
+                        logging.warning("Versão instalada não é a mais recente")
+                        
                         atualizar = messagebox.askyesno("Atualização", "Uma nova versão está disponível, deseja baixá-la?")
                         if atualizar:
+                            logging.info("Usuário decidiu instalar a nova versão")
+                            
                             for asset in assets:
                                 url      = asset['browser_download_url']
                                 filename = asset['name']
@@ -479,12 +621,12 @@ def verificar_versao():
                                     subprocess.run([filename])
                                     messagebox.showinfo("Fim da Atualização", "Abra o programa novamente!")
                                     exit(0)
-            except Exception:
+            case _:
                 pass
-        case _:
-            pass
-
-def salvar_leitura(leitura: database.Leitura, img:PngImageFile):
+    except Exception:
+        pass
+        
+def salvar_leitura(leitura: database.Leitura, img:PngImageFile, *args, **kwargs):
     """Salva a leitura no banco de dados juntamente com o print.
 
     Args:
@@ -499,7 +641,7 @@ def salvar_leitura(leitura: database.Leitura, img:PngImageFile):
     # Incluíndo a leitura no arquivo de resultados:
     database.create_leitura(leitura)
 
-def update_value(leitura: database.Leitura, **kwargs):
+def update_value(leitura: database.Leitura, *args, **kwargs):
     """Faz uma requisição ao banco de dados para atualizar determinada leitura.
 
     Args:
@@ -508,7 +650,7 @@ def update_value(leitura: database.Leitura, **kwargs):
     """
     database.update_leitura(leitura.id, **kwargs)
 
-def delete_leitura(leitura: database.Leitura):
+def delete_leitura(leitura: database.Leitura, *args, **kwargs):
     """Faz a exclusão do print do diretório de imagens e faz uma requisição ao banco de dados para a exclusão da leitura.
 
     Args:
@@ -517,7 +659,7 @@ def delete_leitura(leitura: database.Leitura):
     os.remove(os.path.join(HISTORY_PATH, f"{leitura.mili}.png"))
     database.delete_leitura(leitura)
 
-def realizar_leitura():
+def realizar_leitura(*args, **kwargs):
     """Faz a leitura da imagem que estiver na Área de Transferência.
 
     - Procura inicialmente por um Códigos de Barra
@@ -621,6 +763,24 @@ def realizar_leitura():
 
         return(leitura, img)
 
+def verifica_se_duplicado(leitura: database.Leitura, *args, **kwargs):
+    """Verifica se a linha digitável já foi inserida no banco de dados"""
+    leitura = database.get_leitura_por_cod_lido(leitura.cod_lido)
+    
+    if leitura:
+        return True, leitura
+    
+    return False, None
+
+def get_users_preferences(*args, **kwargs):
+    """Obter o nome da temática escolhida pelo usuário."""
+    
+    preferencia = database.get_preferencia()    
+    return preferencia
+
+def update_users_preferences(themename, *args, **kwargs):
+    database.update_preferencia(themename=themename)
+
 # ======================================================================================================================
 if __name__ == '__main__':
     # -------------------------------------
@@ -630,5 +790,7 @@ if __name__ == '__main__':
     verificar_versao()
 
     # -------------------------------------
-    w = MainWindow()
+    preferences = get_users_preferences()
+    
+    w = MainWindow(themename=preferences.themename)
     w.mainloop()
