@@ -20,7 +20,10 @@ a = Analysis(
     noarchive=False,
 )
 
-a.datas += [('icon.ico', 'icon.ico', 'DATA'),]
+a.datas += [
+    ('icon.ico', 'icon.ico', 'DATA'),
+    ('README.md', 'README.md', 'DATA'),
+]
 
 pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
 
