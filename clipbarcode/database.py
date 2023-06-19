@@ -113,6 +113,8 @@ def get_leitura_por_cod_lido(cod_lido):
     try:
         leitura = Leitura.get(Leitura.cod_lido == cod_lido)
         return leitura
+    except DoesNotExist:
+        pass
     except Exception as e:
         print(e)
 

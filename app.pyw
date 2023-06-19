@@ -100,13 +100,14 @@ class MainWindow:
 
         # -------------------------------------
         # Frames:
-        ttk.Button(self.root, text="Ler Print", command=self._on_ler_print_click).grid(pady=10)
+        self.btn_ler_print = ttk.Button(self.root, text="Ler Print", command=self._on_ler_print_click)
+        self.btn_ler_print.grid(row=0, column=0, padx=(10, 5), pady=(20,10), sticky="nsew")
 
         self.f1 = ttk.Frame(self.root, )
-        self.f1.grid(row=1, column=0, padx=(10, 5), pady=(0, 10), sticky="nswe")
+        self.f1.grid(row=1, column=0, padx=(10, 5), pady=(10, 10), sticky="nswe")
         self.root.columnconfigure(index=0, weight=0, minsize=410)
 
-        self.f2 = ttk.Frame(self.root)
+        self.f2 = ttk.Frame(self.root, )
         self.f2.grid(row=1, column=1, padx=(5, 10), pady=(0, 10), sticky="nswe")
         self.root.columnconfigure(index=1, weight=1)
         
@@ -128,51 +129,51 @@ class MainWindow:
         # -------------------------------------
         # Detail Frame:
         lf_canvas = ttk.Labelframe(self.f2, text="Imagem", bootstyle='primary')
-        lf_canvas.grid(row=0, column=0, sticky="nsew")
+        lf_canvas.grid(row=0, column=0, sticky="nsew", pady=(0, 5))
         
         self.canvas = ttk.Label(lf_canvas)
         self.canvas.pack(fill='both', expand='true', padx=10, pady=10)
 
         # Data:
         self.lbl_date = tk.StringVar()
-        tk.Label(self.f2, textvariable=self.lbl_date, font=(LABEL_FONTNAME, 16),).grid(row=2, column=0, sticky="nswe", pady=(10, 0))
+        tk.Label(self.f2, textvariable=self.lbl_date, font=(LABEL_FONTNAME, 16),).grid(row=1, column=0, sticky="nswe", pady=(5, 5))
 
         # Tipo:
         self.var_tipo = tk.StringVar()
-        tk.Label(self.f2, textvariable=self.var_tipo, font=(LABEL_FONTNAME, 16),).grid(row=3, column=0, sticky="nsew", pady=(0, 10))
+        tk.Label(self.f2, textvariable=self.var_tipo, font=(LABEL_FONTNAME, 16),).grid(row=2, column=0, sticky="nsew", pady=(5, 5))
 
         # Leitura:
         lf_leitura = ttk.Labelframe(self.f2, text="Leitura", bootstyle='primary')
-        lf_leitura.grid(row=4, column=0, sticky="nsew")
+        lf_leitura.grid(row=3, column=0, sticky="nsew", pady=(5, 5))
         
         self.var_leitura = tk.StringVar()
         
         self.entry_leitura = ttk.Entry(lf_leitura, font=(LABEL_FONTNAME, 16), state='readonly', textvariable=self.var_leitura)
-        self.entry_leitura.grid(row=0, column=0, sticky="we", pady=10, padx=10)
+        self.entry_leitura.grid(row=0, column=0, sticky="we", pady=10, padx=(10, 5))
         
         self.btn_copiar_leitura = ttk.Button(lf_leitura, text="Copiar", command=self.on_copiar_leitura_click, width=7)
-        self.btn_copiar_leitura.grid(row=0, column=1, sticky="ew", padx=(0,10))
+        self.btn_copiar_leitura.grid(row=0, column=1, sticky="ew", pady=10, padx=(5,10))
         
         lf_leitura.columnconfigure(0, weight=1)
 
         # Descrição:
         lf_descricao = ttk.Labelframe(self.f2, text="Descrição", bootstyle='primary')
-        lf_descricao.grid(row=5, column=0, sticky="nsew", pady=(10,0))
+        lf_descricao.grid(row=4, column=0, sticky="nsew", pady=(5,0))
         
         self.var_descricao = tk.StringVar()
         
         self.entry_descricao = ttk.Entry(lf_descricao, font=(LABEL_FONTNAME, 16), state='readonly', textvariable=self.var_descricao)
-        self.entry_descricao.grid(row=0, column=0, sticky="we", pady=10, padx=10)
+        self.entry_descricao.grid(row=0, column=0, sticky="we", pady=10, padx=(10, 5))
         self.entry_descricao.bind("<Return>", self._salvar_descricao)
         
         self.btn_descricao = ttk.Button(lf_descricao, text="Editar", command=self._on_btn_descricao_click, width=7)
-        self.btn_descricao.grid(row=0, column=1, sticky="ew", padx=(0,10))
+        self.btn_descricao.grid(row=0, column=1, sticky="ew", pady=10, padx=(5,10))
         
         lf_descricao.columnconfigure(0, weight=1)
         
         # Frame:
         self.f2.rowconfigure(index=0, weight=1)
-        self.f2.columnconfigure(index=0, weight=1,)
+        self.f2.columnconfigure(index=0, weight=1)
 
         # -------------------------------------
         self.root.bind('<Configure>', self._on_configure_callback)
@@ -221,14 +222,16 @@ class MainWindow:
         nova_leitura, img  = realizar_leitura()
         duplicado, leitura = verifica_se_duplicado(nova_leitura)
         
+        index = 0
         if duplicado:
             salvar = messagebox.askyesno(title="Duplicado", message=f"Código de barras já lido.\nDeseja salvar mesmo assim ?")
             if salvar:
-                index = 0
                 salvar_leitura(nova_leitura, img)
             else:
                 index = self.leituras.index(leitura)
-                            
+        else:
+            salvar_leitura(nova_leitura, img)
+
         self._fill_list()
         self.listbox.selection_clear(0, tk.END)
         self.listbox.selection_set(index)
