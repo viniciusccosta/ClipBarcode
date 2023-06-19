@@ -1,8 +1,6 @@
 # =====================================================================
-import json
 from peewee import *
 from dateutil import parser
-import os
 
 # =====================================================================
 db = SqliteDatabase('database.db')
@@ -34,13 +32,27 @@ class Leitura(Model):
         campo = self.descricao if self.descricao else self.cod_lido
         
         return f'{self.id}): {campo[0:max_len]}{"..." if len(campo) > max_len else ""}'
+    
+class Preferencia(Model):
+    themename = TextField(default="darkly")
+    
+    class Meta:
+        database = db
 
 # =====================================================================
 def create_tables():
     db.connect()
-    db.create_tables([Leitura,])
+    db.create_tables(
+        [
+            Leitura, 
+            Preferencia,
+        ],
+        safe=True,
+    )
+    Preferencia.get_or_create(id=0)
     db.close()
     
+# =====================================================================
 def from_json_to_sqlite(json_content):
     leituras = [ 
         Leitura(
@@ -97,4 +109,33 @@ def get_leituras(reverse=True):
     except Exception as e:
         print(e)
 
+def get_leitura_por_cod_lido(cod_lido):
+    try:
+        leitura = Leitura.get(Leitura.cod_lido == cod_lido)
+        return leitura
+    except Exception as e:
+        print(e)
+
 # =====================================================================
+def update_preferencia(**kwargs):
+    try:
+        with db.atomic():
+            preferencia = Preferencia.get(Preferencia.id == 0)
+            
+            for field, value in kwargs.items():
+                setattr(preferencia, field, value)
+            
+            preferencia.save()
+                                
+    except IntegrityError as e:
+        print(e)
+
+def get_preferencia():
+    try:
+        preferencia = Preferencia.get(Preferencia.id == 0)
+        return preferencia
+    except Exception as e:
+        print(e)
+
+# =====================================================================
+
