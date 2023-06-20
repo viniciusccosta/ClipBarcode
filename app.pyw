@@ -595,7 +595,7 @@ def initial_config(*args, **kwargs):
     
 def verificar_versao(*args, **kwargs):
     try:
-        response = requests.get("https://api.github.com/repos/viniciusccosta/clipbarcode/releases", timeout=(0.0, 2.0))
+        response = requests.get("https://api.github.com/repos/viniciusccosta/clipbarcode/releases", timeout=(1.0, 2.0))
     
         match response.status_code:
             case 200:

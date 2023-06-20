@@ -2,6 +2,7 @@
 import re
 
 from abc import ABC, abstractmethod
+from decimal import Decimal
 
 from .datetime_tools import calculate_date
 from .digito_verificador import mod10, mod11
@@ -317,7 +318,7 @@ class Cobranca(Boleto):
             self.dv3            = linha_digitavel[31:31 +  1]
             self.dv_geral       = linha_digitavel[32:32 +  1]
             self.fator_venc     = linha_digitavel[33:33 +  4]
-            self.valor          = int(linha_digitavel[37:37 + 10]) / 100
+            self.valor          = float( Decimal(linha_digitavel[37:37 + 10]) / 100 )
 
             self.venc           = calculate_date(DATA_BASE, self.fator_venc)
 
@@ -363,7 +364,7 @@ class Cobranca(Boleto):
 
             self.dv_geral       = self.dv_cod_barras
 
-            self.linha_digitavel = f'{self.id_banco}{self.cod_moeda}{self.campo_livre_1}{self.dv1}{self.campo_livre_2}{self.dv2}{self.campo_livre_3}{self.dv3}{self.dv_geral}{self.fator_venc}{int(self.valor*100):010}'
+            self.linha_digitavel = f'{self.id_banco}{self.cod_moeda}{self.campo_livre_1}{self.dv1}{self.campo_livre_2}{self.dv2}{self.campo_livre_3}{self.dv3}{self.dv_geral}{self.fator_venc}{int(round(self.valor * 100)):010}'
 
         cod_barras = re.sub('\D', '', cod_barras)
 
@@ -374,7 +375,7 @@ class Cobranca(Boleto):
             self.cod_moeda              = cod_barras[ 3: 3 +  1]
             self.dv_cod_barras          = cod_barras[ 4: 4 +  1]
             self.fator_venc             = cod_barras[ 5: 5 +  4]
-            self.valor                  = int(cod_barras[ 9: 9 + 10]) / 100
+            self.valor                  = float( Decimal(cod_barras[ 9: 9 + 10]) / 100 )
             self.campo_livre_cod_barras = cod_barras[19:19 + 25]
 
             self.venc                   = calculate_date(DATA_BASE, self.fator_venc)

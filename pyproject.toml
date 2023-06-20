@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "clipbarcode"
-version = "v2.0.0"
+version = "v2.0.1"
 description = ""
 authors = ["Vinícius Costa <viniciusccosta95@gmail.com>"]
 license = "MIT"
