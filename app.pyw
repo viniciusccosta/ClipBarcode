@@ -9,8 +9,8 @@ import urllib.request
 import subprocess
 import markdown
 
-import tkinter as tk
-import ttkbootstrap as ttk
+import tkinter          as tk
+import ttkbootstrap     as ttk
 
 from tkinter            import messagebox, filedialog
 from PIL                import ImageGrab, ImageTk, Image, ImageDraw
@@ -22,11 +22,12 @@ from dotenv             import load_dotenv, set_key
 from packaging          import version
 from tkhtmlview         import HTMLScrolledText
 
+# ---------------------------------------------
+import clipbarcode.database         as database
+
 from clipbarcode.datetime_tools     import timens_to_datetime
 from clipbarcode.boleto             import new_boleto, BoletoInvalidoException
 from clipbarcode.version            import __version__
-
-import clipbarcode.database as database
 
 # ======================================================================================================================
 HISTORY_PATH   = "./history"
