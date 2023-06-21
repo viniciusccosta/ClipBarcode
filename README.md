@@ -65,13 +65,13 @@ Aqui estão algumas informações adicionais sobre o **ClipBarcode**:
 ![GIF](https://i.imgflip.com/7q11jo.gif)
 
 O **ClipBarcode** tem suporte aos seguintes temas: 
-- ![bg](https://img.shields.io/badge/bg-%23fcfcfd) ![bg](https://img.shields.io/badge/fg-%23277ee0) Cosmo
-- ![bg](https://img.shields.io/badge/bg-%23222223) ![bg](https://img.shields.io/badge/fg-%2336597e) Darkly
-- ![bg](https://img.shields.io/badge/bg-%23fcfcfd) ![bg](https://img.shields.io/badge/fg-%23e86763) Journal
-- ![bg](https://img.shields.io/badge/bg-%23fcfcfd) ![bg](https://img.shields.io/badge/fg-%23315c86) Sandstorm
-- ![bg](https://img.shields.io/badge/bg-%232a3d50) ![bg](https://img.shields.io/badge/fg-%234b99e5) Superhero
-- ![bg](https://img.shields.io/badge/bg-%23190831) ![bg](https://img.shields.io/badge/fg-%236d3fbe) Vapor
-- ![bg](https://img.shields.io/badge/bg-%23fcfcfd) ![bg](https://img.shields.io/badge/fg-%23008ab8) Yeti
+- ![bg](https://img.shields.io/badge/bg-fg-0?style=plastic&labelColor=fcfcfd&color=277ee0) Cosmo
+- ![bg](https://img.shields.io/badge/bg-fg-0?style=plastic&labelColor=222223&color=36597e) Darkly
+- ![bg](https://img.shields.io/badge/bg-fg-0?style=plastic&labelColor=fcfcfd&color=e86763) Journal
+- ![bg](https://img.shields.io/badge/bg-fg-0?style=plastic&labelColor=fcfcfd&color=315c86) Sandstorm
+- ![bg](https://img.shields.io/badge/bg-fg-0?style=plastic&labelColor=2a3d50&color=4b99e5) Superhero
+- ![bg](https://img.shields.io/badge/bg-fg-0?style=plastic&labelColor=190831&color=6d3fbe) Vapor
+- ![bg](https://img.shields.io/badge/bg-fg-0?style=plastic&labelColor=fcfcfd&color=008ab8) Yeti
 
 # Troubleshooting
 
