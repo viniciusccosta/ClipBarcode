@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "clipbarcode"
-version = "v2.0.1"
-description = ""
+version = "v2.0.2"
+description = "Aplicação Windows que facilita a leitura de códigos de barras e obtenção da linha digitável."
 authors = ["Vinícius Costa <viniciusccosta95@gmail.com>"]
 license = "MIT"
 readme = "README.md"
