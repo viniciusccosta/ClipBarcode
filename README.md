@@ -87,12 +87,12 @@ Se você encontrar algum problema ao utilizar o **ClipBarcode**, aqui estão alg
 Para gerar uma nova release é necessário ter o instalador do tesseract e do MVS na pasta "compiler"
 
 - Tesseract 5.2.0 (12/07/2022):
-    1. [Github](https://github.com/UB-Mannheim/tesseract/wiki)
+    1. [GitHub](https://github.com/UB-Mannheim/tesseract/wiki)
     2. [Site para Download](https://digi.bib.uni-mannheim.de/tesseract/)
     3. [Link para Download x64](https://digi.bib.uni-mannheim.de/tesseract/tesseract-ocr-w64-setup-v5.2.0.20220712.exe)
 
 - Microsoft Visual C++ 12.0.40664:
-    1. [Github](https://github.com/MicrosoftDocs/cpp-docs/blob/main/docs/windows/latest-supported-vc-redist.md)
+    1. [GitHub](https://github.com/MicrosoftDocs/cpp-docs/blob/main/docs/windows/latest-supported-vc-redist.md)
     2. [Site para Download](https://support.microsoft.com/pt-br/topic/update-for-visual-c-2013-redistributable-package-d8ccd6a5-4e26-c290-517b-8da6cfdf4f10)
     3. [Link para Download x64 (EN-US)](https://aka.ms/highdpimfc2013x64enu)
     4. [Link para Download x64 (PT-BR)](https://aka.ms/highdpimfc2013x64ptb)
