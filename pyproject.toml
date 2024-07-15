@@ -5,6 +5,7 @@ description = "Aplicação Windows que facilita a leitura de códigos de barras 
 authors = ["Vinícius Costa <viniciusccosta95@gmail.com>"]
 license = "MIT"
 readme = "README.md"
+package-mode = false
 
 [tool.poetry.dependencies]
 python = "~3.11"
