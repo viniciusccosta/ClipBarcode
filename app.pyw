@@ -21,10 +21,10 @@ from PIL.PngImagePlugin import PngImageFile
 from pyzbar.pyzbar import decode
 from tkhtmlview import HTMLScrolledText
 
-# ---------------------------------------------
 import clipbarcode.database as database
 from clipbarcode.boleto import BoletoInvalidoException, new_boleto
 from clipbarcode.datetime_tools import timens_to_datetime
+from clipbarcode.utils import resource_path
 from clipbarcode.version import __version__
 
 # ======================================================================================================================
@@ -56,7 +56,7 @@ class MainWindow:
         self.root = ttk.Window(alpha=0.99, iconphoto=None)
         self.root.title(f"Clip Barcode {CUR_VERSION}")
         self.root.geometry("1280x720")
-        self.root.iconbitmap("icon.ico")
+        self.root.iconbitmap(resource_path("assets/icon.png"))
         self.root.place_window_center()
         self.root.position_center()
 
