@@ -1,14 +1,32 @@
 # -*- mode: python ; coding: utf-8 -*-
+import toml
 
+# Tell the linter these are defined by PyInstaller
+Analysis: object
+PYZ: object
+EXE: object
+BUNDLE: object
+COLLECT: object
 
 block_cipher = None
 
+# Read version from pyproject.toml
+config = toml.load("pyproject.toml")
+version = config["tool"]["poetry"]["version"]
 
 a = Analysis(
-    ['app.pyw'],
+    ["app.pyw"],
     pathex=[],
-    binaries=[(".venv\Lib\site-packages\pyzbar\libiconv.dll", "."), (".venv\Lib\site-packages\pyzbar\libzbar-64.dll", ".")],
-    datas=[],
+    binaries=[
+        (".venv\Lib\site-packages\pyzbar\libiconv.dll", "."),
+        (".venv\Lib\site-packages\pyzbar\libzbar-64.dll", "."),
+    ],
+    datas=[
+        ("./assets/icon.ico", "./assets/"),
+        ("./assets/icon.png", "./assets/"),
+        ("./assets/icon.icns", "./assets/"),
+        ("README.md", "README.md", "DATA"),
+    ],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
@@ -20,11 +38,6 @@ a = Analysis(
     noarchive=False,
 )
 
-a.datas += [
-    ('icon.ico', 'icon.ico', 'DATA'),
-    ('README.md', 'README.md', 'DATA'),
-]
-
 pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
 
 exe = EXE(
@@ -32,7 +45,7 @@ exe = EXE(
     a.scripts,
     [],
     exclude_binaries=True,
-    name='ClipBarcode',
+    name="ClipBarcode",
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
@@ -44,9 +57,10 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon='icon.ico'
+    icon="./assets/icon.ico",
 )
-coll = COLLECT(
+
+coll = BUNDLE(
     exe,
     a.binaries,
     a.zipfiles,
@@ -54,5 +68,16 @@ coll = COLLECT(
     strip=False,
     upx=True,
     upx_exclude=[],
-    name='main',
+    name="ClipBarcode.app",
+    icon="./assets/icon.icns",
+    bundle_identifier="com.clipbarcode.app",
+    version=version,
+    info_plist={
+        "CFBundleDisplayName": "ClipBarcode",  # A user-friendly name for the Finder/Dock
+        "CFBundleName": "ClipBarcode",  # Short name for the app
+        "CFBundleVersion": version,  # Full version number
+        "CFBundleShortVersionString": version,  # User-visible version
+        "LSApplicationCategoryType": "public.app-category.productivity",  # App category
+        "NSHighResolutionCapable": True,  # Support for Retina displays
+    },
 )
