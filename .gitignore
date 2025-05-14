@@ -187,3 +187,4 @@ pyrightconfig.json
 .vscode/*
 
 .DS_Store
+*.dmg
