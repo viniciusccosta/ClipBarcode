@@ -12,6 +12,7 @@ import markdown
 import pyperclip
 import pytesseract
 import requests
+import toml
 import ttkbootstrap as ttk
 from dotenv import load_dotenv, set_key
 from packaging import version
@@ -25,11 +26,10 @@ import clipbarcode.database as database
 from clipbarcode.boleto import BoletoInvalidoException, new_boleto
 from clipbarcode.datetime_tools import timens_to_datetime
 from clipbarcode.utils import resource_path
-from clipbarcode.version import __version__
 
 # ======================================================================================================================
 HISTORY_PATH = "./history"
-CUR_VERSION = version.parse(__version__)
+CUR_VERSION = version.parse(toml.load("pyproject.toml")["tool"]["poetry"]["version"])
 LABEL_FONTNAME = "Arial"
 TESSERACT_DEFAULT_PATHS = {
     "nt": r"C:/Program Files/Tesseract-OCR/tesseract.exe",
