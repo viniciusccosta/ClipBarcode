@@ -1,56 +1,73 @@
-import os
-import sys
-from pathlib import Path
+try:
+    import os
 
-os.environ["LC_ALL"] = "en_US.UTF-8"
-
-import locale
+    os.environ["LC_ALL"] = "en_US.UTF-8"
+except Exception:
+    print("Failed to set environment variable LC_ALL. ")
 
 try:
+    import locale
+
     locale.setlocale(locale.LC_ALL, "")
 except locale.Error:
     print("Failed to set locale to environment's LC_ALL")
+except Exception as e:
+    print(f"Failed to set locale: {e}")
+
+try:
+    import sys
+
+    if getattr(sys, "frozen", False):
+        tessdata_path = os.path.join(sys._MEIPASS, "tessdata")
+        os.environ["TESSDATA_PREFIX"] = tessdata_path
+except Exception as e:
+    print(f"Failed to set TESSDATA_PREFIX: {e}")
 
 # ======================================================================================================================
-import datetime
-import logging
-import shutil
-import subprocess
-import tkinter as tk
-import urllib.request
-from time import time_ns
-from tkinter import filedialog, messagebox
+try:
+    import datetime
+    import logging
+    import shutil
+    import subprocess
+    import tkinter as tk
+    import urllib.request
+    from time import time_ns
+    from tkinter import filedialog, messagebox
 
-import markdown
-import pyperclip
-import pytesseract
-import requests
-import toml
-import ttkbootstrap as ttk
-from dotenv import load_dotenv, set_key
-from packaging import version
-from PIL import Image, ImageDraw, ImageGrab, ImageTk
-from PIL.Image import Resampling
-from PIL.PngImagePlugin import PngImageFile
-from pyzbar.pyzbar import decode
-from tkhtmlview import HTMLScrolledText
+    import markdown
+    import pyperclip
+    import pytesseract
+    import requests
+    import toml
+    import ttkbootstrap as ttk
+    from dotenv import load_dotenv, set_key
+    from packaging import version
+    from PIL import Image, ImageDraw, ImageGrab, ImageTk
+    from PIL.Image import Resampling
+    from PIL.PngImagePlugin import PngImageFile
+    from pyzbar.pyzbar import decode
+    from tkhtmlview import HTMLScrolledText
 
-import clipbarcode.database as database
-from clipbarcode.boleto import BoletoInvalidoException, new_boleto
-from clipbarcode.datetime_tools import timens_to_datetime
-from clipbarcode.utils import resource_path
+    import clipbarcode.database as database
+    from clipbarcode.boleto import BoletoInvalidoException, new_boleto
+    from clipbarcode.datetime_tools import timens_to_datetime
+    from clipbarcode.utils import resource_path
+except Exception as e:
+    print(f"ImportError: Some modules are not available: {e}")
 
 # ======================================================================================================================
-HISTORY_PATH = resource_path("./history")
-CUR_VERSION = version.parse(
-    toml.load(resource_path("pyproject.toml"))["tool"]["poetry"]["version"]
-)
-LABEL_FONTNAME = "Arial"
-TESSERACT_DEFAULT_PATHS = {
-    "nt": r"C:/Program Files/Tesseract-OCR/tesseract.exe",
-    "posix": r"/usr/bin/tesseract",
-    "mac": r"/opt/homebrew/bin/tesseract",
-}
+try:
+    HISTORY_PATH = resource_path("./history")
+    CUR_VERSION = version.parse(
+        toml.load(resource_path("pyproject.toml"))["tool"]["poetry"]["version"]
+    )
+    LABEL_FONTNAME = "Arial"
+    TESSERACT_DEFAULT_PATHS = {
+        "posix": "/usr/bin/tesseract",
+        "nt": "C:\\Program Files\\Tesseract-OCR\\tesseract.exe",
+    }
+except Exception as e:
+    print("Error: Failed to set up constants. Please check your environment.")
 
 
 # ======================================================================================================================
@@ -577,7 +594,7 @@ class BaseToplevel(ttk.Toplevel):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.iconbitmap("icon.ico")
+        self.iconbitmap(resource_path("icon.ico"))
         self.grab_set()
         self.position_center()
         self.place_window_center()
@@ -620,7 +637,7 @@ class AjudaToplevel(BaseToplevel):
         self.html_label.set_html(html_content)
 
     def _get_html_content(self):
-        with open("README.md", "r", encoding="utf8") as file:
+        with open(resource_path("README.md"), "r", encoding="utf8") as file:
             markdown_content = file.read()
 
         return markdown.markdown(markdown_content)
@@ -629,6 +646,12 @@ class AjudaToplevel(BaseToplevel):
 # ======================================================================================================================
 def find_tesseract():
     """Search for the Tesseract executable in multiple locations."""
+    # Check for bundled Tesseract when running as a PyInstaller app
+    if getattr(sys, "frozen", False):
+        bundle_tesseract = os.path.join(os.path.dirname(sys.executable), "tesseract")
+        if os.path.exists(bundle_tesseract):
+            return bundle_tesseract
+
     # Check environment variable
     tesseract_cmd = os.environ.get("TESSERACT_CMD")
     if tesseract_cmd and os.path.exists(tesseract_cmd):
@@ -640,7 +663,7 @@ def find_tesseract():
         return default_path
 
     # Check common locations for macOS
-    if os.name == "mac":
+    if os.name == "posix":  # Use posix for macOS
         common_locations = [
             "/opt/homebrew/bin/tesseract",
             "/usr/local/bin/tesseract",
@@ -673,7 +696,7 @@ def initial_config(*args, **kwargs):
     # ------------------------------------------
     # Logging:
     logging.basicConfig(
-        stream=open(f".log", "a", encoding="utf-8"),
+        stream=open(resource_path(f".log"), "a", encoding="utf-8"),
         level=logging.INFO,
         datefmt="%Y-%m-%d %H:%M:%S",
         format="%(asctime)s %(levelname)-8s %(message)s",
@@ -699,7 +722,6 @@ def initial_config(*args, **kwargs):
         logging.info("Pasta HISTORY criada com sucesso")
 
     # ------------------------------------------
-    # Tesseract:
     # Tesseract:
     tesseract_path = find_tesseract()
 
@@ -938,14 +960,13 @@ def update_users_preferences(themename, *args, **kwargs):
 
 # ======================================================================================================================
 if __name__ == "__main__":
-    # -------------------------------------
-    initial_config()
+    try:
+        initial_config()
+        verificar_versao()
+        preferences = get_users_preferences()
 
-    # -------------------------------------
-    verificar_versao()
-
-    # -------------------------------------
-    preferences = get_users_preferences()
-
-    w = MainWindow(themename=preferences.themename)
-    w.mainloop()
+        app = MainWindow(themename=preferences.themename)
+        app.mainloop()
+    except Exception as e:
+        logging.error(e)
+        messagebox.showerror("Erro", f"Erro: {e}")
