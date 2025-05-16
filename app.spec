@@ -20,7 +20,7 @@ a = Analysis(
     binaries=[
         # (".venv\Lib\site-packages\pyzbar\libiconv.dll", "."),
         # (".venv\Lib\site-packages\pyzbar\libzbar-64.dll", "."),
-        ('/opt/homebrew/bin/tesseract', 'tesseract')
+        ("/opt/homebrew/bin/tesseract", "tesseract")
     ],
     datas=[
         ("./assets/icon.ico", "./assets/"),
@@ -28,7 +28,7 @@ a = Analysis(
         ("./assets/icon.icns", "./assets/"),
         ("README.md", "./"),
         ("pyproject.toml", "./"),
-        ('/opt/homebrew/share/tessdata', 'tessdata'),
+        ("/opt/homebrew/share/tessdata", "tessdata"),
     ],
     hiddenimports=[],
     hookspath=[],
@@ -82,7 +82,7 @@ coll = BUNDLE(
         "CFBundleShortVersionString": version,  # User-visible version
         "LSApplicationCategoryType": "public.app-category.productivity",  # App category
         "NSHighResolutionCapable": True,  # Support for Retina displays
-        'NSAppleScriptEnabled': True,
-        'NSClipboardUsageDescription': 'This app needs clipboard access to read barcodes.'
+        "NSAppleScriptEnabled": True,
+        "NSClipboardUsageDescription": "This app needs clipboard access to read barcodes.",
     },
 )
