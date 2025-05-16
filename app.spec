@@ -18,14 +18,15 @@ a = Analysis(
     ["app.pyw"],
     pathex=[],
     binaries=[
-        (".venv\Lib\site-packages\pyzbar\libiconv.dll", "."),
-        (".venv\Lib\site-packages\pyzbar\libzbar-64.dll", "."),
+        # (".venv\Lib\site-packages\pyzbar\libiconv.dll", "."),
+        # (".venv\Lib\site-packages\pyzbar\libzbar-64.dll", ".")
     ],
     datas=[
         ("./assets/icon.ico", "./assets/"),
         ("./assets/icon.png", "./assets/"),
         ("./assets/icon.icns", "./assets/"),
-        ("README.md", "README.md", "DATA"),
+        ("README.md", "./"),
+        ("pyproject.toml", "./"),
     ],
     hiddenimports=[],
     hookspath=[],
@@ -50,7 +51,7 @@ exe = EXE(
     bootloader_ignore_signals=False,
     strip=False,
     upx=True,
-    console=False,
+    console=True,
     windowed=True,
     disable_windowed_traceback=False,
     argv_emulation=False,
