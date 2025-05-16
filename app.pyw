@@ -1,7 +1,20 @@
+import os
+import sys
+from pathlib import Path
+
+os.environ["LC_ALL"] = "en_US.UTF-8"
+
+import locale
+
+try:
+    locale.setlocale(locale.LC_ALL, "")
+except locale.Error:
+    print("Failed to set locale to environment's LC_ALL")
+
 # ======================================================================================================================
 import datetime
 import logging
-import os
+import shutil
 import subprocess
 import tkinter as tk
 import urllib.request
@@ -28,13 +41,15 @@ from clipbarcode.datetime_tools import timens_to_datetime
 from clipbarcode.utils import resource_path
 
 # ======================================================================================================================
-HISTORY_PATH = "./history"
-CUR_VERSION = version.parse(toml.load("pyproject.toml")["tool"]["poetry"]["version"])
+HISTORY_PATH = resource_path("./history")
+CUR_VERSION = version.parse(
+    toml.load(resource_path("pyproject.toml"))["tool"]["poetry"]["version"]
+)
 LABEL_FONTNAME = "Arial"
 TESSERACT_DEFAULT_PATHS = {
     "nt": r"C:/Program Files/Tesseract-OCR/tesseract.exe",
     "posix": r"/usr/bin/tesseract",
-    "mac": r"/opt/homebrew/Cellar/tesseract/5.5.0_1/bin/tesseract",
+    "mac": r"/opt/homebrew/bin/tesseract",
 }
 
 
@@ -612,6 +627,36 @@ class AjudaToplevel(BaseToplevel):
 
 
 # ======================================================================================================================
+def find_tesseract():
+    """Search for the Tesseract executable in multiple locations."""
+    # Check environment variable
+    tesseract_cmd = os.environ.get("TESSERACT_CMD")
+    if tesseract_cmd and os.path.exists(tesseract_cmd):
+        return tesseract_cmd
+
+    # Check default path
+    default_path = TESSERACT_DEFAULT_PATHS.get(os.name)
+    if default_path and os.path.exists(default_path):
+        return default_path
+
+    # Check common locations for macOS
+    if os.name == "mac":
+        common_locations = [
+            "/opt/homebrew/bin/tesseract",
+            "/usr/local/bin/tesseract",
+        ]
+        for location in common_locations:
+            if os.path.exists(location):
+                return location
+
+    # Try searching in the system's PATH
+    tesseract_path = shutil.which("tesseract")
+    if tesseract_path:
+        return tesseract_path
+
+    return None
+
+
 def initial_config(*args, **kwargs):
     """Realiza as configurações inicias da aplicação.
 
@@ -655,34 +700,21 @@ def initial_config(*args, **kwargs):
 
     # ------------------------------------------
     # Tesseract:
-    while True:
+    # Tesseract:
+    tesseract_path = find_tesseract()
+
+    if tesseract_path:
+        pytesseract.pytesseract.tesseract_cmd = tesseract_path
         try:
-            # Testando se o Tesseract está instalado:
-            pytesseract.pytesseract.tesseract_cmd = os.environ.get(
-                "TESSERACT_CMD",
-                TESSERACT_DEFAULT_PATHS[os.name],
-            )
             pytesseract.get_tesseract_version()
             logging.info("Tesseract encontrado com sucesso")
-            break
-        except pytesseract.pytesseract.TesseractNotFoundError:
-            pass
-
-        # Caso o Tesseract não esteja nos diretório padrões, vamos perguntar ao usuário onde está o executável:
+        except Exception as e:
+            logging.error(f"Erro ao executar Tesseract: {e}")
+            messagebox.showerror("Erro", f"Erro ao executar Tesseract: {e}")
+            tesseract_path = None
+    else:
         logging.error("Tesseract não encontrado")
         messagebox.showerror("Erro", "Tesseract não encontrado!")
-
-        tesseract_path = filedialog.askopenfilename(
-            title="Onde está executável do tesseract ?"
-        )
-        logging.info(f"Usuário informou |{tesseract_path}| como path para o Tesseract")
-
-        if tesseract_path:
-            set_key(".env", "TESSERACT_CMD", tesseract_path)
-            logging.info("Path do Tesseract salvo com sucesso")
-        else:
-            logging.error("Encerrando programa pois o usuário não informou um path!")
-            exit(1)
 
 
 def verificar_versao(*args, **kwargs):
