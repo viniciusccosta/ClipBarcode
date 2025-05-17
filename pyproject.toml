@@ -1,30 +1,40 @@
 [tool.poetry]
 name = "clipbarcode"
-version = "v2.0.2"
+version = "2.0.3"
 description = "Aplicação Windows que facilita a leitura de códigos de barras e obtenção da linha digitável."
 authors = ["Vinícius Costa <viniciusccosta95@gmail.com>"]
 license = "MIT"
 readme = "README.md"
+package-mode = false
 
 [tool.poetry.dependencies]
-python = ">=3.11,<3.12"
-python-dotenv = "^1.0.0"
-python-dateutil = "^2.8.2"
-pytesseract = "^0.3.10"
-peewee = "^3.16.2"
+python = "~3.12"
+peewee = "^3.17.9"
+python-dotenv = "^1.1.0"
+python-dateutil = "^2.9.0.post0"
+pytesseract = "^0.3.13"
 pyzbar = "^0.1.9"
-pyparsing = "^3.0.9"
-pyperclip = "^1.8.2"
-requests = "^2.31.0"
-ttkbootstrap = "^1.10.1"
-markdown = "^3.4.3"
-tkhtmlview = "^0.2.0"
+pyperclip = "^1.9.0"
+ttkbootstrap = "^1.12.0"
+tkhtmlview = "^0.3.1"
+markdown = "^3.7"
+requests = "^2.32.3"
+pyparsing = "^3.2.3"
+toml = "^0.10.2"
+rich = "^14.0.0"
+python-decouple = "^3.8"
 
 
 [tool.poetry.group.dev.dependencies]
-pdoc3 = "^0.10.0"
-pyinstaller = "^5.12.0"
+pdoc3 = "^0.11.6"
+pyinstaller = "^6.12.0"
+taskipy = "^1.14.1"
+pytest = "^8.3.5"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.taskipy.tasks]
+test = "pytest --tb=short --disable-warnings -p no:warnings"
+build = "./scripts/build.sh && ./scripts/create_dmg.sh"

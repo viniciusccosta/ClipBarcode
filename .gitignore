@@ -185,3 +185,6 @@ pyrightconfig.json
 *.exe
 *.db
 .vscode/*
+
+.DS_Store
+*.dmg
