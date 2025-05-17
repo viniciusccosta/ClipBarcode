@@ -23,74 +23,41 @@ try:
 except Exception as e:
     print(f"Failed to set TESSDATA_PREFIX: {e}")
 
-# ======================================================================================================================
-try:
-    import datetime
-    import logging
-    import shutil
-    import subprocess
-    import tkinter as tk
-    import urllib.request
-    from time import time_ns
-    from tkinter import filedialog, messagebox
 
-    import markdown
-    import pyperclip
-    import pytesseract
-    import requests
-    import toml
-    import ttkbootstrap as ttk
-    from dotenv import load_dotenv, set_key
-    from packaging import version
-    from PIL import Image, ImageDraw, ImageGrab, ImageTk
-    from PIL.Image import Resampling
-    from PIL.PngImagePlugin import PngImageFile
-    from pyzbar.pyzbar import decode
-    from tkhtmlview import HTMLScrolledText
+import datetime
+import logging
+import tkinter as tk
+from time import time_ns
+from tkinter import messagebox
 
-    import clipbarcode.database as database
-    from clipbarcode.boleto import BoletoInvalidoException, new_boleto
-    from clipbarcode.datetime_tools import timens_to_datetime
-    from clipbarcode.utils import resource_path
-except Exception as e:
-    print(f"ImportError: Some modules are not available: {e}")
+import pyperclip
+import pytesseract
+import ttkbootstrap as ttk
+from PIL import Image, ImageDraw, ImageGrab, ImageTk
+from PIL.Image import Resampling
+from PIL.PngImagePlugin import PngImageFile
+from pyzbar.pyzbar import decode
 
-# ======================================================================================================================
-try:
-    HISTORY_PATH = resource_path("./history")
-    CUR_VERSION = version.parse(
-        toml.load(resource_path("pyproject.toml"))["tool"]["poetry"]["version"]
-    )
-    LABEL_FONTNAME = "Arial"
-    TESSERACT_DEFAULT_PATHS = {
-        "posix": "/usr/bin/tesseract",
-        "nt": "C:\\Program Files\\Tesseract-OCR\\tesseract.exe",
-    }
-except Exception as e:
-    print("Error: Failed to set up constants. Please check your environment.")
+from clipbarcode.boleto import BoletoInvalidoException, new_boleto
+from clipbarcode.config import initialize
+from clipbarcode.constants import CUR_VERSION, HISTORY_PATH, LABEL_FONTNAME
+from clipbarcode.datetime_tools import timens_to_datetime
+from clipbarcode.exceptions import LeituraFalhaException, NoImageException
+from clipbarcode.models import Leitura, Preferencia
+from clipbarcode.toplevels import AjudaToplevel, SobreToplevel
+from clipbarcode.update import verificar_versao
+from clipbarcode.utils import resource_path
 
 
-# ======================================================================================================================
-class NoImageException(Exception):
-    pass
-
-
-class LeituraFalhaException(Exception):
-    def __init__(self, message):
-        self.message = message
-
-
-# ======================================================================================================================
-class MainWindow:
-    def __init__(self, themename="darkly", *args, **kwargs):
+class App(ttk.Window):
+    def __init__(self, themename="darkly", alpha=0.99, iconphoto=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.root = ttk.Window(alpha=0.99, iconphoto=None)
-        self.root.title(f"Clip Barcode {CUR_VERSION}")
-        self.root.geometry("1280x720")
-        self.root.iconbitmap(resource_path("assets/icon.png"))
-        self.root.place_window_center()
-        self.root.position_center()
+        self.title(f"Clip Barcode {CUR_VERSION}")
+        self.geometry("1280x720")
+        self.iconbitmap(resource_path("assets/icon.png"))
+        self.place_window_center()
+        self.position_center()
 
         self.last_width = 0
         self.last_height = 0
@@ -99,7 +66,7 @@ class MainWindow:
 
         # -------------------------------------
         menubar = ttk.Menu()
-        self.root.config(menu=menubar)
+        self.config(menu=menubar)
 
         # Themes:
         theme_menu = ttk.Menu()
@@ -112,7 +79,7 @@ class MainWindow:
             "journal",
             "sandstone",
         ]
-        avaiable_themes = [t for t in self.root.style.theme_names() if t in themes]
+        avaiable_themes = [t for t in self.style.theme_names() if t in themes]
         for theme_name in sorted(avaiable_themes):
 
             theme_menu.add_command(
@@ -148,25 +115,21 @@ class MainWindow:
         # -------------------------------------
         # Frames:
         self.btn_ler_print = ttk.Button(
-            self.root, text="Ler Print", command=self._on_ler_print_click
+            self, text="Ler Print", command=self._on_ler_print_click
         )
         self.btn_ler_print.grid(
             row=0, column=0, padx=(10, 5), pady=(20, 10), sticky="nsew"
         )
 
-        self.f1 = ttk.Frame(
-            self.root,
-        )
+        self.f1 = ttk.Frame(self)
         self.f1.grid(row=1, column=0, padx=(10, 5), pady=(10, 10), sticky="nswe")
-        self.root.columnconfigure(index=0, weight=0, minsize=410)
+        self.columnconfigure(index=0, weight=0, minsize=410)
 
-        self.f2 = ttk.Frame(
-            self.root,
-        )
+        self.f2 = ttk.Frame(self)
         self.f2.grid(row=1, column=1, padx=(5, 10), pady=(0, 10), sticky="nswe")
-        self.root.columnconfigure(index=1, weight=1)
+        self.columnconfigure(index=1, weight=1)
 
-        self.root.rowconfigure(index=1, weight=1)
+        self.rowconfigure(index=1, weight=1)
 
         # -------------------------------------
         # List Frame:
@@ -257,7 +220,7 @@ class MainWindow:
         self.f2.columnconfigure(index=0, weight=1)
 
         # -------------------------------------
-        self.root.bind("<Configure>", self._on_configure_callback)
+        self.bind("<Configure>", self._on_configure_callback)
 
         # -------------------------------------
         self.cur_img = None
@@ -268,15 +231,15 @@ class MainWindow:
         # -------------------------------------
 
     def _change_theme(self, themename, *args, **kwargs):
-        self.root.style.theme_use(themename)
-        update_users_preferences(themename)
+        self.style.theme_use(themename)
+        Preferencia.update_preferencia(themename=themename)
 
-        self.root.style.configure(
+        self.style.configure(
             "TButton",
             font=(LABEL_FONTNAME, 12),
         )
 
-        self.root.style.configure(
+        self.style.configure(
             "TLabelframe.Label",
             font=(LABEL_FONTNAME, 10),
         )
@@ -289,7 +252,7 @@ class MainWindow:
 
     def _fill_list(self, *args, **kwargs):
         """Método responsável por atualiza a lista com as leituras e atualiza o listbox."""
-        self.leituras = database.get_leituras()
+        self.leituras = Leitura.get_leituras()
 
         self.listbox.delete(0, tk.END)
 
@@ -298,6 +261,150 @@ class MainWindow:
 
     def _ler_print(self):
         """Método responsáel por realizar a leitura do print, verificar se é duplicado, e etc."""
+
+        def salvar_leitura(leitura: Leitura, img: PngImageFile, *args, **kwargs):
+            """Salva a leitura no banco de dados juntamente com o print.
+
+            Args:
+                result (Leitura): Instância da classe Leitura com os dados da leitura
+                img (PngImageFile): Print em si
+            """
+
+            # Salvando a imagem:
+            img.save(os.path.join(HISTORY_PATH, f"{leitura.mili}.png"))
+            logging.info(f"{leitura.mili}.png salvo com sucesso na pasta History")
+
+            # Incluíndo a leitura no arquivo de resultados:
+            Leitura.create_leitura(leitura)
+
+        def realizar_leitura(*args, **kwargs):
+            """Faz a leitura da imagem que estiver na Área de Transferência.
+
+            - Procura inicialmente por um Códigos de Barra
+            - Caso não identifique nenhum código de barras, realiza OCR
+
+            Raises:
+                NoImageException: Caso não seja encontrado nenhuma imagem na Área de Transferência
+                LeituraFalhaException: Caso qualquer problema ocorra ao realizar a leitura
+            """
+
+            # -----------------------------------------------------------
+            timens = time_ns()
+            agora = timens_to_datetime(timens)
+
+            # -----------------------------------------------------------
+            img = ImageGrab.grabclipboard()
+
+            # -----------------------------------------------------------
+            # Código de Barras:
+            try:
+                results = decode(img)
+            except (TypeError, Exception):
+                raise NoImageException
+
+            if len(results) >= 1:
+                logging.info("Código de barras encontrado")
+
+                if len(results) > 1:
+                    texto = "O seu print só deve conter apenas 1 código de barras"
+                    logging.error(texto)
+                    raise LeituraFalhaException(texto)
+
+                d = results[0]
+                text = d.data.decode("utf-8")
+
+                match (d.type):
+                    case "I25":  # Boletos de Cobraça e Arrecadação
+                        logging.debug(
+                            "Código de barrras do tipo I25 (boletos de cobrança e arrecadação)"
+                        )
+                        try:
+                            boleto = new_boleto(cod_barras=text)
+                            cod_conv = boleto.linha_digitavel
+                            m_type = 1
+                        except BoletoInvalidoException:
+                            texto = f"Boleto Inválido: |{text}|"
+                            logging.error(texto)
+                            raise LeituraFalhaException(texto)
+                    case "CODE128":  # Código de Nota Fiscal
+                        logging.debug(
+                            "Código de barras do tipo CODE128 (notas fiscais)"
+                        )
+                        cod_conv = text
+                        m_type = 2
+                    case "QRCODE":  # QRCode
+                        logging.debug("Código de barras do tipo QRCODE")
+                        cod_conv = text
+                        m_type = 3
+                    case _:  # Nenhum dos tipos anteriores
+                        texto = f"O código de barras do tipo {d.type} não é suportado"
+                        logging.warning(texto)
+                        raise LeituraFalhaException(texto)
+
+                x, y, wi, h = d.rect.left, d.rect.top, d.rect.width, d.rect.height
+                imgdraw = ImageDraw.Draw(img)
+                imgdraw.rectangle(
+                    xy=(x, y, x + wi, y + h),
+                    outline="#FF0000",
+                    width=2,
+                )
+                logging.debug(f"Imagem encontrada em ({x},{y}) -> ({x+wi},{y+h})")
+
+                leitura = Leitura(
+                    mili=f"{timens}",
+                    data=agora,
+                    type=m_type,
+                    cod_lido=text,
+                    cod_conv=cod_conv,
+                )
+
+                return (leitura, img)
+
+            # -----------------------------------------------------------
+            # OCR:
+            else:
+                logging.info(
+                    "Nenhum código de barras encontrado, programa tentará fazer OCR."
+                )
+
+                try:
+                    text = pytesseract.image_to_string(
+                        img,
+                        lang="por",
+                    ).strip(
+                        "\n"
+                    )  # TODO: Tesseract está tendo dificuldades em ler números com mais de dois 0 seguidos
+                except TypeError:
+                    raise NoImageException
+
+                if len(text) <= 0:
+                    texto = "OCR não encontrou nada"
+                    logging.warning(texto)
+                    raise LeituraFalhaException(texto)
+
+                logging.debug(f"OCR realizado com sucesso |{text}|")
+
+                boleto = new_boleto(linha_digitavel=text)
+
+                leitura = Leitura(
+                    mili=f"{timens}",
+                    data=agora,
+                    type=0,
+                    cod_lido=text,
+                    cod_conv=boleto.linha_digitavel if boleto else text,
+                )
+
+                return (leitura, img)
+
+        def verifica_se_duplicado(leitura: Leitura, *args, **kwargs):
+            """Verifica se a linha digitável já foi inserida no banco de dados"""
+            leitura = Leitura.get_leitura_por_cod_lido(leitura.cod_lido)
+
+            if leitura:
+                return True, leitura
+
+            return False, None
+
         nova_leitura, img = realizar_leitura()
         duplicado, leitura = verifica_se_duplicado(nova_leitura)
 
@@ -398,7 +505,11 @@ class MainWindow:
             if cur_selection:
                 selected_index = cur_selection[0]
                 leitura = self.leituras[selected_index]
-                delete_leitura(leitura)
+
+                # TODO: Pathlib
+                os.remove(os.path.join(HISTORY_PATH, f"{leitura.mili}.png"))
+                Leitura.delete_leitura(leitura)
+
                 self._fill_list()
                 self.clear()
             else:
@@ -410,7 +521,7 @@ class MainWindow:
         """
         pyperclip.copy(self.var_leitura.get())
         self.btn_copiar_leitura.config(text="Copiado", bootstyle="success")
-        self.root.after(
+        self.after(
             1000,
             lambda: self.btn_copiar_leitura.config(text="Copiar", bootstyle="default"),
         )
@@ -465,19 +576,15 @@ class MainWindow:
 
         leitura = self.leituras[self.cur_index]
 
-        update_value(leitura, descricao=self.var_descricao.get())
+        Leitura.update_leitura(leitura, descricao=self.var_descricao.get())
         self._fill_list()
         # TODO: Selecionar algum item da listbox (o anterior, o próximo, o primeiro...)
 
-    def mainloop(self, *args, **kwargs):
-        """Mainloop do TkInter"""
-        self.root.mainloop()
-
-    def update_frame_detail(self, leitura: database.Leitura, *args, **kwargs):
+    def update_frame_detail(self, leitura: Leitura, *args, **kwargs):
         """Atualiza todos os widgets presentes no frame "Detail"
 
         Args:
-            leitura(database.Leitura): Instância da class Leitura que contém todos os dados necessários para atualizar os widgets.
+            leitura(Leitura): Instância da class Leitura que contém todos os dados necessários para atualizar os widgets.
         """
 
         self.update_canvas(filename=os.path.join(HISTORY_PATH, f"{leitura.mili}.png"))
@@ -589,384 +696,19 @@ class MainWindow:
         self.update_tipo("")
         self.update_widget_leitura("")
 
+    def run(self, *args, **kwargs):
+        """Executa o loop principal da aplicação."""
+        self.mainloop()
 
-class BaseToplevel(ttk.Toplevel):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
-        self.iconbitmap(resource_path("icon.ico"))
-        self.grab_set()
-        self.position_center()
-        self.place_window_center()
-
-
-class SobreToplevel(BaseToplevel):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        f = tk.Frame(
-            self,
-        )
-        f.pack(expand=True, fill="both", pady=10, padx=10)
-
-        tk.Label(f, text="ClipBarcode", font=(LABEL_FONTNAME, 16)).pack(
-            expand=False,
-            fill="both",
-        )
-        tk.Label(f, text=f"Versão {CUR_VERSION}").pack(
-            expand=False,
-            fill="both",
-        )
-        tk.Label(f, text="Vinícius Costa").pack(
-            expand=False,
-            fill="both",
-        )
-        tk.Label(f, text="https://github.com/viniciusccosta/ClipBarcode").pack(
-            expand=False,
-            fill="both",
-        )
-
-
-class AjudaToplevel(BaseToplevel):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        html_content = self._get_html_content()
-
-        self.html_label = HTMLScrolledText(self)
-        self.html_label.pack(expand=True, fill="both")
-        self.html_label.set_html(html_content)
-
-    def _get_html_content(self):
-        with open(resource_path("README.md"), "r", encoding="utf8") as file:
-            markdown_content = file.read()
-
-        return markdown.markdown(markdown_content)
-
-
-# ======================================================================================================================
-def find_tesseract():
-    """Search for the Tesseract executable in multiple locations."""
-    # Check for bundled Tesseract when running as a PyInstaller app
-    if getattr(sys, "frozen", False):
-        bundle_tesseract = os.path.join(os.path.dirname(sys.executable), "tesseract")
-        if os.path.exists(bundle_tesseract):
-            return bundle_tesseract
-
-    # Check environment variable
-    tesseract_cmd = os.environ.get("TESSERACT_CMD")
-    if tesseract_cmd and os.path.exists(tesseract_cmd):
-        return tesseract_cmd
-
-    # Check default path
-    default_path = TESSERACT_DEFAULT_PATHS.get(os.name)
-    if default_path and os.path.exists(default_path):
-        return default_path
-
-    # Check common locations for macOS
-    if os.name == "posix":  # Use posix for macOS
-        common_locations = [
-            "/opt/homebrew/bin/tesseract",
-            "/usr/local/bin/tesseract",
-        ]
-        for location in common_locations:
-            if os.path.exists(location):
-                return location
-
-    # Try searching in the system's PATH
-    tesseract_path = shutil.which("tesseract")
-    if tesseract_path:
-        return tesseract_path
-
-    return None
-
-
-def initial_config(*args, **kwargs):
-    """Realiza as configurações inicias da aplicação.
-
-    - Logging
-    - SQLite
-    - Diretório de Imagens
-    - Tesseract
-    - Variáveis de Ambiente
-    """
-
-    # ------------------------------------------
-    load_dotenv()
-
-    # ------------------------------------------
-    # Logging:
-    logging.basicConfig(
-        stream=open(resource_path(f".log"), "a", encoding="utf-8"),
-        level=logging.INFO,
-        datefmt="%Y-%m-%d %H:%M:%S",
-        format="%(asctime)s %(levelname)-8s %(message)s",
-    )
-
-    # ------------------------------------------
-    # Banco de Dados:
-    json_path = os.path.join(HISTORY_PATH, "results.json")
-
-    database.create_tables()
-    if os.path.exists(json_path):
-        try:
-            database.from_json_to_sqlite(json_path)
-            os.remove(json_path)  # Excluindo json após transferir as leituras para DB
-        except Exception as e:
-            print(e)
-            logging.error(e)
-
-    # ------------------------------------------
-    # Diretório de Imagens:
-    if not os.path.exists(HISTORY_PATH):
-        os.mkdir(HISTORY_PATH)
-        logging.info("Pasta HISTORY criada com sucesso")
-
-    # ------------------------------------------
-    # Tesseract:
-    tesseract_path = find_tesseract()
-
-    if tesseract_path:
-        pytesseract.pytesseract.tesseract_cmd = tesseract_path
-        try:
-            pytesseract.get_tesseract_version()
-            logging.info("Tesseract encontrado com sucesso")
-        except Exception as e:
-            logging.error(f"Erro ao executar Tesseract: {e}")
-            messagebox.showerror("Erro", f"Erro ao executar Tesseract: {e}")
-            tesseract_path = None
-    else:
-        logging.error("Tesseract não encontrado")
-        messagebox.showerror("Erro", "Tesseract não encontrado!")
-
-
-def verificar_versao(*args, **kwargs):
-    try:
-        response = requests.get(
-            "https://api.github.com/repos/viniciusccosta/clipbarcode/releases",
-            timeout=(1.0, 2.0),
-        )
-
-        match response.status_code:
-            case 200:
-                json_data = response.json()
-
-                if len(json_data) > 0:
-                    release = json_data[0]
-                    latest_version = version.parse(release["tag_name"])
-                    assets = release["assets"]
-
-                    logging.info(f"Versão mais recente: {latest_version}")
-
-                    if latest_version > CUR_VERSION and len(assets) > 0:
-                        logging.warning("Versão instalada não é a mais recente")
-
-                        atualizar = messagebox.askyesno(
-                            "Atualização",
-                            "Uma nova versão está disponível, deseja baixá-la?",
-                        )
-                        if atualizar:
-                            logging.info("Usuário decidiu instalar a nova versão")
-
-                            for asset in assets:
-                                url = asset["browser_download_url"]
-                                filename = asset["name"]
-
-                                if url.endswith(".exe"):
-                                    urllib.request.urlretrieve(url, filename)
-                                    subprocess.run([filename])
-                                    messagebox.showinfo(
-                                        "Fim da Atualização",
-                                        "Abra o programa novamente!",
-                                    )
-                                    exit(0)
-            case _:
-                pass
-    except Exception:
-        pass
-
-
-def salvar_leitura(leitura: database.Leitura, img: PngImageFile, *args, **kwargs):
-    """Salva a leitura no banco de dados juntamente com o print.
-
-    Args:
-        result (database.Leitura): Instância da classe Leitura com os dados da leitura
-        img (PngImageFile): Print em si
-    """
-
-    # Salvando a imagem:
-    img.save(os.path.join(HISTORY_PATH, f"{leitura.mili}.png"))
-    logging.info(f"{leitura.mili}.png salvo com sucesso na pasta History")
-
-    # Incluíndo a leitura no arquivo de resultados:
-    database.create_leitura(leitura)
-
-
-def update_value(leitura: database.Leitura, *args, **kwargs):
-    """Faz uma requisição ao banco de dados para atualizar determinada leitura.
-
-    Args:
-        leitura (database.Leitura):
-        **kwargs (dict): Dicionário com os campos e valores a serem atualizados
-    """
-    database.update_leitura(leitura.id, **kwargs)
-
-
-def delete_leitura(leitura: database.Leitura, *args, **kwargs):
-    """Faz a exclusão do print do diretório de imagens e faz uma requisição ao banco de dados para a exclusão da leitura.
-
-    Args:
-        leitura (database.Leitura):
-    """
-    os.remove(os.path.join(HISTORY_PATH, f"{leitura.mili}.png"))
-    database.delete_leitura(leitura)
-
-
-def realizar_leitura(*args, **kwargs):
-    """Faz a leitura da imagem que estiver na Área de Transferência.
-
-    - Procura inicialmente por um Códigos de Barra
-    - Caso não identifique nenhum código de barras, realiza OCR
-
-    Raises:
-        NoImageException: Caso não seja encontrado nenhuma imagem na Área de Transferência
-        LeituraFalhaException: Caso qualquer problema ocorra ao realizar a leitura
-    """
-
-    # -----------------------------------------------------------
-    timens = time_ns()
-    agora = timens_to_datetime(timens)
-
-    # -----------------------------------------------------------
-    img = ImageGrab.grabclipboard()
-
-    # -----------------------------------------------------------
-    # Código de Barras:
-    try:
-        results = decode(img)
-    except (TypeError, Exception):
-        raise NoImageException
-
-    if len(results) >= 1:
-        logging.info("Código de barras encontrado")
-
-        if len(results) > 1:
-            texto = "O seu print só deve conter apenas 1 código de barras"
-            logging.error(texto)
-            raise LeituraFalhaException(texto)
-
-        d = results[0]
-        text = d.data.decode("utf-8")
-
-        match (d.type):
-            case "I25":  # Boletos de Cobraça e Arrecadação
-                logging.debug(
-                    "Código de barrras do tipo I25 (boletos de cobrança e arrecadação)"
-                )
-                try:
-                    boleto = new_boleto(cod_barras=text)
-                    cod_conv = boleto.linha_digitavel
-                    m_type = 1
-                except BoletoInvalidoException:
-                    texto = f"Boleto Inválido: |{text}|"
-                    logging.error(texto)
-                    raise LeituraFalhaException(texto)
-            case "CODE128":  # Código de Nota Fiscal
-                logging.debug("Código de barras do tipo CODE128 (notas fiscais)")
-                cod_conv = text
-                m_type = 2
-            case "QRCODE":  # QRCode
-                logging.debug("Código de barras do tipo QRCODE")
-                cod_conv = text
-                m_type = 3
-            case _:  # Nenhum dos tipos anteriores
-                texto = f"O código de barras do tipo {d.type} não é suportado"
-                logging.warning(texto)
-                raise LeituraFalhaException(texto)
-
-        x, y, wi, h = d.rect.left, d.rect.top, d.rect.width, d.rect.height
-        imgdraw = ImageDraw.Draw(img)
-        imgdraw.rectangle(
-            xy=(x, y, x + wi, y + h),
-            outline="#FF0000",
-            width=2,
-        )
-        logging.debug(f"Imagem encontrada em ({x},{y}) -> ({x+wi},{y+h})")
-
-        leitura = database.Leitura(
-            mili=f"{timens}",
-            data=agora,
-            type=m_type,
-            cod_lido=text,
-            cod_conv=cod_conv,
-        )
-
-        return (leitura, img)
-
-    # -----------------------------------------------------------
-    # OCR:
-    else:
-        logging.info("Nenhum código de barras encontrado, programa tentará fazer OCR.")
-
-        try:
-            text = pytesseract.image_to_string(
-                img,
-                lang="por",
-            ).strip(
-                "\n"
-            )  # TODO: Tesseract está tendo dificuldades em ler números com mais de dois 0 seguidos
-        except TypeError:
-            raise NoImageException
-
-        if len(text) <= 0:
-            texto = "OCR não encontrou nada"
-            logging.warning(texto)
-            raise LeituraFalhaException(texto)
-
-        logging.debug(f"OCR realizado com sucesso |{text}|")
-
-        boleto = new_boleto(linha_digitavel=text)
-
-        leitura = database.Leitura(
-            mili=f"{timens}",
-            data=agora,
-            type=0,
-            cod_lido=text,
-            cod_conv=boleto.linha_digitavel if boleto else text,
-        )
-
-        return (leitura, img)
-
-
-def verifica_se_duplicado(leitura: database.Leitura, *args, **kwargs):
-    """Verifica se a linha digitável já foi inserida no banco de dados"""
-    leitura = database.get_leitura_por_cod_lido(leitura.cod_lido)
-
-    if leitura:
-        return True, leitura
-
-    return False, None
-
-
-def get_users_preferences(*args, **kwargs):
-    """Obter o nome da temática escolhida pelo usuário."""
-
-    preferencia = database.get_preferencia()
-    return preferencia
-
-
-def update_users_preferences(themename, *args, **kwargs):
-    database.update_preferencia(themename=themename)
-
-
-# ======================================================================================================================
 if __name__ == "__main__":
     try:
-        initial_config()
+        initialize()
         verificar_versao()
-        preferences = get_users_preferences()
+        preferences = Preferencia.get_preferencia()
 
-        app = MainWindow(themename=preferences.themename)
-        app.mainloop()
+        app = App(themename=preferences.themename)
+        app.run()
     except Exception as e:
         logging.error(e)
         messagebox.showerror("Erro", f"Erro: {e}")
