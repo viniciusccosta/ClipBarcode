@@ -28,7 +28,13 @@ python-decouple = "^3.8"
 [tool.poetry.group.dev.dependencies]
 pdoc3 = "^0.11.6"
 pyinstaller = "^6.12.0"
+taskipy = "^1.14.1"
+pytest = "^8.3.5"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.taskipy.tasks]
+test = "pytest --tb=short --disable-warnings -p no:warnings"
+build = "./scripts/build.sh && ./scripts/create_dmg.sh"
