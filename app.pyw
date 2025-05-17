@@ -40,7 +40,7 @@ from ttkbootstrap.localization.msgcat import MessageCatalog
 
 from clipbarcode.boleto import BoletoInvalidoException, new_boleto
 from clipbarcode.config import initialize_system
-from clipbarcode.constants import CUR_VERSION, HISTORY_PATH, LABEL_FONTNAME
+from clipbarcode.constants import CURRENT_VERSION, HISTORY_PATH, LABEL_FONTNAME
 from clipbarcode.datetime_tools import timens_to_datetime
 from clipbarcode.exceptions import LeituraFalhaException, NoImageException
 from clipbarcode.models import AppSettings, Leitura
@@ -56,7 +56,7 @@ class App(ttk.Window):
     def __init__(self, themename="darkly", alpha=0.99, *args, **kwargs):
         super().__init__(themename=themename, alpha=alpha, *args, **kwargs)
 
-        self.title(f"Clip Barcode {CUR_VERSION}")
+        self.title(f"Clip Barcode {CURRENT_VERSION}")
         self.geometry("1280x720")
         self.iconbitmap(resource_path("assets/icon.png"))
         self.place_window_center()
@@ -64,6 +64,8 @@ class App(ttk.Window):
 
         self.last_width = 0
         self.last_height = 0
+
+        # TODO: create_widget function
 
         # -------------------------------------
         menubar = ttk.Menu()

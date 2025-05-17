@@ -7,7 +7,7 @@ from packaging import version
 from ttkbootstrap.dialogs import Messagebox
 from ttkbootstrap.localization.msgcat import MessageCatalog
 
-from clipbarcode.constants import CUR_VERSION
+from clipbarcode.constants import CURRENT_VERSION
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +32,7 @@ def check_for_updates(*args, **kwargs):
                 latest_version = version.parse(release["tag_name"])
                 assets = release["assets"]
 
-                if latest_version <= CUR_VERSION:
+                if latest_version <= CURRENT_VERSION:
                     logger.info("Versão instalada é a mais recente")
                     return
 

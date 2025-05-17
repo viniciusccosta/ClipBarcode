@@ -5,7 +5,7 @@ import markdown
 import ttkbootstrap as ttk
 from tkhtmlview import HTMLScrolledText
 
-from clipbarcode.constants import CUR_VERSION, LABEL_FONTNAME
+from clipbarcode.constants import CURRENT_VERSION, LABEL_FONTNAME
 from clipbarcode.utils import resource_path
 
 
@@ -29,7 +29,7 @@ class SobreToplevel(BaseToplevel):
         tk.Label(f, text="ClipBarcode", font=(LABEL_FONTNAME, 16)).pack(
             expand=False, fill="both"
         )
-        tk.Label(f, text=f"Versão {CUR_VERSION}").pack(expand=False, fill="both")
+        tk.Label(f, text=f"Versão {CURRENT_VERSION}").pack(expand=False, fill="both")
         tk.Label(f, text="Vinícius Costa").pack(expand=False, fill="both")
         tk.Label(f, text="https://github.com/viniciusccosta/ClipBarcode").pack(
             expand=False, fill="both"
