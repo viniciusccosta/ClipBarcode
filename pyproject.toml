@@ -21,6 +21,8 @@ markdown = "^3.7"
 requests = "^2.32.3"
 pyparsing = "^3.2.3"
 toml = "^0.10.2"
+rich = "^14.0.0"
+python-decouple = "^3.8"
 
 
 [tool.poetry.group.dev.dependencies]
