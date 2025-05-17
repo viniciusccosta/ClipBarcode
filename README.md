@@ -2,7 +2,7 @@
 # ClipBarcode
 
 [![MIT License](https://img.shields.io/github/license/viniciusccosta/clipbarcode)](https://choosealicense.com/licenses/mit/)
-[![Python 3.11](https://img.shields.io/badge/Python-3.11-blue)](https://www.python.org/downloads/release/python-3110/)
+[![Python 3.11](https://img.shields.io/badge/Python-3.12-blue)](https://www.python.org/downloads/release/python-3120/)
 [![Tesseract 5.2.0](https://img.shields.io/badge/Tesseract-5.2.0-orange)](https://github.com/tesseract-ocr/tesseract)
 [![Microsoft Visual C++ 12.0.40664](https://img.shields.io/badge/Microsoft%20Visual%20C%2B%2B-12.0.40664-orange)](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170)
 ![Downloads](https://img.shields.io/github/downloads/viniciusccosta/clipbarcode/total)
