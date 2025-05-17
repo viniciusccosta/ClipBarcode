@@ -1,17 +1,18 @@
 import logging
-import os
 import subprocess
-import sys
 import urllib.request
-from tkinter import messagebox
 
 import requests
 from packaging import version
+from ttkbootstrap.dialogs import Messagebox
+from ttkbootstrap.localization.msgcat import MessageCatalog
 
 from clipbarcode.constants import CUR_VERSION
 
+logger = logging.getLogger(__name__)
 
-def verificar_versao(*args, **kwargs):
+
+def check_for_updates(*args, **kwargs):
     try:
         response = requests.get(
             "https://api.github.com/repos/viniciusccosta/clipbarcode/releases",
@@ -20,37 +21,48 @@ def verificar_versao(*args, **kwargs):
 
         match response.status_code:
             case 200:
+                # Verifica se a resposta é válida
                 json_data = response.json()
+                if len(json_data) <= 0:
+                    logger.warning("Nenhuma versão encontrada")
+                    return
 
-                if len(json_data) > 0:
-                    release = json_data[0]
-                    latest_version = version.parse(release["tag_name"])
-                    assets = release["assets"]
+                # Verifica se a versão mais recente é maior que a versão atual
+                release = json_data[0]
+                latest_version = version.parse(release["tag_name"])
+                assets = release["assets"]
 
-                    logging.info(f"Versão mais recente: {latest_version}")
+                if latest_version <= CUR_VERSION:
+                    logger.info("Versão instalada é a mais recente")
+                    return
 
-                    if latest_version > CUR_VERSION and len(assets) > 0:
-                        logging.warning("Versão instalada não é a mais recente")
+                if len(assets) < 0:
+                    logger.warning("Nenhum asset encontrado")
+                    return
 
-                        atualizar = messagebox.askyesno(
-                            "Atualização",
-                            "Uma nova versão está disponível, deseja baixá-la?",
+                # Pergunta ao usuário se deseja atualizar:
+                ans = Messagebox.yesno(
+                    "Atualização",
+                    "Uma nova versão está disponível, deseja baixá-la?",
+                )
+
+                if ans == MessageCatalog.translate("No"):
+                    logger.info("Usuário decidiu não instalar a nova versão")
+                    return
+
+                # Baixa o arquivo executável
+                for asset in assets:
+                    url = asset["browser_download_url"]
+                    filename = asset["name"]
+
+                    if url.endswith(".exe"):
+                        urllib.request.urlretrieve(url, filename)
+                        subprocess.run([filename])
+                        Messagebox.show_info(
+                            title="Fim da Atualização",
+                            message="Abra o programa novamente!",
                         )
-                        if atualizar:
-                            logging.info("Usuário decidiu instalar a nova versão")
-
-                            for asset in assets:
-                                url = asset["browser_download_url"]
-                                filename = asset["name"]
-
-                                if url.endswith(".exe"):
-                                    urllib.request.urlretrieve(url, filename)
-                                    subprocess.run([filename])
-                                    messagebox.showinfo(
-                                        "Fim da Atualização",
-                                        "Abra o programa novamente!",
-                                    )
-                                    exit(0)
+                        exit(0)
             case _:
                 pass
     except Exception:
