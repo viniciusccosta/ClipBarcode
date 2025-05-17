@@ -1,3 +1,5 @@
+import logging
+
 from dateutil import parser
 from peewee import (
     CharField,
@@ -10,6 +12,8 @@ from peewee import (
 )
 
 from clipbarcode.database import db
+
+logger = logging.getLogger(__name__)
 
 
 class Leitura(Model):
@@ -51,7 +55,6 @@ class Leitura(Model):
                     setattr(leitura, field, value)
 
                 leitura.save()
-
         except IntegrityError as e:
             print(e)
 
@@ -75,7 +78,7 @@ class Leitura(Model):
             print(e)
 
     @classmethod
-    def get_leitura_por_cod_lido(cls, cod_lido):
+    def get_by_code(cls, cod_lido):
         try:
             leitura = Leitura.get(Leitura.cod_lido == cod_lido)
             return leitura
@@ -112,30 +115,30 @@ class Leitura(Model):
         return f'{self.id}): {campo[0:max_len]}{"..." if len(campo) > max_len else ""}'
 
 
-class Preferencia(Model):
-    themename = TextField(default="darkly")
+class AppSettings(Model):
+    themename = TextField(default="darkly", null=False)
 
     class Meta:
         database = db
 
     @classmethod
-    def get_preferencia(cls):
+    def get_settings(cls, key):
         try:
-            preferencia = Preferencia.get(Preferencia.id == 0)
-            return preferencia
-        except Exception as e:
-            print(e)
+            settings = cls.get_by_id(0)
+        except AppSettings.DoesNotExist:
+            print("Settings not found, creating default settings.")
+            settings = cls.create(id=0)
+            settings.save()
+
+        return getattr(settings, key)
 
     @classmethod
-    def update_preferencia(cls, **kwargs):
+    def set_settings(cls, key, value):
         try:
-            with db.atomic():
-                preferencia = Preferencia.get(Preferencia.id == 0)
+            settings = cls.get_by_id(0)
+        except AppSettings.DoesNotExist:
+            print("Settings not found, creating default settings.")
+            settings = cls.create(id=0)
 
-                for field, value in kwargs.items():
-                    setattr(preferencia, field, value)
-
-                preferencia.save()
-
-        except IntegrityError as e:
-            print(e)
+        setattr(settings, key, value)
+        settings.save()

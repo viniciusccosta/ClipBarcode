@@ -1,19 +1,18 @@
+# Locale (ttkbootstrap)
 try:
+    import locale
     import os
 
     os.environ["LC_ALL"] = "en_US.UTF-8"
-except Exception:
-    print("Failed to set environment variable LC_ALL. ")
-
-try:
-    import locale
-
     locale.setlocale(locale.LC_ALL, "")
-except locale.Error:
+except locale.Error as e:
     print("Failed to set locale to environment's LC_ALL")
+    print(f"Error: {e}")
 except Exception as e:
-    print(f"Failed to set locale: {e}")
+    print("Failed to set locale")
+    print(f"Error: {e}")
 
+# Tesseract:
 try:
     import sys
 
@@ -23,12 +22,11 @@ try:
 except Exception as e:
     print(f"Failed to set TESSDATA_PREFIX: {e}")
 
-
+# Imports:
 import datetime
 import logging
 import tkinter as tk
 from time import time_ns
-from tkinter import messagebox
 
 import pyperclip
 import pytesseract
@@ -37,21 +35,26 @@ from PIL import Image, ImageDraw, ImageGrab, ImageTk
 from PIL.Image import Resampling
 from PIL.PngImagePlugin import PngImageFile
 from pyzbar.pyzbar import decode
+from ttkbootstrap.dialogs import Messagebox
+from ttkbootstrap.localization.msgcat import MessageCatalog
 
 from clipbarcode.boleto import BoletoInvalidoException, new_boleto
-from clipbarcode.config import initialize
+from clipbarcode.config import initialize_system
 from clipbarcode.constants import CUR_VERSION, HISTORY_PATH, LABEL_FONTNAME
 from clipbarcode.datetime_tools import timens_to_datetime
 from clipbarcode.exceptions import LeituraFalhaException, NoImageException
-from clipbarcode.models import Leitura, Preferencia
+from clipbarcode.models import AppSettings, Leitura
 from clipbarcode.toplevels import AjudaToplevel, SobreToplevel
-from clipbarcode.update import verificar_versao
+from clipbarcode.update import check_for_updates
 from clipbarcode.utils import resource_path
 
+logger = logging.getLogger(__name__)
 
+
+# Main Window:
 class App(ttk.Window):
-    def __init__(self, themename="darkly", alpha=0.99, iconphoto=None, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, themename="darkly", alpha=0.99, *args, **kwargs):
+        super().__init__(themename=themename, alpha=alpha, *args, **kwargs)
 
         self.title(f"Clip Barcode {CUR_VERSION}")
         self.geometry("1280x720")
@@ -61,8 +64,6 @@ class App(ttk.Window):
 
         self.last_width = 0
         self.last_height = 0
-
-        self._change_theme(themename)
 
         # -------------------------------------
         menubar = ttk.Menu()
@@ -81,36 +82,19 @@ class App(ttk.Window):
         ]
         avaiable_themes = [t for t in self.style.theme_names() if t in themes]
         for theme_name in sorted(avaiable_themes):
-
             theme_menu.add_command(
                 label=theme_name,
                 command=lambda t=theme_name: self._change_theme(t),
             )
 
-        menubar.add_cascade(
-            label="Temas",
-            menu=theme_menu,
-        )
+        menubar.add_cascade(label="Temas", menu=theme_menu)
 
         # Ajuda:
         help_menu = ttk.Menu()
-
-        help_menu.add_command(
-            label="Ajuda",
-            command=self._on_ajuda_click,
-        )
-
+        help_menu.add_command(label="Ajuda", command=self._on_ajuda_click)
         help_menu.add_separator()
-
-        help_menu.add_command(
-            label="Sobre",
-            command=self._on_sobre_click,
-        )
-
-        menubar.add_cascade(
-            label="Ajuda",
-            menu=help_menu,
-        )
+        help_menu.add_command(label="Sobre", command=self._on_sobre_click)
+        menubar.add_cascade(label="Ajuda", menu=help_menu)
 
         # -------------------------------------
         # Frames:
@@ -232,7 +216,7 @@ class App(ttk.Window):
 
     def _change_theme(self, themename, *args, **kwargs):
         self.style.theme_use(themename)
-        Preferencia.update_preferencia(themename=themename)
+        AppSettings.set_settings("themename", themename)
 
         self.style.configure(
             "TButton",
@@ -272,7 +256,7 @@ class App(ttk.Window):
 
             # Salvando a imagem:
             img.save(os.path.join(HISTORY_PATH, f"{leitura.mili}.png"))
-            logging.info(f"{leitura.mili}.png salvo com sucesso na pasta History")
+            logger.info(f"{leitura.mili}.png salvo com sucesso na pasta History")
 
             # Incluíndo a leitura no arquivo de resultados:
             Leitura.create_leitura(leitura)
@@ -303,11 +287,11 @@ class App(ttk.Window):
                 raise NoImageException
 
             if len(results) >= 1:
-                logging.info("Código de barras encontrado")
+                logger.info("Código de barras encontrado")
 
                 if len(results) > 1:
                     texto = "O seu print só deve conter apenas 1 código de barras"
-                    logging.error(texto)
+                    logger.error(texto)
                     raise LeituraFalhaException(texto)
 
                 d = results[0]
@@ -315,7 +299,7 @@ class App(ttk.Window):
 
                 match (d.type):
                     case "I25":  # Boletos de Cobraça e Arrecadação
-                        logging.debug(
+                        logger.debug(
                             "Código de barrras do tipo I25 (boletos de cobrança e arrecadação)"
                         )
                         try:
@@ -324,21 +308,19 @@ class App(ttk.Window):
                             m_type = 1
                         except BoletoInvalidoException:
                             texto = f"Boleto Inválido: |{text}|"
-                            logging.error(texto)
+                            logger.error(texto)
                             raise LeituraFalhaException(texto)
                     case "CODE128":  # Código de Nota Fiscal
-                        logging.debug(
-                            "Código de barras do tipo CODE128 (notas fiscais)"
-                        )
+                        logger.debug("Código de barras do tipo CODE128 (notas fiscais)")
                         cod_conv = text
                         m_type = 2
                     case "QRCODE":  # QRCode
-                        logging.debug("Código de barras do tipo QRCODE")
+                        logger.debug("Código de barras do tipo QRCODE")
                         cod_conv = text
                         m_type = 3
                     case _:  # Nenhum dos tipos anteriores
                         texto = f"O código de barras do tipo {d.type} não é suportado"
-                        logging.warning(texto)
+                        logger.warning(texto)
                         raise LeituraFalhaException(texto)
 
                 x, y, wi, h = d.rect.left, d.rect.top, d.rect.width, d.rect.height
@@ -348,7 +330,7 @@ class App(ttk.Window):
                     outline="#FF0000",
                     width=2,
                 )
-                logging.debug(f"Imagem encontrada em ({x},{y}) -> ({x+wi},{y+h})")
+                logger.debug(f"Imagem encontrada em ({x},{y}) -> ({x+wi},{y+h})")
 
                 leitura = Leitura(
                     mili=f"{timens}",
@@ -363,7 +345,7 @@ class App(ttk.Window):
             # -----------------------------------------------------------
             # OCR:
             else:
-                logging.info(
+                logger.info(
                     "Nenhum código de barras encontrado, programa tentará fazer OCR."
                 )
 
@@ -379,10 +361,10 @@ class App(ttk.Window):
 
                 if len(text) <= 0:
                     texto = "OCR não encontrou nada"
-                    logging.warning(texto)
+                    logger.warning(texto)
                     raise LeituraFalhaException(texto)
 
-                logging.debug(f"OCR realizado com sucesso |{text}|")
+                logger.debug(f"OCR realizado com sucesso |{text}|")
 
                 boleto = new_boleto(linha_digitavel=text)
 
@@ -398,7 +380,7 @@ class App(ttk.Window):
 
         def verifica_se_duplicado(leitura: Leitura, *args, **kwargs):
             """Verifica se a linha digitável já foi inserida no banco de dados"""
-            leitura = Leitura.get_leitura_por_cod_lido(leitura.cod_lido)
+            leitura = Leitura.get_by_code(leitura.cod_lido)
 
             if leitura:
                 return True, leitura
@@ -410,14 +392,16 @@ class App(ttk.Window):
 
         index = 0
         if duplicado:
-            salvar = messagebox.askyesno(
+            ans = Messagebox.yesno(
                 title="Duplicado",
                 message=f"Código de barras já lido.\nDeseja salvar mesmo assim ?",
             )
-            if salvar:
+
+            if ans == MessageCatalog.translate("Yes"):
                 salvar_leitura(nova_leitura, img)
             else:
                 index = self.leituras.index(leitura)
+
         else:
             salvar_leitura(nova_leitura, img)
 
@@ -442,9 +426,9 @@ class App(ttk.Window):
         try:
             self._ler_print()
         except NoImageException:
-            messagebox.showwarning("Sem Imagem", "Tire um print antes")
+            Messagebox.show_warning(title="Sem Imagem", message="Tire um print antes")
         except LeituraFalhaException as e:
-            messagebox.showwarning("Ops", e.message)
+            Messagebox.show_warning(title="Ops", message=e.message)
 
         self.listbox.focus()
 
@@ -497,9 +481,9 @@ class App(ttk.Window):
 
     def _on_del_click(self, *args, **kwargs):
         """Método responsável por lidar com o evento do botão "Delete" pressionado no Lisbox"""
-        ans = messagebox.askyesno(title="Excluir", message="Excluir registro ?")
+        ans = Messagebox.yesno(title="Excluir", message="Excluir registro ?")
 
-        if ans:
+        if ans == MessageCatalog.translate("Yes"):
             cur_selection = self.listbox.curselection()
 
             if cur_selection:
@@ -513,7 +497,9 @@ class App(ttk.Window):
                 self._fill_list()
                 self.clear()
             else:
-                messagebox.showerror("Erro", "Não foi possível excluir o registro")
+                Messagebox.show_error(
+                    title="Erro", message="Não foi possível excluir o registro"
+                )
 
     def on_copiar_leitura_click(self, *args, **kwargs):
         """Método responsável por lidar com o evento do botão "Copiar" pressionado.
@@ -675,8 +661,8 @@ class App(ttk.Window):
                 self.photoimage = ImageTk.PhotoImage(self.cur_img_resized)
                 self.canvas["image"] = self.photoimage
             except (FileNotFoundError, FileExistsError, NoImageException):
-                logging.error("Imagem não encontrada")
-                messagebox.showerror("Imagem", "Imagem não encontrada")
+                logger.error("Imagem não encontrada")
+                Messagebox.show_error(title="Imagem", message="Imagem não encontrada")
             except ValueError:
                 pass
 
@@ -702,13 +688,8 @@ class App(ttk.Window):
 
 
 if __name__ == "__main__":
-    try:
-        initialize()
-        verificar_versao()
-        preferences = Preferencia.get_preferencia()
+    initialize_system()
+    check_for_updates()
 
-        app = App(themename=preferences.themename)
-        app.run()
-    except Exception as e:
-        logging.error(e)
-        messagebox.showerror("Erro", f"Erro: {e}")
+    app = App(themename=AppSettings.get_settings("themename"))
+    app.run()
