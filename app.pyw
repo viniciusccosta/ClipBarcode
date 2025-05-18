@@ -143,7 +143,7 @@ class App(ttk.Window):
 
         self.leituras = None
         self.cur_index = None
-        self.fill_list()
+        self.update_listbox_with_leituras()
 
         # -------------------------------------
         # Detail Frame:
@@ -260,9 +260,10 @@ class App(ttk.Window):
     def _on_ajuda_click(self, *args, **kwargs):
         AjudaToplevel(title="Ajuda", minsize=(600, 600), alpha=0.99, topmost=True)
 
-    def fill_list(self, *args, **kwargs):
+    def update_listbox_with_leituras(self, *args, **kwargs):
         """Método responsável por atualiza a lista com as leituras e atualiza o listbox."""
 
+        # TODO: Pesado para fazer na thread principal ? Já receber a lista de leituras como argumento
         self.leituras = Leitura.get_leituras()
 
         self.listbox.delete(0, tk.END)
@@ -270,11 +271,16 @@ class App(ttk.Window):
         for leitura in self.leituras:
             self.listbox.insert(tk.END, str(leitura))
 
-    def update_selection(self, index: int):
-        self.fill_list()
+    def update_listbox_and_selection(self, index: int):
+        self.update_listbox_with_leituras()
+
         self.listbox.selection_clear(0, tk.END)
         self.listbox.selection_set(index)
         self.listbox.event_generate("<<ListboxSelect>>")
+
+        # self.listbox.update()
+        # self.update()
+        # self.listbox.focus()
 
     def read_clipboard(self):
         """
@@ -416,9 +422,6 @@ class App(ttk.Window):
         # Salvando a leitura:
         store_image(nova_leitura, highlighted_image)
 
-        # Atualizando listbox e simulando um "item selecionado":
-        self.update_selection(0)
-
         # Retornando a leitura:
         return nova_leitura
 
@@ -441,7 +444,7 @@ class App(ttk.Window):
 
             # TODO: Algum lugar sobreescreveu o self.leituras por um objeto Leitura "ValueError: <Leitura: 3): Version 4 QR Code, up to 50 char> is not in list"
             index = self.leituras.index(e.leitura)
-            self.update_selection(index)
+            self.update_listbox_and_selection(index)
         except Exception as e:
             logger.error(f"Erro ao ler a Área de Transferência: {e}")
             logger.exception(e)
@@ -511,7 +514,7 @@ class App(ttk.Window):
                 os.remove(os.path.join(HISTORY_PATH, f"{leitura.mili}.png"))
                 Leitura.delete_leitura(leitura)
 
-                self.fill_list()
+                self.update_listbox_with_leituras()
                 self.reset_widgets()
             else:
                 Messagebox.show_error(
@@ -580,7 +583,7 @@ class App(ttk.Window):
         leitura = self.leituras[self.cur_index]
 
         Leitura.update_leitura(leitura, descricao=self.var_descricao.get())
-        self.fill_list()
+        self.update_listbox_with_leituras()
         # TODO: Selecionar algum item da listbox (o anterior, o próximo, o primeiro...)
 
     def update_frame_detail(self, leitura: Leitura, *args, **kwargs):
@@ -730,32 +733,24 @@ class App(ttk.Window):
             # Tenta ler a Área de Transferência:
             try:
                 leitura = self.read_clipboard()
+                index = 0
             except (NoImageException, LeituraFalhaException):
                 logger.debug("Nenhum código de barras encontrado ou falha na leitura")
             except DuplicatedLeituraException as e:
                 logger.debug("Leitura duplicada")
                 leitura = e.leitura
                 index = self.leituras.index(leitura)
-                self.task_queue.put((self.update_selection, (index,)))
             except Exception as e:
                 logger.warning(f"Erro ao ler a Área de Transferência: {e}")
-            finally:
-                # Schedule callbacks via the queue
-                self.task_queue.put((self._process_clipboard_change, (leitura,)))
 
-                # Reinicia o monitoramento da Área de Transferência:
-                # TODO: Usar uma variável para o tempo de espera
-                threading.Event().wait(1)
-
-    def _process_clipboard_change(self, leitura):
-        try:
-            # Se a leitura foi realizada com sucesso, copiamos o código de barras lido para a Área de Transferência:
+            # Schedule callbacks via the queue
             if leitura:
-                self.listbox.focus()
+                self.task_queue.put((self.update_listbox_and_selection, (index,)))
                 pyperclip.copy(leitura.cod_conv)
-        except Exception as e:
-            logger.error(f"Erro ao copiar o código de barras")
-            logger.exception(e)
+
+            # Reinicia o monitoramento da Área de Transferência:
+            # TODO: Usar uma variável para o tempo de espera
+            threading.Event().wait(1)
 
     def _on_close(self, *args, **kwargs):
         """Método responsável por lidar com o evento de fechamento da janela.
