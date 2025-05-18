@@ -39,11 +39,12 @@ from pyzbar.pyzbar import Decoded, decode
 from ttkbootstrap.dialogs import Messagebox
 from ttkbootstrap.localization.msgcat import MessageCatalog
 
-from clipbarcode.boleto import BoletoInvalidoException, new_boleto
+from clipbarcode.boleto import new_boleto
 from clipbarcode.config import initialize_system
 from clipbarcode.constants import CURRENT_VERSION, HISTORY_PATH, LABEL_FONTNAME
 from clipbarcode.datetime_tools import timens_to_datetime
 from clipbarcode.exceptions import (
+    BoletoInvalidoException,
     DuplicatedLeituraException,
     LeituraFalhaException,
     NoImageException,

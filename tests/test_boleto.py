@@ -1,11 +1,7 @@
 import unittest
 
-from clipbarcode.boleto import (
-    Arrecadacao,
-    BoletoInvalidoException,
-    Cobranca,
-    new_boleto,
-)
+from clipbarcode.boleto import Arrecadacao, Cobranca, new_boleto
+from clipbarcode.exceptions import BoletoInvalidoException
 
 
 class NovoBoletoTestCase(unittest.TestCase):

@@ -1,16 +1,14 @@
-# =============================================================================
 import re
 from abc import ABC, abstractmethod
 from decimal import Decimal
 
-from .datetime_tools import calculate_date
-from .digito_verificador import mod10, mod11
+from clipbarcode.datetime_tools import calculate_date
+from clipbarcode.digito_verificador import mod10, mod11
+from clipbarcode.exceptions import BoletoInvalidoException
 
-# =============================================================================
 DATA_BASE = "07/10/1997"
 
 
-# =============================================================================
 def new_boleto(*args, **kwargs):
     if "linha_digitavel" in kwargs:
         linha_digitavel = kwargs.get("linha_digitavel")
@@ -37,12 +35,6 @@ def new_boleto(*args, **kwargs):
     raise BoletoInvalidoException
 
 
-# =============================================================================
-class BoletoInvalidoException(Exception):
-    pass
-
-
-# =============================================================================
 class Boleto(ABC):
     def __init__(self, *args, **kwargs):
         self.linha_digitavel = None
@@ -430,17 +422,3 @@ class Cobranca(Boleto):
                 raise BoletoInvalidoException
         else:
             raise BoletoInvalidoException
-
-
-# =============================================================================
-"""
-    https://www.boletobancario-codigodebarras.com/2016/04/linha-digitavel.html
-    https://cmsarquivos.febraban.org.br/Arquivos/documentos/PDF/Layout%20-%20C%C3%B3digo%20de%20Barras%20ATUALIZADO.pdf
-    https://www.macoratti.net/07/10/net_bol.htm
-    https://www.banese.com.br/wps/discovirtual/download?nmInternalFolder=/Empresa_recebimento&nmFile=Composicao%20da%20Linha%20Digitavel%20e%20do%20Codigo%20de%20Barras_05062017.pdf
-    https://demo.iprefeituras.com.br/uploads/noticia/16091/manual_cnab_400.pdf
-    https://www.bb.com.br/docs/pub/emp/empl/dwn/Doc5175Bloqueto.pdf
-    https://www.bb.com.br/docs/pub/emp/empl/dwn/Doc8122GuiaNaoComp.pdf
-"""
-
-# =============================================================================
