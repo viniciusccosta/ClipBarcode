@@ -25,16 +25,17 @@ except Exception as e:
 # Imports:
 import datetime
 import logging
+import queue
+import threading
 import tkinter as tk
 from time import time_ns
 
 import pyperclip
-import pytesseract
 import ttkbootstrap as ttk
 from PIL import Image, ImageDraw, ImageGrab, ImageTk
 from PIL.Image import Resampling
 from PIL.PngImagePlugin import PngImageFile
-from pyzbar.pyzbar import decode
+from pyzbar.pyzbar import Decoded, decode
 from ttkbootstrap.dialogs import Messagebox
 from ttkbootstrap.localization.msgcat import MessageCatalog
 
@@ -42,7 +43,11 @@ from clipbarcode.boleto import BoletoInvalidoException, new_boleto
 from clipbarcode.config import initialize_system
 from clipbarcode.constants import CURRENT_VERSION, HISTORY_PATH, LABEL_FONTNAME
 from clipbarcode.datetime_tools import timens_to_datetime
-from clipbarcode.exceptions import LeituraFalhaException, NoImageException
+from clipbarcode.exceptions import (
+    DuplicatedLeituraException,
+    LeituraFalhaException,
+    NoImageException,
+)
 from clipbarcode.models import AppSettings, Leitura
 from clipbarcode.toplevels import AjudaToplevel, SobreToplevel
 from clipbarcode.update import check_for_updates
@@ -65,6 +70,11 @@ class App(ttk.Window):
         self.last_width = 0
         self.last_height = 0
 
+        # self.bind("<Destroy>", self._on_close)
+        self.protocol("WM_DELETE_WINDOW", self._on_close)
+
+        # TODO: SystemTray onde ao clicar no ícone ativa/desativa a leitura automática
+
         # TODO: create_widget function
 
         # -------------------------------------
@@ -86,10 +96,13 @@ class App(ttk.Window):
         for theme_name in sorted(avaiable_themes):
             theme_menu.add_command(
                 label=theme_name,
-                command=lambda t=theme_name: self._change_theme(t),
+                command=lambda t=theme_name: self.change_theme(t),
             )
 
         menubar.add_cascade(label="Temas", menu=theme_menu)
+
+        # TODO: Configurações:
+        # TODO: Ativar/Desativar leitura automática
 
         # Ajuda:
         help_menu = ttk.Menu()
@@ -130,7 +143,7 @@ class App(ttk.Window):
 
         self.leituras = None
         self.cur_index = None
-        self._fill_list()
+        self.fill_list()
 
         # -------------------------------------
         # Detail Frame:
@@ -192,7 +205,7 @@ class App(ttk.Window):
             textvariable=self.var_descricao,
         )
         self.entry_descricao.grid(row=0, column=0, sticky="we", pady=10, padx=(10, 5))
-        self.entry_descricao.bind("<Return>", self._salvar_descricao)
+        self.entry_descricao.bind("<Return>", self.salvar_descricao)
 
         self.btn_descricao = ttk.Button(
             lf_descricao, text="Editar", command=self._on_btn_descricao_click, width=7
@@ -213,10 +226,21 @@ class App(ttk.Window):
         self.cur_img_resized = None
         self.photoimage = None
 
-        self._hot_read()
+        # Leitura automática a cada X segundos:
+        self.clipboard_thread_running = True
+        self.task_queue = queue.Queue()
+
+        self.clipboard_thread = threading.Thread(
+            target=self.watch_clipboard,
+            daemon=True,
+        )
+        self.clipboard_thread.start()
+
+        self.after(100, self._process_queue)
+
         # -------------------------------------
 
-    def _change_theme(self, themename, *args, **kwargs):
+    def change_theme(self, themename, *args, **kwargs):
         self.style.theme_use(themename)
         AppSettings.set_settings("themename", themename)
 
@@ -236,8 +260,9 @@ class App(ttk.Window):
     def _on_ajuda_click(self, *args, **kwargs):
         AjudaToplevel(title="Ajuda", minsize=(600, 600), alpha=0.99, topmost=True)
 
-    def _fill_list(self, *args, **kwargs):
+    def fill_list(self, *args, **kwargs):
         """Método responsável por atualiza a lista com as leituras e atualiza o listbox."""
+
         self.leituras = Leitura.get_leituras()
 
         self.listbox.delete(0, tk.END)
@@ -245,10 +270,119 @@ class App(ttk.Window):
         for leitura in self.leituras:
             self.listbox.insert(tk.END, str(leitura))
 
-    def _ler_print(self):
-        """Método responsáel por realizar a leitura do print, verificar se é duplicado, e etc."""
+    def update_selection(self, index: int):
+        self.fill_list()
+        self.listbox.selection_clear(0, tk.END)
+        self.listbox.selection_set(index)
+        self.listbox.event_generate("<<ListboxSelect>>")
 
-        def salvar_leitura(leitura: Leitura, img: PngImageFile, *args, **kwargs):
+    def read_clipboard(self):
+        """
+        Função responsável por realizar a leitura de um código de barras.
+
+        - Faz a leitura da imagem que estiver na Área de Transferência
+        - Verifica se a leitura já existe no banco de dados
+        - Caso não exista, salva a leitura no banco de dados
+        - Desenha um retângulo em volta do código de barras
+        - Atualiza a imagem no canvas
+        - Atualiza os widgets com os dados da leitura
+        """
+
+        def capture_and_decode():
+            """Faz a leitura da imagem que estiver na Área de Transferência.
+
+            - Procura inicialmente por um Códigos de Barra
+            - Caso não identifique nenhum código de barras, realiza OCR
+
+            Raises:
+                NoImageException: Caso não seja encontrado nenhuma imagem na Área de Transferência
+                LeituraFalhaException: Caso qualquer problema ocorra ao realizar a leitura
+            """
+
+            # Imagem da Área de Transferência:
+            img = ImageGrab.grabclipboard()
+
+            # Código de Barras:
+            try:
+                results = decode(img)
+            except (TypeError, Exception):
+                raise NoImageException
+
+            # Validando o número de códigos de barras encontrados:
+            if len(results) == 0:
+                texto = "Nenhum código de barras encontrado"
+                logger.warning(texto)
+                raise NoImageException(texto)
+
+            # Validando o número de códigos de barras encontrados:
+            if len(results) > 1:
+                texto = "O seu print só deve conter apenas 1 código de barras"
+                logger.warning(texto)
+                raise LeituraFalhaException(texto)
+
+            # Pegando o primeiro (único) resultado:
+            decoded_data = results[0]
+
+            # Result
+            return img, decoded_data
+
+        def create_leitura(decoded_data):
+            # Texto:
+            text = decoded_data.data.decode("utf-8")
+
+            # Verificando o tipo do código de barras:
+            match (decoded_data.type):
+                case "I25":  # Boletos de Cobraça e Arrecadação
+                    try:
+                        boleto = new_boleto(cod_barras=text)
+                        cod_conv = boleto.linha_digitavel
+                        m_type = 1
+                    except BoletoInvalidoException:
+                        texto = f"Boleto Inválido: |{text}|"
+                        logger.warning(texto)
+                        raise LeituraFalhaException(texto)
+                case "CODE128":  # Código de Nota Fiscal
+                    cod_conv = text
+                    m_type = 2
+                case "QRCODE":  # QRCode
+                    cod_conv = text
+                    m_type = 3
+                case _:  # Nenhum dos tipos anteriores
+                    logger.warning(texto)
+                    raise LeituraFalhaException(texto)
+
+            # Criando a leitura:
+            timens = time_ns()
+            leitura = Leitura(
+                mili=f"{timens}",
+                data=timens_to_datetime(timens),
+                type=m_type,
+                cod_lido=text,
+                cod_conv=cod_conv,
+            )
+
+            # Retornando a leitura:
+            return leitura
+
+        def highlight_rectangle(img: PngImageFile, decoded_data: Decoded):
+            # Desenho do retângulo:
+            x, y, wi, h = (
+                decoded_data.rect.left,
+                decoded_data.rect.top,
+                decoded_data.rect.width,
+                decoded_data.rect.height,
+            )
+            imgdraw = ImageDraw.Draw(img)
+            imgdraw.rectangle(
+                xy=(x, y, x + wi, y + h),
+                outline="#FF0000",
+                width=2,
+            )
+            logger.debug(f"Desenhando em ({x},{y}) -> ({x+wi},{y+h})")
+
+            return img
+
+        def store_image(leitura: Leitura, img: PngImageFile):
             """Salva a leitura no banco de dados juntamente com o print.
 
             Args:
@@ -263,176 +397,57 @@ class App(ttk.Window):
             # Incluíndo a leitura no arquivo de resultados:
             Leitura.create_leitura(leitura)
 
-        def realizar_leitura(*args, **kwargs):
-            """Faz a leitura da imagem que estiver na Área de Transferência.
+        # Lendo a imagem da Área de Transferência:
+        captured_image, decoded_data = capture_and_decode()
 
-            - Procura inicialmente por um Códigos de Barra
-            - Caso não identifique nenhum código de barras, realiza OCR
+        # Criando a leitura:
+        nova_leitura = create_leitura(decoded_data)
 
-            Raises:
-                NoImageException: Caso não seja encontrado nenhuma imagem na Área de Transferência
-                LeituraFalhaException: Caso qualquer problema ocorra ao realizar a leitura
-            """
+        # Desenhando o retângulo na imagem:
+        highlighted_image = highlight_rectangle(captured_image, decoded_data)
 
-            # -----------------------------------------------------------
-            timens = time_ns()
-            agora = timens_to_datetime(timens)
-
-            # -----------------------------------------------------------
-            img = ImageGrab.grabclipboard()
-
-            # -----------------------------------------------------------
-            # Código de Barras:
-            try:
-                results = decode(img)
-            except (TypeError, Exception):
-                raise NoImageException
-
-            if len(results) >= 1:
-                logger.info("Código de barras encontrado")
-
-                if len(results) > 1:
-                    texto = "O seu print só deve conter apenas 1 código de barras"
-                    logger.error(texto)
-                    raise LeituraFalhaException(texto)
-
-                d = results[0]
-                text = d.data.decode("utf-8")
-
-                match (d.type):
-                    case "I25":  # Boletos de Cobraça e Arrecadação
-                        logger.debug(
-                            "Código de barrras do tipo I25 (boletos de cobrança e arrecadação)"
-                        )
-                        try:
-                            boleto = new_boleto(cod_barras=text)
-                            cod_conv = boleto.linha_digitavel
-                            m_type = 1
-                        except BoletoInvalidoException:
-                            texto = f"Boleto Inválido: |{text}|"
-                            logger.error(texto)
-                            raise LeituraFalhaException(texto)
-                    case "CODE128":  # Código de Nota Fiscal
-                        logger.debug("Código de barras do tipo CODE128 (notas fiscais)")
-                        cod_conv = text
-                        m_type = 2
-                    case "QRCODE":  # QRCode
-                        logger.debug("Código de barras do tipo QRCODE")
-                        cod_conv = text
-                        m_type = 3
-                    case _:  # Nenhum dos tipos anteriores
-                        texto = f"O código de barras do tipo {d.type} não é suportado"
-                        logger.warning(texto)
-                        raise LeituraFalhaException(texto)
-
-                x, y, wi, h = d.rect.left, d.rect.top, d.rect.width, d.rect.height
-                imgdraw = ImageDraw.Draw(img)
-                imgdraw.rectangle(
-                    xy=(x, y, x + wi, y + h),
-                    outline="#FF0000",
-                    width=2,
-                )
-                logger.debug(f"Imagem encontrada em ({x},{y}) -> ({x+wi},{y+h})")
-
-                leitura = Leitura(
-                    mili=f"{timens}",
-                    data=agora,
-                    type=m_type,
-                    cod_lido=text,
-                    cod_conv=cod_conv,
-                )
-
-                return (leitura, img)
-
-            # -----------------------------------------------------------
-            # OCR:
-            else:
-                logger.info(
-                    "Nenhum código de barras encontrado, programa tentará fazer OCR."
-                )
-
-                try:
-                    text = pytesseract.image_to_string(
-                        img,
-                        lang="por",
-                    ).strip(
-                        "\n"
-                    )  # TODO: Tesseract está tendo dificuldades em ler números com mais de dois 0 seguidos
-                except TypeError:
-                    raise NoImageException
-
-                if len(text) <= 0:
-                    texto = "OCR não encontrou nada"
-                    logger.warning(texto)
-                    raise LeituraFalhaException(texto)
-
-                logger.debug(f"OCR realizado com sucesso |{text}|")
-
-                boleto = new_boleto(linha_digitavel=text)
-
-                leitura = Leitura(
-                    mili=f"{timens}",
-                    data=agora,
-                    type=0,
-                    cod_lido=text,
-                    cod_conv=boleto.linha_digitavel if boleto else text,
-                )
-
-                return (leitura, img)
-
-        def verifica_se_duplicado(leitura: Leitura, *args, **kwargs):
-            """Verifica se a linha digitável já foi inserida no banco de dados"""
-            leitura = Leitura.get_by_code(leitura.cod_lido)
-
-            if leitura:
-                return True, leitura
-
-            return False, None
-
-        nova_leitura, img = realizar_leitura()
-        duplicado, leitura = verifica_se_duplicado(nova_leitura)
-
-        index = 0
-        if duplicado:
-            ans = Messagebox.yesno(
-                title="Duplicado",
-                message=f"Código de barras já lido.\nDeseja salvar mesmo assim ?",
+        # Verificando se a leitura já existe:
+        if old_leitura := Leitura.get_by_code(nova_leitura.cod_lido):
+            raise DuplicatedLeituraException(
+                message="Código de barras já lido anteriormente",
+                leitura=old_leitura,
             )
 
-            if ans == MessageCatalog.translate("Yes"):
-                salvar_leitura(nova_leitura, img)
-            else:
-                index = self.leituras.index(leitura)
+        # Salvando a leitura:
+        store_image(nova_leitura, highlighted_image)
 
-        else:
-            salvar_leitura(nova_leitura, img)
+        # Atualizando listbox e simulando um "item selecionado":
+        self.update_selection(0)
 
-        self._fill_list()
-        self.listbox.selection_clear(0, tk.END)
-        self.listbox.selection_set(index)
-        self.listbox.event_generate(
-            "<<ListboxSelect>>"
-        )  # Simulando um "item selecionado"
-
-    def _hot_read(self):
-        """Método responsável por tentar realizar uma leitura logo na inicialização da aplicação."""
-        try:
-            self._ler_print()
-        except Exception:
-            pass
-
-        self.listbox.focus()
+        # Retornando a leitura:
+        return nova_leitura
 
     def _on_ler_print_click(self, *args, **kwargs):
         """Método responsável por lidar com o evento do Botão "Ler Print" ao ser pressionado."""
+
+        # TODO: O ideal seria fazer isso em uma thread separada para não travar a interface.
+
         try:
-            self._ler_print()
-        except NoImageException:
+            self.read_clipboard()
+            self.listbox.focus()
+        except NoImageException as e:
             Messagebox.show_warning(title="Sem Imagem", message="Tire um print antes")
         except LeituraFalhaException as e:
             Messagebox.show_warning(title="Ops", message=e.message)
+        except DuplicatedLeituraException as e:
+            Messagebox.show_warning(
+                title="Duplicado", message=f"Código de barras já lido."
+            )
 
-        self.listbox.focus()
+            # TODO: Algum lugar sobreescreveu o self.leituras por um objeto Leitura "ValueError: <Leitura: 3): Version 4 QR Code, up to 50 char> is not in list"
+            index = self.leituras.index(e.leitura)
+            self.update_selection(index)
+        except Exception as e:
+            logger.error(f"Erro ao ler a Área de Transferência: {e}")
+            logger.exception(e)
+            Messagebox.show_error(
+                title="Erro", message=f"Erro ao ler a Área de Transferência"
+            )
 
     def _on_item_selected(self, *args, **kwargs):
         """Método responsável por lidar com os eventos de um item selecionado na Listbox.
@@ -496,8 +511,8 @@ class App(ttk.Window):
                 os.remove(os.path.join(HISTORY_PATH, f"{leitura.mili}.png"))
                 Leitura.delete_leitura(leitura)
 
-                self._fill_list()
-                self.clear()
+                self.fill_list()
+                self.reset_widgets()
             else:
                 Messagebox.show_error(
                     title="Erro", message="Não foi possível excluir o registro"
@@ -529,7 +544,7 @@ class App(ttk.Window):
                 self.entry_descricao.config(state="normal")
 
             case "Salvar":
-                self._salvar_descricao()
+                self.salvar_descricao()
 
     def _on_configure_callback(self, event, *args, **kwargs):
         """Callback para qualquer evento de configuração da Janela.
@@ -554,7 +569,7 @@ class App(ttk.Window):
                 self.last_width = event.width
                 self.last_height = event.height
 
-    def _salvar_descricao(self, *args, **kwargs):
+    def salvar_descricao(self, *args, **kwargs):
         self.btn_descricao.configure(text="Editar", bootstyle="default")
         self.entry_descricao.config(state="readonly")
 
@@ -565,7 +580,7 @@ class App(ttk.Window):
         leitura = self.leituras[self.cur_index]
 
         Leitura.update_leitura(leitura, descricao=self.var_descricao.get())
-        self._fill_list()
+        self.fill_list()
         # TODO: Selecionar algum item da listbox (o anterior, o próximo, o primeiro...)
 
     def update_frame_detail(self, leitura: Leitura, *args, **kwargs):
@@ -663,7 +678,7 @@ class App(ttk.Window):
                 self.photoimage = ImageTk.PhotoImage(self.cur_img_resized)
                 self.canvas["image"] = self.photoimage
             except (FileNotFoundError, FileExistsError, NoImageException):
-                logger.error("Imagem não encontrada")
+                logger.warning("Imagem não encontrada")
                 Messagebox.show_error(title="Imagem", message="Imagem não encontrada")
             except ValueError:
                 pass
@@ -676,7 +691,7 @@ class App(ttk.Window):
         else:
             self.canvas["image"] = ""
 
-    def clear(self, *args, **kwargs):
+    def reset_widgets(self, *args, **kwargs):
         """Limpa todos os widgets."""
         self.listbox.selection_clear(0, tk.END)
         self.update_canvas()
@@ -684,14 +699,87 @@ class App(ttk.Window):
         self.update_tipo("")
         self.update_widget_leitura("")
 
+    def _process_queue(self):
+        """Processa a fila de tarefas.
+
+        Essa função é chamada a cada 100ms e verifica se há tarefas na fila.
+        Se houver, executa a tarefa e remove da fila.
+        """
+
+        while not self.task_queue.empty():
+            task, args = self.task_queue.get()
+            task(*args)
+
+        # Schedule the next check
+        # TODO: Usar uma variável para o tempo de espera
+        self.after(500, self._process_queue)
+
+    def watch_clipboard(self):
+        """Método responsável por monitorar a Área de Transferência.
+
+        Caso o usuário copie algo, iremos tentar fazer a leitura automaticamente.
+        Caso não seja possível, iremos ignorar o erro e continuar monitorando a Área de Transferência.
+        """
+
+        # TODO: Fornecer a possibilidade de ativar/desativar essa função
+        # TODO: No automático vai copiar o código de barras lido para a Área de Transferência e no manual não ?
+
+        while self.clipboard_thread_running:
+            leitura = None
+
+            # Tenta ler a Área de Transferência:
+            try:
+                leitura = self.read_clipboard()
+            except (NoImageException, LeituraFalhaException):
+                logger.debug("Nenhum código de barras encontrado ou falha na leitura")
+            except DuplicatedLeituraException as e:
+                logger.debug("Leitura duplicada")
+                leitura = e.leitura
+                index = self.leituras.index(leitura)
+                self.task_queue.put((self.update_selection, (index,)))
+            except Exception as e:
+                logger.warning(f"Erro ao ler a Área de Transferência: {e}")
+            finally:
+                # Schedule callbacks via the queue
+                self.task_queue.put((self._process_clipboard_change, (leitura,)))
+
+                # Reinicia o monitoramento da Área de Transferência:
+                # TODO: Usar uma variável para o tempo de espera
+                threading.Event().wait(1)
+
+    def _process_clipboard_change(self, leitura):
+        try:
+            # Se a leitura foi realizada com sucesso, copiamos o código de barras lido para a Área de Transferência:
+            if leitura:
+                self.listbox.focus()
+                pyperclip.copy(leitura.cod_conv)
+        except Exception as e:
+            logger.error(f"Erro ao copiar o código de barras")
+            logger.exception(e)
+
+    def _on_close(self, *args, **kwargs):
+        """Método responsável por lidar com o evento de fechamento da janela.
+
+        Caso o usuário clique no botão de fechar a janela, iremos perguntar se ele realmente deseja sair.
+        """
+
+        ans = Messagebox.yesno(title="Sair", message="Deseja realmente sair ?")
+
+        if ans == MessageCatalog.translate("Yes"):
+            self.clipboard_thread_running = False
+            self.clipboard_thread.join(timeout=0.5)
+            self.destroy()
+            self.quit()
+
     def run(self, *args, **kwargs):
         """Executa o loop principal da aplicação."""
+
         self.mainloop()
 
 
 if __name__ == "__main__":
-    initialize_system()
-    check_for_updates()
+    initialize_system()  # TODO: Faz sentido fazer isso aqui?
+    check_for_updates()  # TODO: Faz sentido fazer isso aqui?
 
     app = App(themename=AppSettings.get_settings("themename"))
     app.run()
