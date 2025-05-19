@@ -35,6 +35,6 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.taskipy.tasks]
-test = "pytest --tb=short --disable-warnings -p no:warnings"
+test = "pytest -x --tb=short --disable-warnings -p no:warnings"
 build = "./scripts/build.sh && ./scripts/create_dmg.sh"
 docs = "pdoc --html --output-dir docs --force clipbarcode"
