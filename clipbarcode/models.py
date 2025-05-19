@@ -45,7 +45,7 @@ class Leitura(BaseModel):
             with proxy.atomic():
                 leitura.save()
         except IntegrityError as e:
-            print(e)
+            logger.exception(e)
 
     @classmethod
     def update_leitura(cls, leitura_id, **kwargs):
@@ -58,7 +58,7 @@ class Leitura(BaseModel):
 
                 leitura.save()
         except IntegrityError as e:
-            print(e)
+            logger.exception(e)
 
     @classmethod
     def delete_leitura(cls, leitura):
@@ -66,7 +66,7 @@ class Leitura(BaseModel):
             with proxy.atomic():
                 leitura.delete_instance()
         except IntegrityError as e:
-            print(e)
+            logger.exception(e)
 
     @classmethod
     def get_leituras(cls, reverse=True):
@@ -77,7 +77,7 @@ class Leitura(BaseModel):
             leituras = Leitura.select().order_by(field)
             return list(leituras)
         except Exception as e:
-            print(e)
+            logger.exception(e)
 
     @classmethod
     def get_by_code(cls, cod_lido):
@@ -87,7 +87,7 @@ class Leitura(BaseModel):
         except DoesNotExist:
             pass
         except Exception as e:
-            print(e)
+            logger.exception(e)
 
     @classmethod
     def from_json_to_sqlite(cls, json_content):
@@ -125,7 +125,7 @@ class AppSettings(BaseModel):
         try:
             settings = cls.get_by_id(0)
         except AppSettings.DoesNotExist:
-            print("Settings not found, creating default settings.")
+            logger.warning("Settings not found, creating default settings.")
             settings = cls.create(id=0)
             settings.save()
 
@@ -136,7 +136,7 @@ class AppSettings(BaseModel):
         try:
             settings = cls.get_by_id(0)
         except AppSettings.DoesNotExist:
-            print("Settings not found, creating default settings.")
+            logger.warning("Settings not found, creating default settings.")
             settings = cls.create(id=0)
 
         setattr(settings, key, value)
