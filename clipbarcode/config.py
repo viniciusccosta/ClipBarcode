@@ -6,11 +6,12 @@ from pathlib import Path
 
 import pytesseract
 from decouple import config
+from peewee import SqliteDatabase
 from rich.logging import RichHandler
 from ttkbootstrap.dialogs import Messagebox
 
 from clipbarcode.constants import HISTORY_PATH, TESSERACT_DEFAULT_PATHS
-from clipbarcode.database import db
+from clipbarcode.database import proxy
 from clipbarcode.models import AppSettings, Leitura
 from clipbarcode.utils import resource_path
 
@@ -59,22 +60,34 @@ def create_database():
     """
 
     def _create_tables():
-        # TODO: with db...
+        # Use the context manager to handle connect/close automatically
+        with db:
+            db.create_tables([Leitura, AppSettings], safe=True)
 
-        db.connect()
-        db.create_tables([Leitura, AppSettings], safe=True)
-        db.close()
+    def _import_json_to_sqlite():
+        # TODO: Drop this compabitility code...
+        json_path = os.path.join(HISTORY_PATH, "results.json")
 
-    json_path = os.path.join(HISTORY_PATH, "results.json")
+        if os.path.exists(json_path):
+            try:
+                # Import JSON data to SQLite
+                Leitura.from_json_to_sqlite(json_path)
 
+                # Excluindo json após transferir as leituras para DB
+                os.remove(json_path)
+            except Exception as e:
+                logger.error("Erro ao importar dados do JSON para o SQLite")
+                logger.exception(e)
+
+    # Initilize the database
+    db = SqliteDatabase(resource_path("clipbarcode.db"))
+    proxy.initialize(db)
+
+    # Create the database and tables
     _create_tables()
-    if os.path.exists(json_path):
-        try:
-            Leitura.from_json_to_sqlite(json_path)
-            os.remove(json_path)  # Excluindo json após transferir as leituras para DB
-        except Exception as e:
-            print(e)
-            logger.error(e)
+
+    # Import JSON (older versions) data to SQLite (newer versions)
+    _import_json_to_sqlite
 
 
 def create_images_directory():
