@@ -101,16 +101,12 @@ el.replaceWith(d);
     # ---------------------------------------------------------------------------
     soma = 0
 
-    # print(dados, multiplicador)
     for i in range(len(multiplicador)):
         produto = int(dados[i]) * multiplicador[i]
-        # print(f&#39;{i:02}) {int(dados[i])} x {multiplicador[i]} = {produto:02} --&gt; Soma antes: {soma:03}&#39;)
         soma += produto
-    # print(f&#34;Soma: {soma:03}&#34;)
 
     # ---------------------------------------------------------------------------
     resto = soma % 11
-    # print(f&#34;RESTO: {resto}&#34;)
 
     if x10:
         dv = ((soma * 10) % 11) % 10

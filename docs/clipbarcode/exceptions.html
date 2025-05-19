@@ -46,6 +46,46 @@ el.replaceWith(d);
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
+<dt id="clipbarcode.exceptions.BoletoInvalidoException"><code class="flex name class">
+<span>class <span class="ident">BoletoInvalidoException</span></span>
+<span>(</span><span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class BoletoInvalidoException(Exception):
+    pass</code></pre>
+</details>
+<div class="desc"><p>Common base class for all non-exit exceptions.</p></div>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>builtins.Exception</li>
+<li>builtins.BaseException</li>
+</ul>
+</dd>
+<dt id="clipbarcode.exceptions.DuplicatedLeituraException"><code class="flex name class">
+<span>class <span class="ident">DuplicatedLeituraException</span></span>
+<span>(</span><span>message, leitura=None)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class DuplicatedLeituraException(Exception):
+    def __init__(self, message, leitura=None):
+        self.message = message
+        self.leitura = leitura</code></pre>
+</details>
+<div class="desc"><p>Common base class for all non-exit exceptions.</p></div>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>builtins.Exception</li>
+<li>builtins.BaseException</li>
+</ul>
+</dd>
 <dt id="clipbarcode.exceptions.LeituraFalhaException"><code class="flex name class">
 <span>class <span class="ident">LeituraFalhaException</span></span>
 <span>(</span><span>message)</span>
@@ -100,6 +140,12 @@ el.replaceWith(d);
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
+<li>
+<h4><code><a title="clipbarcode.exceptions.BoletoInvalidoException" href="#clipbarcode.exceptions.BoletoInvalidoException">BoletoInvalidoException</a></code></h4>
+</li>
+<li>
+<h4><code><a title="clipbarcode.exceptions.DuplicatedLeituraException" href="#clipbarcode.exceptions.DuplicatedLeituraException">DuplicatedLeituraException</a></code></h4>
+</li>
 <li>
 <h4><code><a title="clipbarcode.exceptions.LeituraFalhaException" href="#clipbarcode.exceptions.LeituraFalhaException">LeituraFalhaException</a></code></h4>
 </li>

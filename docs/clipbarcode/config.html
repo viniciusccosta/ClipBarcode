@@ -103,22 +103,34 @@ el.replaceWith(d);
     &#34;&#34;&#34;
 
     def _create_tables():
-        # TODO: with db...
+        # Use the context manager to handle connect/close automatically
+        with db:
+            db.create_tables([Leitura, AppSettings], safe=True)
 
-        db.connect()
-        db.create_tables([Leitura, AppSettings], safe=True)
-        db.close()
+    def _import_json_to_sqlite():
+        # TODO: Drop this compabitility code...
+        json_path = os.path.join(HISTORY_PATH, &#34;results.json&#34;)
 
-    json_path = os.path.join(HISTORY_PATH, &#34;results.json&#34;)
+        if os.path.exists(json_path):
+            try:
+                # Import JSON data to SQLite
+                Leitura.from_json_to_sqlite(json_path)
 
+                # Excluindo json após transferir as leituras para DB
+                os.remove(json_path)
+            except Exception as e:
+                logger.error(&#34;Erro ao importar dados do JSON para o SQLite&#34;)
+                logger.exception(e)
+
+    # Initilize the database
+    db = SqliteDatabase(resource_path(&#34;clipbarcode.db&#34;))
+    proxy.initialize(db)
+
+    # Create the database and tables
     _create_tables()
-    if os.path.exists(json_path):
-        try:
-            Leitura.from_json_to_sqlite(json_path)
-            os.remove(json_path)  # Excluindo json após transferir as leituras para DB
-        except Exception as e:
-            print(e)
-            logger.error(e)</code></pre>
+
+    # Import JSON (older versions) data to SQLite (newer versions)
+    _import_json_to_sqlite</code></pre>
 </details>
 <div class="desc"><p>Create the database and tables if they do not exist.
 This function connects to the database, creates the necessary tables,
