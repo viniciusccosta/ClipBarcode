@@ -11,12 +11,17 @@ from peewee import (
     TextField,
 )
 
-from clipbarcode.database import db
+from clipbarcode.database import proxy
 
 logger = logging.getLogger(__name__)
 
 
-class Leitura(Model):
+class BaseModel(Model):
+    class Meta:
+        database = proxy
+
+
+class Leitura(BaseModel):
     TYPES = (
         ("0", "Texto"),
         ("1", "Código de Barras"),
@@ -31,24 +36,21 @@ class Leitura(Model):
     cod_conv = TextField()
     descricao = TextField(null=True)
 
-    class Meta:
-        database = db
-
     def get_type_display(self):
         return dict(self.TYPES)[self.type]
 
     @classmethod
     def create_leitura(cls, leitura):
         try:
-            with db.atomic():
+            with proxy.atomic():
                 leitura.save()
         except IntegrityError as e:
-            print(e)
+            logger.exception(e)
 
     @classmethod
     def update_leitura(cls, leitura_id, **kwargs):
         try:
-            with db.atomic():
+            with proxy.atomic():
                 leitura = Leitura.get(Leitura.id == leitura_id)
 
                 for field, value in kwargs.items():
@@ -56,15 +58,15 @@ class Leitura(Model):
 
                 leitura.save()
         except IntegrityError as e:
-            print(e)
+            logger.exception(e)
 
     @classmethod
     def delete_leitura(cls, leitura):
         try:
-            with db.atomic():
+            with proxy.atomic():
                 leitura.delete_instance()
         except IntegrityError as e:
-            print(e)
+            logger.exception(e)
 
     @classmethod
     def get_leituras(cls, reverse=True):
@@ -75,7 +77,7 @@ class Leitura(Model):
             leituras = Leitura.select().order_by(field)
             return list(leituras)
         except Exception as e:
-            print(e)
+            logger.exception(e)
 
     @classmethod
     def get_by_code(cls, cod_lido):
@@ -85,7 +87,7 @@ class Leitura(Model):
         except DoesNotExist:
             pass
         except Exception as e:
-            print(e)
+            logger.exception(e)
 
     @classmethod
     def from_json_to_sqlite(cls, json_content):
@@ -98,10 +100,10 @@ class Leitura(Model):
                 cod_conv=dic["cod_conv"],
                 descricao=dic.get("descricao"),
             )
-            for mili, dic in json_content.items()
+            for mili, dic in sorted(json_content.items(), key=lambda x: x[0])
         ]
 
-        with db.atomic():
+        with proxy.atomic():
             for leitura in leituras:
                 try:
                     leitura.save()
@@ -115,18 +117,15 @@ class Leitura(Model):
         return f'{self.id}): {campo[0:max_len]}{"..." if len(campo) > max_len else ""}'
 
 
-class AppSettings(Model):
+class AppSettings(BaseModel):
     themename = TextField(default="darkly", null=False)
-
-    class Meta:
-        database = db
 
     @classmethod
     def get_settings(cls, key):
         try:
             settings = cls.get_by_id(0)
         except AppSettings.DoesNotExist:
-            print("Settings not found, creating default settings.")
+            logger.warning("Settings not found, creating default settings.")
             settings = cls.create(id=0)
             settings.save()
 
@@ -137,7 +136,7 @@ class AppSettings(Model):
         try:
             settings = cls.get_by_id(0)
         except AppSettings.DoesNotExist:
-            print("Settings not found, creating default settings.")
+            logger.warning("Settings not found, creating default settings.")
             settings = cls.create(id=0)
 
         setattr(settings, key, value)

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
 <meta name="generator" content="pdoc3 0.11.6">
-<title>clipbarcode.database API documentation</title>
+<title>clipbarcode.update API documentation</title>
 <meta name="description" content="">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
@@ -33,7 +33,7 @@ el.replaceWith(d);
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>clipbarcode.database</code></h1>
+<h1 class="title">Module <code>clipbarcode.update</code></h1>
 </header>
 <section id="section-intro">
 </section>
@@ -42,6 +42,75 @@ el.replaceWith(d);
 <section>
 </section>
 <section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="clipbarcode.update.check_for_updates"><code class="name flex">
+<span>def <span class="ident">check_for_updates</span></span>(<span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def check_for_updates(*args, **kwargs):
+    try:
+        response = requests.get(
+            &#34;https://api.github.com/repos/viniciusccosta/clipbarcode/releases&#34;,
+            timeout=(1.0, 2.0),
+        )
+
+        match response.status_code:
+            case 200:
+                # Verifica se a resposta é válida
+                json_data = response.json()
+                if len(json_data) &lt;= 0:
+                    logger.warning(&#34;Nenhuma versão encontrada&#34;)
+                    return
+
+                # Verifica se a versão mais recente é maior que a versão atual
+                release = json_data[0]
+                latest_version = version.parse(release[&#34;tag_name&#34;])
+                assets = release[&#34;assets&#34;]
+
+                if latest_version &lt;= CURRENT_VERSION:
+                    logger.info(&#34;Versão instalada é a mais recente&#34;)
+                    return
+
+                if len(assets) &lt; 0:
+                    logger.warning(&#34;Nenhum asset encontrado&#34;)
+                    return
+
+                # Pergunta ao usuário se deseja atualizar:
+                ans = Messagebox.yesno(
+                    &#34;Atualização&#34;,
+                    &#34;Uma nova versão está disponível, deseja baixá-la?&#34;,
+                )
+
+                if ans == MessageCatalog.translate(&#34;No&#34;):
+                    logger.info(&#34;Usuário decidiu não instalar a nova versão&#34;)
+                    return
+
+                # Baixa o arquivo executável
+                for asset in assets:
+                    url = asset[&#34;browser_download_url&#34;]
+                    filename = asset[&#34;name&#34;]
+
+                    if url.endswith(&#34;.exe&#34;):
+                        urllib.request.urlretrieve(url, filename)
+                        subprocess.run([filename])
+                        Messagebox.show_info(
+                            title=&#34;Fim da Atualização&#34;,
+                            message=&#34;Abra o programa novamente!&#34;,
+                        )
+                        exit(0)
+            case _:
+                pass
+    except Exception:
+        pass</code></pre>
+</details>
+<div class="desc"></div>
+</dd>
+</dl>
 </section>
 <section>
 </section>
@@ -54,6 +123,11 @@ el.replaceWith(d);
 <li><h3>Super-module</h3>
 <ul>
 <li><code><a title="clipbarcode" href="index.html">clipbarcode</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="clipbarcode.update.check_for_updates" href="#clipbarcode.update.check_for_updates">check_for_updates</a></code></li>
 </ul>
 </li>
 </ul>

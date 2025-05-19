@@ -38,16 +38,12 @@ def mod11(dados, x10=False):
     # ---------------------------------------------------------------------------
     soma = 0
 
-    # print(dados, multiplicador)
     for i in range(len(multiplicador)):
         produto = int(dados[i]) * multiplicador[i]
-        # print(f'{i:02}) {int(dados[i])} x {multiplicador[i]} = {produto:02} --> Soma antes: {soma:03}')
         soma += produto
-    # print(f"Soma: {soma:03}")
 
     # ---------------------------------------------------------------------------
     resto = soma % 11
-    # print(f"RESTO: {resto}")
 
     if x10:
         dv = ((soma * 10) % 11) % 10

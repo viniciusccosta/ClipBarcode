@@ -1,5 +1,3 @@
-from peewee import SqliteDatabase
+from peewee import Proxy
 
-from clipbarcode.utils import resource_path
-
-db = SqliteDatabase(resource_path("database.db"))
+proxy = Proxy()

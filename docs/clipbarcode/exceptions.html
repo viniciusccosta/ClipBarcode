@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
 <meta name="generator" content="pdoc3 0.11.6">
-<title>clipbarcode.database API documentation</title>
+<title>clipbarcode.exceptions API documentation</title>
 <meta name="description" content="">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
@@ -33,7 +33,7 @@ el.replaceWith(d);
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>clipbarcode.database</code></h1>
+<h1 class="title">Module <code>clipbarcode.exceptions</code></h1>
 </header>
 <section id="section-intro">
 </section>
@@ -44,6 +44,88 @@ el.replaceWith(d);
 <section>
 </section>
 <section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="clipbarcode.exceptions.BoletoInvalidoException"><code class="flex name class">
+<span>class <span class="ident">BoletoInvalidoException</span></span>
+<span>(</span><span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class BoletoInvalidoException(Exception):
+    pass</code></pre>
+</details>
+<div class="desc"><p>Common base class for all non-exit exceptions.</p></div>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>builtins.Exception</li>
+<li>builtins.BaseException</li>
+</ul>
+</dd>
+<dt id="clipbarcode.exceptions.DuplicatedLeituraException"><code class="flex name class">
+<span>class <span class="ident">DuplicatedLeituraException</span></span>
+<span>(</span><span>message, leitura=None)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class DuplicatedLeituraException(Exception):
+    def __init__(self, message, leitura=None):
+        self.message = message
+        self.leitura = leitura</code></pre>
+</details>
+<div class="desc"><p>Common base class for all non-exit exceptions.</p></div>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>builtins.Exception</li>
+<li>builtins.BaseException</li>
+</ul>
+</dd>
+<dt id="clipbarcode.exceptions.LeituraFalhaException"><code class="flex name class">
+<span>class <span class="ident">LeituraFalhaException</span></span>
+<span>(</span><span>message)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class LeituraFalhaException(Exception):
+    def __init__(self, message):
+        self.message = message</code></pre>
+</details>
+<div class="desc"><p>Common base class for all non-exit exceptions.</p></div>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>builtins.Exception</li>
+<li>builtins.BaseException</li>
+</ul>
+</dd>
+<dt id="clipbarcode.exceptions.NoImageException"><code class="flex name class">
+<span>class <span class="ident">NoImageException</span></span>
+<span>(</span><span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class NoImageException(Exception):
+    pass</code></pre>
+</details>
+<div class="desc"><p>Common base class for all non-exit exceptions.</p></div>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>builtins.Exception</li>
+<li>builtins.BaseException</li>
+</ul>
+</dd>
+</dl>
 </section>
 </article>
 <nav id="sidebar">
@@ -54,6 +136,22 @@ el.replaceWith(d);
 <li><h3>Super-module</h3>
 <ul>
 <li><code><a title="clipbarcode" href="index.html">clipbarcode</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="clipbarcode.exceptions.BoletoInvalidoException" href="#clipbarcode.exceptions.BoletoInvalidoException">BoletoInvalidoException</a></code></h4>
+</li>
+<li>
+<h4><code><a title="clipbarcode.exceptions.DuplicatedLeituraException" href="#clipbarcode.exceptions.DuplicatedLeituraException">DuplicatedLeituraException</a></code></h4>
+</li>
+<li>
+<h4><code><a title="clipbarcode.exceptions.LeituraFalhaException" href="#clipbarcode.exceptions.LeituraFalhaException">LeituraFalhaException</a></code></h4>
+</li>
+<li>
+<h4><code><a title="clipbarcode.exceptions.NoImageException" href="#clipbarcode.exceptions.NoImageException">NoImageException</a></code></h4>
+</li>
 </ul>
 </li>
 </ul>

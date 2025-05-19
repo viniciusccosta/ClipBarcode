@@ -2,18 +2,32 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.10.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="generator" content="pdoc3 0.11.6">
 <title>clipbarcode.boleto API documentation</title>
-<meta name="description" content="" />
-<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
-<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
-<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
-<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
-<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<meta name="description" content="">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source > summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible;min-width:max-content}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin:1em 0}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
 <style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
-<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => {
+hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
+hljs.highlightAll();
+/* Collapse source docstrings */
+setTimeout(() => {
+[...document.querySelectorAll('.hljs.language-python > .hljs-string')]
+.filter(el => el.innerHTML.length > 200 && ['"""', "'''"].includes(el.innerHTML.substring(0, 3)))
+.forEach(el => {
+let d = document.createElement('details');
+d.classList.add('hljs-string');
+d.innerHTML = '<summary>"""</summary>' + el.innerHTML.substring(3);
+el.replaceWith(d);
+});
+}, 100);
+})</script>
 </head>
 <body>
 <main>
@@ -22,411 +36,6 @@
 <h1 class="title">Module <code>clipbarcode.boleto</code></h1>
 </header>
 <section id="section-intro">
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python"># =============================================================================
-import re
-
-from abc import ABC, abstractmethod
-
-from .datetime_tools import calculate_date
-from .digito_verificador import mod10, mod11
-
-# =============================================================================
-DATA_BASE = &#34;07/10/1997&#34;
-
-# =============================================================================
-def new_boleto(*args, **kwargs):
-    if &#34;linha_digitavel&#34; in kwargs:
-        linha_digitavel = kwargs.get(&#34;linha_digitavel&#34;)
-        linha_digitavel = re.sub(&#39;\D&#39;, &#39;&#39;, linha_digitavel)
-
-        if len(linha_digitavel) == 47:
-            try:
-                return Cobranca(linha_digitavel=linha_digitavel)
-            except BoletoInvalidoException:
-                raise
-        elif len(linha_digitavel) == 48:
-            return Arrecadacao(linha_digitavel=linha_digitavel)
-
-    elif &#34;cod_barras&#34; in kwargs:
-        cod_barras = kwargs.get(&#34;cod_barras&#34;)
-        cod_barras = re.sub(&#39;\D&#39;, &#39;&#39;, cod_barras)
-
-        if len(cod_barras) == 44:
-            if cod_barras[0] == &#34;8&#34;:
-                return Arrecadacao(cod_barras=cod_barras)
-            else:
-                return Cobranca(cod_barras=cod_barras)
-
-    raise BoletoInvalidoException
-
-# =============================================================================
-class BoletoInvalidoException(Exception):
-    pass
-
-# =============================================================================
-class Boleto(ABC):
-    def __init__(self, *args, **kwargs):
-        self.linha_digitavel = None
-        self.cod_barras = None
-
-    @abstractmethod
-    def from_linha_digitavel(self, linha_digitavel):
-        pass
-
-    @abstractmethod
-    def from_cod_barras(self, cod_barras):
-        pass
-
-class Arrecadacao(Boleto):
-    &#34;&#34;&#34;
-    Segmento do Produto:
-        1. Prefeituras;
-        2. Saneamento;
-        3. Energia Elétrica e Gás;
-        4. Telecomunicações;
-        5. Órgãos Governamentais;
-        6. Carnes e Assemelhados ou demais
-            Empresas / Órgãos que serão identificadas através do CNPJ.
-        7. Multas de trânsito
-        9. Uso exclusivo do banco
-
-    Valor Efetivo ou Referência:
-        “6”- Valor a ser cobrado efetivamente em reais com dígito verificador calculado pelo módulo 10 na quarta posição do Código de Barras e valor com 11 posições (versão 2 e posteriores) sem qualquer alteração;
-
-        “7”- Quantidade de moeda:
-            Zeros- somente na impossibilidade de utilizar o valor;
-            Valor a ser reajustado por um índice com dígito verificador calculado pelo módulo 10 na quarta posição do Código de Barras e valor com 11 posições (versão 2 e posteriores).
-
-        “8”- Valor a ser cobrado efetivamente em reais com dígito verificador calculado pelo módulo 11 na quarta posição do Código de Barras e valor com 11 posições (versão 2 e posteriores) sem qualquer alteração.
-
-        “9”- Quantidade de moeda
-            Zeros- somente na impossibilidade de utilizar o valor;
-            Valor a ser reajustado por um índice com dígito verificador calculado pelo módulo 11 na quarta posição do Código de Barras e valor com 11 posições (versão 2 e posteriores).
-    &#34;&#34;&#34;
-    
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        # TODO: TALVEZ usar variáveis mais específicas
-        # self.id_prod     = None     # Constante “8” para identificar arrecadação
-        # self.seg_prod    = None     # 1 - Prefeitura, 2 - Saneamento, ....
-        # self.id_ve_ref   = None     #
-        # self.valor       = None     #
-        # self.id_emp      = None     #
-        # self.campo_livre = None     #
-
-        self.dv_geral = None  #
-
-        self.campo1 = None
-        self.dv1    = None
-        self.campo2 = None
-        self.dv2    = None
-        self.campo3 = None
-        self.dv3    = None
-        self.campo4 = None
-        self.dv4    = None
-
-        if &#34;linha_digitavel&#34; in kwargs:
-            self.from_linha_digitavel(kwargs.get(&#34;linha_digitavel&#34;))
-        elif &#34;cod_barras&#34; in kwargs:
-            self.from_cod_barras(kwargs.get(&#34;cod_barras&#34;))
-        else:
-            raise BoletoInvalidoException
-
-    def from_linha_digitavel(self, linha_digitavel):
-        def validar_linha_digitavel():
-            if self.campo1[2] == &#34;8&#34; or self.campo1[2] == &#34;9&#34;:               # TODO: Ao invés desses &#34;ifs&#34; poderíamos fazer uma subclasse de Arrecadação
-                dv1 = mod11(f&#39;{self.campo1}&#39;, x10=True)
-                dv2 = mod11(f&#39;{self.campo2}&#39;, x10=True)
-                dv3 = mod11(f&#39;{self.campo3}&#39;, x10=True)
-                dv4 = mod11(f&#39;{self.campo4}&#39;, x10=True)
-                dv_geral = mod11(f&#39;{self.campo1[0:0 + 3]}{self.campo1[4:4 + 8]}{self.campo2}{self.campo3}{self.campo4}&#39;, x10=True)
-            else:
-                dv1 = mod10(f&#39;{self.campo1}&#39;)
-                dv2 = mod10(f&#39;{self.campo2}&#39;)
-                dv3 = mod10(f&#39;{self.campo3}&#39;)
-                dv4 = mod10(f&#39;{self.campo4}&#39;)
-                dv_geral = mod10(f&#39;{self.campo1[0:0 + 3]}{self.campo1[4:4 + 8]}{self.campo2}{self.campo3}{self.campo4}&#39;)
-
-            return dv1 == self.dv1 and dv2 == self.dv2 and dv3 == self.dv3 and dv4 == self.dv4 and self.dv_geral == dv_geral
-
-        def preencher_cod_barras():
-            self.cod_barras = f&#39;{self.campo1}{self.campo2}{self.campo3}{self.campo4}&#39;
-
-        linha_digitavel = re.sub(&#39;\D&#39;, &#39;&#39;, linha_digitavel)
-
-        if len(linha_digitavel) == 48:
-            self.linha_digitavel = linha_digitavel
-
-            self.campo1 = linha_digitavel[ 0: 0+11]
-            self.dv1    = linha_digitavel[11:11+ 1]
-            self.campo2 = linha_digitavel[12:12+11]
-            self.dv2    = linha_digitavel[23:23+ 1]
-            self.campo3 = linha_digitavel[24:24+11]
-            self.dv3    = linha_digitavel[35:35+ 1]
-            self.campo4 = linha_digitavel[36:36+11]
-            self.dv4    = linha_digitavel[47:47+ 1]
-
-            self.dv_geral = self.campo1[3]
-
-            if validar_linha_digitavel():
-                preencher_cod_barras()
-            else:
-                raise BoletoInvalidoException
-        else:
-            raise BoletoInvalidoException
-
-    def from_cod_barras(self, cod_barras):
-        &#34;&#34;&#34;
-            +---------+---------+--------------------------------------------+
-            | POSIÇÃO | TAMANHO | CONTEÚDO                                   |
-            +---------+---------+--------------------------------------------+
-            | 01 - 01 | 1       | Identificação do Produto                   |
-            +---------+---------+--------------------------------------------+
-            | 02 - 02 | 1       | Identificação do Segmento                  |
-            +---------+---------+--------------------------------------------+
-            | 03 - 03 | 1       | Identificação do valor real ou referência  |
-            +---------+---------+--------------------------------------------+
-            | 04 - 04 | 1       | Dígito verificador geral (módulo 10 ou 11) |
-            +---------+---------+--------------------------------------------+
-            | 05 - 15 | 11      | Valor                                      |
-            +---------+---------+--------------------------------------------+
-            | 16 - 19 | 4       | Identificação da Empresa/Órgão             |
-            +---------+---------+--------------------------------------------+
-            | 20 - 44 | 25      | Campo livre de utilização da Empresa/Orgão |
-            +---------+---------+--------------------------------------------+
-            | 16 - 23 | 8       | CNPJ / MF                                  |
-            +---------+---------+--------------------------------------------+
-            | 24 - 44 | 21      | Campo livre de utilização da Empresa/Órgão |
-            +---------+---------+--------------------------------------------+
-        &#34;&#34;&#34;
-
-        def validar_cod_barras():
-            if self.campo1[2] == &#34;8&#34; or self.campo1[2] == &#34;9&#34;:     # TODO: Ao invés desses &#34;ifs&#34; poderíamos fazer uma subclasse de Arrecadação
-                dv_geral = mod11(f&#39;{self.campo1[0:0 + 3]}{self.campo1[4:4 + 8]}{self.campo2}{self.campo3}{self.campo4}&#39;, x10=True)
-            else:
-                dv_geral = mod10(f&#39;{self.campo1[0:0 + 3]}{self.campo1[4:4 + 8]}{self.campo2}{self.campo3}{self.campo4}&#39;)
-
-            return dv_geral == self.dv_geral
-
-        def preencher_linha_digitavel():
-            if self.campo1[2] == &#34;8&#34; or self.campo1[2] == &#34;9&#34;:               # TODO: Ao invés desses &#34;ifs&#34; poderíamos fazer uma subclasse de Arrecadação
-                self.dv1 = mod11(f&#39;{self.campo1}&#39;, x10=True)
-                self.dv2 = mod11(f&#39;{self.campo2}&#39;, x10=True)
-                self.dv3 = mod11(f&#39;{self.campo3}&#39;, x10=True)
-                self.dv4 = mod11(f&#39;{self.campo4}&#39;, x10=True)
-                self.dv_geral = mod11(f&#39;{self.campo1[0:0 + 3]}{self.campo1[4:4 + 8]}{self.campo2}{self.campo3}{self.campo4}&#39;, x10=True)
-            else:
-                self.dv1 = mod10(f&#39;{self.campo1}&#39;)
-                self.dv2 = mod10(f&#39;{self.campo2}&#39;)
-                self.dv3 = mod10(f&#39;{self.campo3}&#39;)
-                self.dv4 = mod10(f&#39;{self.campo4}&#39;)
-                self.dv_geral = mod10(f&#39;{self.campo1[0:0 + 3]}{self.campo1[4:4 + 8]}{self.campo2}{self.campo3}{self.campo4}&#39;)
-
-            self.linha_digitavel = f&#39;{self.campo1}{self.dv1}{self.campo2}{self.dv2}{self.campo3}{self.dv3}{self.campo4}{self.dv4}&#39;
-
-        cod_barras = re.sub(&#39;\D&#39;, &#39;&#39;, cod_barras)
-
-        if len(cod_barras) == 44:
-            self.cod_barras = cod_barras
-
-            self.campo1 = cod_barras[ 0: 0+11]
-            self.campo2 = cod_barras[11:11+11]
-            self.campo3 = cod_barras[22:22+11]
-            self.campo4 = cod_barras[33:33+11]
-
-            self.dv_geral = self.campo1[3]
-
-            if validar_cod_barras():
-                preencher_linha_digitavel()
-            else:
-                raise BoletoInvalidoException
-        else:
-            raise BoletoInvalidoException
-
-class Cobranca(Boleto):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        # ------------------------------
-        self.id_banco = None
-
-        self.cod_moeda = None
-
-        self.campo_livre_1 = None
-        self.dv1 = None
-
-        self.campo_livre_2 = None
-        self.dv2 = None
-
-        self.campo_livre_3 = None
-        self.dv3 = None
-
-        self.dv_geral = None
-
-        self.fator_venc = None
-
-        self.valor = None
-
-        # ------------------------------
-        self.dv_cod_barras = None
-
-        self.campo_livre_cod_barras = None
-
-        # ------------------------------
-        self.venc = None
-
-        # ------------------------------
-        if &#34;linha_digitavel&#34; in kwargs:
-            self.from_linha_digitavel(kwargs.get(&#34;linha_digitavel&#34;))
-        elif &#34;cod_barras&#34; in kwargs:
-            self.from_cod_barras(kwargs.get(&#34;cod_barras&#34;))
-        else:
-            raise BoletoInvalidoException
-
-    def from_linha_digitavel(self, linha_digitavel):
-        &#34;&#34;&#34;
-            +---------+---------+--------------------------------------+
-            | Posição | Tamanho | Conteúdo                             |
-            +---------+---------+--------------------------------------+
-            | 01-03   | 3       | Identificação do Banco               |
-            +---------+---------+--------------------------------------+
-            | 04-04   | 1       | Código de Moeda (9 - Real)           |
-            +---------+---------+--------------------------------------+
-            | 05-09   | 5       | Posições 1 a 5 do campo livre        |
-            +---------+---------+--------------------------------------+
-            | 10-10   | 1       | Dígito verificador do primeiro campo |
-            +---------+---------+--------------------------------------+
-            | 11-20   | 10      | Posições 6 a 15 do campo livre       |
-            +---------+---------+--------------------------------------+
-            | 21-21   | 1       | Dígito verificador do segundo campo  |
-            +---------+---------+--------------------------------------+
-            | 22-31   | 10      | Posições 16 a 25 do campo livre      |
-            +---------+---------+--------------------------------------+
-            | 32-32   | 1       | Dígito verificador do terceiro campo |
-            +---------+---------+--------------------------------------+
-            | 33-33   | 1       | Dígito verificador geral             |
-            +---------+---------+--------------------------------------+
-            | 34-37   | 4       | Fator de Vencimento                  |
-            +---------+---------+--------------------------------------+
-            | 38-47   | 10      | Valor nominal do título              |
-            +---------+---------+--------------------------------------+
-        &#34;&#34;&#34;
-
-        def validar_linha_digitavel():
-            dv1 = mod10(f&#39;{self.id_banco}{self.cod_moeda}{self.campo_livre_1}&#39;)
-            dv2 = mod10(f&#39;{self.campo_livre_2}&#39;)
-            dv3 = mod10(f&#39;{self.campo_livre_3}&#39;)
-            dv = mod11(f&#39;{self.id_banco}{self.cod_moeda}{self.fator_venc}{int(round(self.valor * 100)):010}{self.campo_livre_1}{self.campo_livre_2}{self.campo_livre_3}&#39;)
-
-            return dv1 == self.dv1 and dv2 == self.dv2 and dv3 == self.dv3 and dv == self.dv_geral
-
-        def preencher_cod_barras():
-            self.campo_livre_cod_barras = f&#39;{self.campo_livre_1}{self.campo_livre_2}{self.campo_livre_3}&#39;
-            self.dv_cod_barras          = self.dv_geral
-            self.cod_barras             = f&#39;{self.id_banco}{self.cod_moeda}{self.dv_cod_barras}{self.fator_venc}{int(round(self.valor * 100)):010}{self.campo_livre_cod_barras}&#39;
-
-        linha_digitavel = re.sub(&#39;\D&#39;, &#39;&#39;, linha_digitavel)
-
-        if len(linha_digitavel) == 47:                          # TODO: Realizar verificações necessárias, como verificar se só possuem números e coisas similares
-            self.linha_digitavel = linha_digitavel
-
-            self.id_banco       = linha_digitavel[ 0: 0 +  3]
-            self.cod_moeda      = linha_digitavel[ 3: 3 +  1]
-            self.campo_livre_1  = linha_digitavel[ 4: 4 +  5]
-            self.dv1            = linha_digitavel[ 9: 9 +  1]
-            self.campo_livre_2  = linha_digitavel[10:10 + 10]
-            self.dv2            = linha_digitavel[20:20 +  1]
-            self.campo_livre_3  = linha_digitavel[21:21 + 10]
-            self.dv3            = linha_digitavel[31:31 +  1]
-            self.dv_geral       = linha_digitavel[32:32 +  1]
-            self.fator_venc     = linha_digitavel[33:33 +  4]
-            self.valor          = int(linha_digitavel[37:37 + 10]) / 100
-
-            self.venc           = calculate_date(DATA_BASE, self.fator_venc)
-
-            if validar_linha_digitavel():
-                preencher_cod_barras()
-            else:
-                raise BoletoInvalidoException
-        else:
-            raise BoletoInvalidoException
-
-    def from_cod_barras(self, cod_barras):
-        &#34;&#34;&#34;
-                    +---------+---------+----------+--------------------------------------------------------------------------------+
-                    | Posição | Tamanho | Picture  | Conteúdo                                                                       |
-                    +---------+---------+----------+--------------------------------------------------------------------------------+
-                    | 01-03   | 3       | 9(3)     | Identificação do banco                                                         |
-                    +---------+---------+----------+--------------------------------------------------------------------------------+
-                    | 04-04   | 1       | 9        | Código moeda (9-Real)                                                          |
-                    +---------+---------+----------+--------------------------------------------------------------------------------+
-                    | 05-05   | 1       | 9        | Dígito verificador do código de barras (DV)                                    |
-                    +---------+---------+----------+--------------------------------------------------------------------------------+
-                    | 06-09   | 4       | 9(4)     | Fator de vencimento                                                            |
-                    +---------+---------+----------+--------------------------------------------------------------------------------+
-                    | 10-19   | 10      | 9(08)v99 | Valor nominal do título                                                        |
-                    +---------+---------+----------+--------------------------------------------------------------------------------+
-                    | 20-44   | 25      | 9(25)    | Campo livre - utilizado de acordo com a especificação interna do banco emissor |
-                    +---------+---------+----------+--------------------------------------------------------------------------------+
-                &#34;&#34;&#34;
-
-        def validar_cod_barras():
-            dv = mod11(f&#39;{self.id_banco}{self.cod_moeda}{self.fator_venc}{int(round(self.valor * 100)):010}{self.campo_livre_cod_barras}&#39;)
-            return dv == self.dv_cod_barras
-
-        def preencher_linha_digitavel():
-            self.campo_livre_1  = self.campo_livre_cod_barras[0:0+5]
-            self.dv1            = mod10(f&#39;{self.id_banco}{self.cod_moeda}{self.campo_livre_1}&#39;)
-
-            self.campo_livre_2  = self.campo_livre_cod_barras[5:5+10]
-            self.dv2            = mod10(f&#39;{self.campo_livre_2}&#39;)
-
-            self.campo_livre_3  = self.campo_livre_cod_barras[15:15+10]
-            self.dv3            = mod10(f&#39;{self.campo_livre_3}&#39;)
-
-            self.dv_geral       = self.dv_cod_barras
-
-            self.linha_digitavel = f&#39;{self.id_banco}{self.cod_moeda}{self.campo_livre_1}{self.dv1}{self.campo_livre_2}{self.dv2}{self.campo_livre_3}{self.dv3}{self.dv_geral}{self.fator_venc}{int(self.valor*100):010}&#39;
-
-        cod_barras = re.sub(&#39;\D&#39;, &#39;&#39;, cod_barras)
-
-        if len(cod_barras) == 44:
-            self.cod_barras = cod_barras
-
-            self.id_banco               = cod_barras[ 0: 0 +  3]
-            self.cod_moeda              = cod_barras[ 3: 3 +  1]
-            self.dv_cod_barras          = cod_barras[ 4: 4 +  1]
-            self.fator_venc             = cod_barras[ 5: 5 +  4]
-            self.valor                  = int(cod_barras[ 9: 9 + 10]) / 100
-            self.campo_livre_cod_barras = cod_barras[19:19 + 25]
-
-            self.venc                   = calculate_date(DATA_BASE, self.fator_venc)
-
-            if validar_cod_barras():
-                preencher_linha_digitavel()
-            else:
-                raise BoletoInvalidoException
-        else:
-            raise BoletoInvalidoException
-
-# =============================================================================
-&#34;&#34;&#34;
-    https://www.boletobancario-codigodebarras.com/2016/04/linha-digitavel.html
-    https://cmsarquivos.febraban.org.br/Arquivos/documentos/PDF/Layout%20-%20C%C3%B3digo%20de%20Barras%20ATUALIZADO.pdf
-    https://www.macoratti.net/07/10/net_bol.htm
-    https://www.banese.com.br/wps/discovirtual/download?nmInternalFolder=/Empresa_recebimento&amp;nmFile=Composicao%20da%20Linha%20Digitavel%20e%20do%20Codigo%20de%20Barras_05062017.pdf
-    https://demo.iprefeituras.com.br/uploads/noticia/16091/manual_cnab_400.pdf
-    https://www.bb.com.br/docs/pub/emp/empl/dwn/Doc5175Bloqueto.pdf
-    https://www.bb.com.br/docs/pub/emp/empl/dwn/Doc8122GuiaNaoComp.pdf
-&#34;&#34;&#34;
-
-# =============================================================================</code></pre>
-</details>
 </section>
 <section>
 </section>
@@ -439,7 +48,6 @@ class Cobranca(Boleto):
 <span>def <span class="ident">new_boleto</span></span>(<span>*args, **kwargs)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -447,7 +55,7 @@ class Cobranca(Boleto):
 <pre><code class="python">def new_boleto(*args, **kwargs):
     if &#34;linha_digitavel&#34; in kwargs:
         linha_digitavel = kwargs.get(&#34;linha_digitavel&#34;)
-        linha_digitavel = re.sub(&#39;\D&#39;, &#39;&#39;, linha_digitavel)
+        linha_digitavel = re.sub(r&#34;\D&#34;, &#34;&#34;, linha_digitavel)
 
         if len(linha_digitavel) == 47:
             try:
@@ -459,7 +67,7 @@ class Cobranca(Boleto):
 
     elif &#34;cod_barras&#34; in kwargs:
         cod_barras = kwargs.get(&#34;cod_barras&#34;)
-        cod_barras = re.sub(&#39;\D&#39;, &#39;&#39;, cod_barras)
+        cod_barras = re.sub(r&#34;\D&#34;, &#34;&#34;, cod_barras)
 
         if len(cod_barras) == 44:
             if cod_barras[0] == &#34;8&#34;:
@@ -469,6 +77,7 @@ class Cobranca(Boleto):
 
     raise BoletoInvalidoException</code></pre>
 </details>
+<div class="desc"></div>
 </dd>
 </dl>
 </section>
@@ -480,28 +89,6 @@ class Cobranca(Boleto):
 <span>(</span><span>*args, **kwargs)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Segmento do Produto:
-1. Prefeituras;
-2. Saneamento;
-3. Energia Elétrica e Gás;
-4. Telecomunicações;
-5. Órgãos Governamentais;
-6. Carnes e Assemelhados ou demais
-Empresas / Órgãos que serão identificadas através do CNPJ.
-7. Multas de trânsito
-9. Uso exclusivo do banco</p>
-<p>Valor Efetivo ou Referência:
-“6”- Valor a ser cobrado efetivamente em reais com dígito verificador calculado pelo módulo 10 na quarta posição do Código de Barras e valor com 11 posições (versão 2 e posteriores) sem qualquer alteração;</p>
-<pre><code>“7”- Quantidade de moeda:
-    Zeros- somente na impossibilidade de utilizar o valor;
-    Valor a ser reajustado por um índice com dígito verificador calculado pelo módulo 10 na quarta posição do Código de Barras e valor com 11 posições (versão 2 e posteriores).
-
-“8”- Valor a ser cobrado efetivamente em reais com dígito verificador calculado pelo módulo 11 na quarta posição do Código de Barras e valor com 11 posições (versão 2 e posteriores) sem qualquer alteração.
-
-“9”- Quantidade de moeda
-    Zeros- somente na impossibilidade de utilizar o valor;
-    Valor a ser reajustado por um índice com dígito verificador calculado pelo módulo 11 na quarta posição do Código de Barras e valor com 11 posições (versão 2 e posteriores).
-</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -532,7 +119,7 @@ Empresas / Órgãos que serão identificadas através do CNPJ.
             Zeros- somente na impossibilidade de utilizar o valor;
             Valor a ser reajustado por um índice com dígito verificador calculado pelo módulo 11 na quarta posição do Código de Barras e valor com 11 posições (versão 2 e posteriores).
     &#34;&#34;&#34;
-    
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -547,13 +134,13 @@ Empresas / Órgãos que serão identificadas através do CNPJ.
         self.dv_geral = None  #
 
         self.campo1 = None
-        self.dv1    = None
+        self.dv1 = None
         self.campo2 = None
-        self.dv2    = None
+        self.dv2 = None
         self.campo3 = None
-        self.dv3    = None
+        self.dv3 = None
         self.campo4 = None
-        self.dv4    = None
+        self.dv4 = None
 
         if &#34;linha_digitavel&#34; in kwargs:
             self.from_linha_digitavel(kwargs.get(&#34;linha_digitavel&#34;))
@@ -564,37 +151,50 @@ Empresas / Órgãos que serão identificadas através do CNPJ.
 
     def from_linha_digitavel(self, linha_digitavel):
         def validar_linha_digitavel():
-            if self.campo1[2] == &#34;8&#34; or self.campo1[2] == &#34;9&#34;:               # TODO: Ao invés desses &#34;ifs&#34; poderíamos fazer uma subclasse de Arrecadação
-                dv1 = mod11(f&#39;{self.campo1}&#39;, x10=True)
-                dv2 = mod11(f&#39;{self.campo2}&#39;, x10=True)
-                dv3 = mod11(f&#39;{self.campo3}&#39;, x10=True)
-                dv4 = mod11(f&#39;{self.campo4}&#39;, x10=True)
-                dv_geral = mod11(f&#39;{self.campo1[0:0 + 3]}{self.campo1[4:4 + 8]}{self.campo2}{self.campo3}{self.campo4}&#39;, x10=True)
+            if (
+                self.campo1[2] == &#34;8&#34; or self.campo1[2] == &#34;9&#34;
+            ):  # TODO: Ao invés desses &#34;ifs&#34; poderíamos fazer uma subclasse de Arrecadação
+                dv1 = mod11(f&#34;{self.campo1}&#34;, x10=True)
+                dv2 = mod11(f&#34;{self.campo2}&#34;, x10=True)
+                dv3 = mod11(f&#34;{self.campo3}&#34;, x10=True)
+                dv4 = mod11(f&#34;{self.campo4}&#34;, x10=True)
+                dv_geral = mod11(
+                    f&#34;{self.campo1[0:0 + 3]}{self.campo1[4:4 + 8]}{self.campo2}{self.campo3}{self.campo4}&#34;,
+                    x10=True,
+                )
             else:
-                dv1 = mod10(f&#39;{self.campo1}&#39;)
-                dv2 = mod10(f&#39;{self.campo2}&#39;)
-                dv3 = mod10(f&#39;{self.campo3}&#39;)
-                dv4 = mod10(f&#39;{self.campo4}&#39;)
-                dv_geral = mod10(f&#39;{self.campo1[0:0 + 3]}{self.campo1[4:4 + 8]}{self.campo2}{self.campo3}{self.campo4}&#39;)
+                dv1 = mod10(f&#34;{self.campo1}&#34;)
+                dv2 = mod10(f&#34;{self.campo2}&#34;)
+                dv3 = mod10(f&#34;{self.campo3}&#34;)
+                dv4 = mod10(f&#34;{self.campo4}&#34;)
+                dv_geral = mod10(
+                    f&#34;{self.campo1[0:0 + 3]}{self.campo1[4:4 + 8]}{self.campo2}{self.campo3}{self.campo4}&#34;
+                )
 
-            return dv1 == self.dv1 and dv2 == self.dv2 and dv3 == self.dv3 and dv4 == self.dv4 and self.dv_geral == dv_geral
+            return (
+                dv1 == self.dv1
+                and dv2 == self.dv2
+                and dv3 == self.dv3
+                and dv4 == self.dv4
+                and self.dv_geral == dv_geral
+            )
 
         def preencher_cod_barras():
-            self.cod_barras = f&#39;{self.campo1}{self.campo2}{self.campo3}{self.campo4}&#39;
+            self.cod_barras = f&#34;{self.campo1}{self.campo2}{self.campo3}{self.campo4}&#34;
 
-        linha_digitavel = re.sub(&#39;\D&#39;, &#39;&#39;, linha_digitavel)
+        linha_digitavel = re.sub(r&#34;\D&#34;, &#34;&#34;, linha_digitavel)
 
         if len(linha_digitavel) == 48:
             self.linha_digitavel = linha_digitavel
 
-            self.campo1 = linha_digitavel[ 0: 0+11]
-            self.dv1    = linha_digitavel[11:11+ 1]
-            self.campo2 = linha_digitavel[12:12+11]
-            self.dv2    = linha_digitavel[23:23+ 1]
-            self.campo3 = linha_digitavel[24:24+11]
-            self.dv3    = linha_digitavel[35:35+ 1]
-            self.campo4 = linha_digitavel[36:36+11]
-            self.dv4    = linha_digitavel[47:47+ 1]
+            self.campo1 = linha_digitavel[0 : 0 + 11]
+            self.dv1 = linha_digitavel[11 : 11 + 1]
+            self.campo2 = linha_digitavel[12 : 12 + 11]
+            self.dv2 = linha_digitavel[23 : 23 + 1]
+            self.campo3 = linha_digitavel[24 : 24 + 11]
+            self.dv3 = linha_digitavel[35 : 35 + 1]
+            self.campo4 = linha_digitavel[36 : 36 + 11]
+            self.dv4 = linha_digitavel[47 : 47 + 1]
 
             self.dv_geral = self.campo1[3]
 
@@ -607,62 +207,76 @@ Empresas / Órgãos que serão identificadas através do CNPJ.
 
     def from_cod_barras(self, cod_barras):
         &#34;&#34;&#34;
-            +---------+---------+--------------------------------------------+
-            | POSIÇÃO | TAMANHO | CONTEÚDO                                   |
-            +---------+---------+--------------------------------------------+
-            | 01 - 01 | 1       | Identificação do Produto                   |
-            +---------+---------+--------------------------------------------+
-            | 02 - 02 | 1       | Identificação do Segmento                  |
-            +---------+---------+--------------------------------------------+
-            | 03 - 03 | 1       | Identificação do valor real ou referência  |
-            +---------+---------+--------------------------------------------+
-            | 04 - 04 | 1       | Dígito verificador geral (módulo 10 ou 11) |
-            +---------+---------+--------------------------------------------+
-            | 05 - 15 | 11      | Valor                                      |
-            +---------+---------+--------------------------------------------+
-            | 16 - 19 | 4       | Identificação da Empresa/Órgão             |
-            +---------+---------+--------------------------------------------+
-            | 20 - 44 | 25      | Campo livre de utilização da Empresa/Orgão |
-            +---------+---------+--------------------------------------------+
-            | 16 - 23 | 8       | CNPJ / MF                                  |
-            +---------+---------+--------------------------------------------+
-            | 24 - 44 | 21      | Campo livre de utilização da Empresa/Órgão |
-            +---------+---------+--------------------------------------------+
+        +---------+---------+--------------------------------------------+
+        | POSIÇÃO | TAMANHO | CONTEÚDO                                   |
+        +---------+---------+--------------------------------------------+
+        | 01 - 01 | 1       | Identificação do Produto                   |
+        +---------+---------+--------------------------------------------+
+        | 02 - 02 | 1       | Identificação do Segmento                  |
+        +---------+---------+--------------------------------------------+
+        | 03 - 03 | 1       | Identificação do valor real ou referência  |
+        +---------+---------+--------------------------------------------+
+        | 04 - 04 | 1       | Dígito verificador geral (módulo 10 ou 11) |
+        +---------+---------+--------------------------------------------+
+        | 05 - 15 | 11      | Valor                                      |
+        +---------+---------+--------------------------------------------+
+        | 16 - 19 | 4       | Identificação da Empresa/Órgão             |
+        +---------+---------+--------------------------------------------+
+        | 20 - 44 | 25      | Campo livre de utilização da Empresa/Orgão |
+        +---------+---------+--------------------------------------------+
+        | 16 - 23 | 8       | CNPJ / MF                                  |
+        +---------+---------+--------------------------------------------+
+        | 24 - 44 | 21      | Campo livre de utilização da Empresa/Órgão |
+        +---------+---------+--------------------------------------------+
         &#34;&#34;&#34;
 
         def validar_cod_barras():
-            if self.campo1[2] == &#34;8&#34; or self.campo1[2] == &#34;9&#34;:     # TODO: Ao invés desses &#34;ifs&#34; poderíamos fazer uma subclasse de Arrecadação
-                dv_geral = mod11(f&#39;{self.campo1[0:0 + 3]}{self.campo1[4:4 + 8]}{self.campo2}{self.campo3}{self.campo4}&#39;, x10=True)
+            if (
+                self.campo1[2] == &#34;8&#34; or self.campo1[2] == &#34;9&#34;
+            ):  # TODO: Ao invés desses &#34;ifs&#34; poderíamos fazer uma subclasse de Arrecadação
+                dv_geral = mod11(
+                    f&#34;{self.campo1[0:0 + 3]}{self.campo1[4:4 + 8]}{self.campo2}{self.campo3}{self.campo4}&#34;,
+                    x10=True,
+                )
             else:
-                dv_geral = mod10(f&#39;{self.campo1[0:0 + 3]}{self.campo1[4:4 + 8]}{self.campo2}{self.campo3}{self.campo4}&#39;)
+                dv_geral = mod10(
+                    f&#34;{self.campo1[0:0 + 3]}{self.campo1[4:4 + 8]}{self.campo2}{self.campo3}{self.campo4}&#34;
+                )
 
             return dv_geral == self.dv_geral
 
         def preencher_linha_digitavel():
-            if self.campo1[2] == &#34;8&#34; or self.campo1[2] == &#34;9&#34;:               # TODO: Ao invés desses &#34;ifs&#34; poderíamos fazer uma subclasse de Arrecadação
-                self.dv1 = mod11(f&#39;{self.campo1}&#39;, x10=True)
-                self.dv2 = mod11(f&#39;{self.campo2}&#39;, x10=True)
-                self.dv3 = mod11(f&#39;{self.campo3}&#39;, x10=True)
-                self.dv4 = mod11(f&#39;{self.campo4}&#39;, x10=True)
-                self.dv_geral = mod11(f&#39;{self.campo1[0:0 + 3]}{self.campo1[4:4 + 8]}{self.campo2}{self.campo3}{self.campo4}&#39;, x10=True)
+            if (
+                self.campo1[2] == &#34;8&#34; or self.campo1[2] == &#34;9&#34;
+            ):  # TODO: Ao invés desses &#34;ifs&#34; poderíamos fazer uma subclasse de Arrecadação
+                self.dv1 = mod11(f&#34;{self.campo1}&#34;, x10=True)
+                self.dv2 = mod11(f&#34;{self.campo2}&#34;, x10=True)
+                self.dv3 = mod11(f&#34;{self.campo3}&#34;, x10=True)
+                self.dv4 = mod11(f&#34;{self.campo4}&#34;, x10=True)
+                self.dv_geral = mod11(
+                    f&#34;{self.campo1[0:0 + 3]}{self.campo1[4:4 + 8]}{self.campo2}{self.campo3}{self.campo4}&#34;,
+                    x10=True,
+                )
             else:
-                self.dv1 = mod10(f&#39;{self.campo1}&#39;)
-                self.dv2 = mod10(f&#39;{self.campo2}&#39;)
-                self.dv3 = mod10(f&#39;{self.campo3}&#39;)
-                self.dv4 = mod10(f&#39;{self.campo4}&#39;)
-                self.dv_geral = mod10(f&#39;{self.campo1[0:0 + 3]}{self.campo1[4:4 + 8]}{self.campo2}{self.campo3}{self.campo4}&#39;)
+                self.dv1 = mod10(f&#34;{self.campo1}&#34;)
+                self.dv2 = mod10(f&#34;{self.campo2}&#34;)
+                self.dv3 = mod10(f&#34;{self.campo3}&#34;)
+                self.dv4 = mod10(f&#34;{self.campo4}&#34;)
+                self.dv_geral = mod10(
+                    f&#34;{self.campo1[0:0 + 3]}{self.campo1[4:4 + 8]}{self.campo2}{self.campo3}{self.campo4}&#34;
+                )
 
-            self.linha_digitavel = f&#39;{self.campo1}{self.dv1}{self.campo2}{self.dv2}{self.campo3}{self.dv3}{self.campo4}{self.dv4}&#39;
+            self.linha_digitavel = f&#34;{self.campo1}{self.dv1}{self.campo2}{self.dv2}{self.campo3}{self.dv3}{self.campo4}{self.dv4}&#34;
 
-        cod_barras = re.sub(&#39;\D&#39;, &#39;&#39;, cod_barras)
+        cod_barras = re.sub(r&#34;\D&#34;, &#34;&#34;, cod_barras)
 
         if len(cod_barras) == 44:
             self.cod_barras = cod_barras
 
-            self.campo1 = cod_barras[ 0: 0+11]
-            self.campo2 = cod_barras[11:11+11]
-            self.campo3 = cod_barras[22:22+11]
-            self.campo4 = cod_barras[33:33+11]
+            self.campo1 = cod_barras[0 : 0 + 11]
+            self.campo2 = cod_barras[11 : 11 + 11]
+            self.campo3 = cod_barras[22 : 22 + 11]
+            self.campo4 = cod_barras[33 : 33 + 11]
 
             self.dv_geral = self.campo1[3]
 
@@ -673,6 +287,28 @@ Empresas / Órgãos que serão identificadas através do CNPJ.
         else:
             raise BoletoInvalidoException</code></pre>
 </details>
+<div class="desc"><p>Segmento do Produto:
+1. Prefeituras;
+2. Saneamento;
+3. Energia Elétrica e Gás;
+4. Telecomunicações;
+5. Órgãos Governamentais;
+6. Carnes e Assemelhados ou demais
+Empresas / Órgãos que serão identificadas através do CNPJ.
+7. Multas de trânsito
+9. Uso exclusivo do banco</p>
+<p>Valor Efetivo ou Referência:
+“6”- Valor a ser cobrado efetivamente em reais com dígito verificador calculado pelo módulo 10 na quarta posição do Código de Barras e valor com 11 posições (versão 2 e posteriores) sem qualquer alteração;</p>
+<pre><code>“7”- Quantidade de moeda:
+    Zeros- somente na impossibilidade de utilizar o valor;
+    Valor a ser reajustado por um índice com dígito verificador calculado pelo módulo 10 na quarta posição do Código de Barras e valor com 11 posições (versão 2 e posteriores).
+
+“8”- Valor a ser cobrado efetivamente em reais com dígito verificador calculado pelo módulo 11 na quarta posição do Código de Barras e valor com 11 posições (versão 2 e posteriores) sem qualquer alteração.
+
+“9”- Quantidade de moeda
+    Zeros- somente na impossibilidade de utilizar o valor;
+    Valor a ser reajustado por um índice com dígito verificador calculado pelo módulo 11 na quarta posição do Código de Barras e valor com 11 posições (versão 2 e posteriores).
+</code></pre></div>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="clipbarcode.boleto.Boleto" href="#clipbarcode.boleto.Boleto">Boleto</a></li>
@@ -684,6 +320,92 @@ Empresas / Órgãos que serão identificadas através do CNPJ.
 <span>def <span class="ident">from_cod_barras</span></span>(<span>self, cod_barras)</span>
 </code></dt>
 <dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def from_cod_barras(self, cod_barras):
+    &#34;&#34;&#34;
+    +---------+---------+--------------------------------------------+
+    | POSIÇÃO | TAMANHO | CONTEÚDO                                   |
+    +---------+---------+--------------------------------------------+
+    | 01 - 01 | 1       | Identificação do Produto                   |
+    +---------+---------+--------------------------------------------+
+    | 02 - 02 | 1       | Identificação do Segmento                  |
+    +---------+---------+--------------------------------------------+
+    | 03 - 03 | 1       | Identificação do valor real ou referência  |
+    +---------+---------+--------------------------------------------+
+    | 04 - 04 | 1       | Dígito verificador geral (módulo 10 ou 11) |
+    +---------+---------+--------------------------------------------+
+    | 05 - 15 | 11      | Valor                                      |
+    +---------+---------+--------------------------------------------+
+    | 16 - 19 | 4       | Identificação da Empresa/Órgão             |
+    +---------+---------+--------------------------------------------+
+    | 20 - 44 | 25      | Campo livre de utilização da Empresa/Orgão |
+    +---------+---------+--------------------------------------------+
+    | 16 - 23 | 8       | CNPJ / MF                                  |
+    +---------+---------+--------------------------------------------+
+    | 24 - 44 | 21      | Campo livre de utilização da Empresa/Órgão |
+    +---------+---------+--------------------------------------------+
+    &#34;&#34;&#34;
+
+    def validar_cod_barras():
+        if (
+            self.campo1[2] == &#34;8&#34; or self.campo1[2] == &#34;9&#34;
+        ):  # TODO: Ao invés desses &#34;ifs&#34; poderíamos fazer uma subclasse de Arrecadação
+            dv_geral = mod11(
+                f&#34;{self.campo1[0:0 + 3]}{self.campo1[4:4 + 8]}{self.campo2}{self.campo3}{self.campo4}&#34;,
+                x10=True,
+            )
+        else:
+            dv_geral = mod10(
+                f&#34;{self.campo1[0:0 + 3]}{self.campo1[4:4 + 8]}{self.campo2}{self.campo3}{self.campo4}&#34;
+            )
+
+        return dv_geral == self.dv_geral
+
+    def preencher_linha_digitavel():
+        if (
+            self.campo1[2] == &#34;8&#34; or self.campo1[2] == &#34;9&#34;
+        ):  # TODO: Ao invés desses &#34;ifs&#34; poderíamos fazer uma subclasse de Arrecadação
+            self.dv1 = mod11(f&#34;{self.campo1}&#34;, x10=True)
+            self.dv2 = mod11(f&#34;{self.campo2}&#34;, x10=True)
+            self.dv3 = mod11(f&#34;{self.campo3}&#34;, x10=True)
+            self.dv4 = mod11(f&#34;{self.campo4}&#34;, x10=True)
+            self.dv_geral = mod11(
+                f&#34;{self.campo1[0:0 + 3]}{self.campo1[4:4 + 8]}{self.campo2}{self.campo3}{self.campo4}&#34;,
+                x10=True,
+            )
+        else:
+            self.dv1 = mod10(f&#34;{self.campo1}&#34;)
+            self.dv2 = mod10(f&#34;{self.campo2}&#34;)
+            self.dv3 = mod10(f&#34;{self.campo3}&#34;)
+            self.dv4 = mod10(f&#34;{self.campo4}&#34;)
+            self.dv_geral = mod10(
+                f&#34;{self.campo1[0:0 + 3]}{self.campo1[4:4 + 8]}{self.campo2}{self.campo3}{self.campo4}&#34;
+            )
+
+        self.linha_digitavel = f&#34;{self.campo1}{self.dv1}{self.campo2}{self.dv2}{self.campo3}{self.dv3}{self.campo4}{self.dv4}&#34;
+
+    cod_barras = re.sub(r&#34;\D&#34;, &#34;&#34;, cod_barras)
+
+    if len(cod_barras) == 44:
+        self.cod_barras = cod_barras
+
+        self.campo1 = cod_barras[0 : 0 + 11]
+        self.campo2 = cod_barras[11 : 11 + 11]
+        self.campo3 = cod_barras[22 : 22 + 11]
+        self.campo4 = cod_barras[33 : 33 + 11]
+
+        self.dv_geral = self.campo1[3]
+
+        if validar_cod_barras():
+            preencher_linha_digitavel()
+        else:
+            raise BoletoInvalidoException
+    else:
+        raise BoletoInvalidoException</code></pre>
+</details>
 <div class="desc"><p>+---------+---------+--------------------------------------------+
 | POSIÇÃO | TAMANHO | CONTEÚDO
 |
@@ -721,121 +443,61 @@ Empresas / Órgãos que serão identificadas através do CNPJ.
 | 24 - 44 | 21
 | Campo livre de utilização da Empresa/Órgão |
 +---------+---------+--------------------------------------------+</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def from_cod_barras(self, cod_barras):
-    &#34;&#34;&#34;
-        +---------+---------+--------------------------------------------+
-        | POSIÇÃO | TAMANHO | CONTEÚDO                                   |
-        +---------+---------+--------------------------------------------+
-        | 01 - 01 | 1       | Identificação do Produto                   |
-        +---------+---------+--------------------------------------------+
-        | 02 - 02 | 1       | Identificação do Segmento                  |
-        +---------+---------+--------------------------------------------+
-        | 03 - 03 | 1       | Identificação do valor real ou referência  |
-        +---------+---------+--------------------------------------------+
-        | 04 - 04 | 1       | Dígito verificador geral (módulo 10 ou 11) |
-        +---------+---------+--------------------------------------------+
-        | 05 - 15 | 11      | Valor                                      |
-        +---------+---------+--------------------------------------------+
-        | 16 - 19 | 4       | Identificação da Empresa/Órgão             |
-        +---------+---------+--------------------------------------------+
-        | 20 - 44 | 25      | Campo livre de utilização da Empresa/Orgão |
-        +---------+---------+--------------------------------------------+
-        | 16 - 23 | 8       | CNPJ / MF                                  |
-        +---------+---------+--------------------------------------------+
-        | 24 - 44 | 21      | Campo livre de utilização da Empresa/Órgão |
-        +---------+---------+--------------------------------------------+
-    &#34;&#34;&#34;
-
-    def validar_cod_barras():
-        if self.campo1[2] == &#34;8&#34; or self.campo1[2] == &#34;9&#34;:     # TODO: Ao invés desses &#34;ifs&#34; poderíamos fazer uma subclasse de Arrecadação
-            dv_geral = mod11(f&#39;{self.campo1[0:0 + 3]}{self.campo1[4:4 + 8]}{self.campo2}{self.campo3}{self.campo4}&#39;, x10=True)
-        else:
-            dv_geral = mod10(f&#39;{self.campo1[0:0 + 3]}{self.campo1[4:4 + 8]}{self.campo2}{self.campo3}{self.campo4}&#39;)
-
-        return dv_geral == self.dv_geral
-
-    def preencher_linha_digitavel():
-        if self.campo1[2] == &#34;8&#34; or self.campo1[2] == &#34;9&#34;:               # TODO: Ao invés desses &#34;ifs&#34; poderíamos fazer uma subclasse de Arrecadação
-            self.dv1 = mod11(f&#39;{self.campo1}&#39;, x10=True)
-            self.dv2 = mod11(f&#39;{self.campo2}&#39;, x10=True)
-            self.dv3 = mod11(f&#39;{self.campo3}&#39;, x10=True)
-            self.dv4 = mod11(f&#39;{self.campo4}&#39;, x10=True)
-            self.dv_geral = mod11(f&#39;{self.campo1[0:0 + 3]}{self.campo1[4:4 + 8]}{self.campo2}{self.campo3}{self.campo4}&#39;, x10=True)
-        else:
-            self.dv1 = mod10(f&#39;{self.campo1}&#39;)
-            self.dv2 = mod10(f&#39;{self.campo2}&#39;)
-            self.dv3 = mod10(f&#39;{self.campo3}&#39;)
-            self.dv4 = mod10(f&#39;{self.campo4}&#39;)
-            self.dv_geral = mod10(f&#39;{self.campo1[0:0 + 3]}{self.campo1[4:4 + 8]}{self.campo2}{self.campo3}{self.campo4}&#39;)
-
-        self.linha_digitavel = f&#39;{self.campo1}{self.dv1}{self.campo2}{self.dv2}{self.campo3}{self.dv3}{self.campo4}{self.dv4}&#39;
-
-    cod_barras = re.sub(&#39;\D&#39;, &#39;&#39;, cod_barras)
-
-    if len(cod_barras) == 44:
-        self.cod_barras = cod_barras
-
-        self.campo1 = cod_barras[ 0: 0+11]
-        self.campo2 = cod_barras[11:11+11]
-        self.campo3 = cod_barras[22:22+11]
-        self.campo4 = cod_barras[33:33+11]
-
-        self.dv_geral = self.campo1[3]
-
-        if validar_cod_barras():
-            preencher_linha_digitavel()
-        else:
-            raise BoletoInvalidoException
-    else:
-        raise BoletoInvalidoException</code></pre>
-</details>
 </dd>
 <dt id="clipbarcode.boleto.Arrecadacao.from_linha_digitavel"><code class="name flex">
 <span>def <span class="ident">from_linha_digitavel</span></span>(<span>self, linha_digitavel)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def from_linha_digitavel(self, linha_digitavel):
     def validar_linha_digitavel():
-        if self.campo1[2] == &#34;8&#34; or self.campo1[2] == &#34;9&#34;:               # TODO: Ao invés desses &#34;ifs&#34; poderíamos fazer uma subclasse de Arrecadação
-            dv1 = mod11(f&#39;{self.campo1}&#39;, x10=True)
-            dv2 = mod11(f&#39;{self.campo2}&#39;, x10=True)
-            dv3 = mod11(f&#39;{self.campo3}&#39;, x10=True)
-            dv4 = mod11(f&#39;{self.campo4}&#39;, x10=True)
-            dv_geral = mod11(f&#39;{self.campo1[0:0 + 3]}{self.campo1[4:4 + 8]}{self.campo2}{self.campo3}{self.campo4}&#39;, x10=True)
+        if (
+            self.campo1[2] == &#34;8&#34; or self.campo1[2] == &#34;9&#34;
+        ):  # TODO: Ao invés desses &#34;ifs&#34; poderíamos fazer uma subclasse de Arrecadação
+            dv1 = mod11(f&#34;{self.campo1}&#34;, x10=True)
+            dv2 = mod11(f&#34;{self.campo2}&#34;, x10=True)
+            dv3 = mod11(f&#34;{self.campo3}&#34;, x10=True)
+            dv4 = mod11(f&#34;{self.campo4}&#34;, x10=True)
+            dv_geral = mod11(
+                f&#34;{self.campo1[0:0 + 3]}{self.campo1[4:4 + 8]}{self.campo2}{self.campo3}{self.campo4}&#34;,
+                x10=True,
+            )
         else:
-            dv1 = mod10(f&#39;{self.campo1}&#39;)
-            dv2 = mod10(f&#39;{self.campo2}&#39;)
-            dv3 = mod10(f&#39;{self.campo3}&#39;)
-            dv4 = mod10(f&#39;{self.campo4}&#39;)
-            dv_geral = mod10(f&#39;{self.campo1[0:0 + 3]}{self.campo1[4:4 + 8]}{self.campo2}{self.campo3}{self.campo4}&#39;)
+            dv1 = mod10(f&#34;{self.campo1}&#34;)
+            dv2 = mod10(f&#34;{self.campo2}&#34;)
+            dv3 = mod10(f&#34;{self.campo3}&#34;)
+            dv4 = mod10(f&#34;{self.campo4}&#34;)
+            dv_geral = mod10(
+                f&#34;{self.campo1[0:0 + 3]}{self.campo1[4:4 + 8]}{self.campo2}{self.campo3}{self.campo4}&#34;
+            )
 
-        return dv1 == self.dv1 and dv2 == self.dv2 and dv3 == self.dv3 and dv4 == self.dv4 and self.dv_geral == dv_geral
+        return (
+            dv1 == self.dv1
+            and dv2 == self.dv2
+            and dv3 == self.dv3
+            and dv4 == self.dv4
+            and self.dv_geral == dv_geral
+        )
 
     def preencher_cod_barras():
-        self.cod_barras = f&#39;{self.campo1}{self.campo2}{self.campo3}{self.campo4}&#39;
+        self.cod_barras = f&#34;{self.campo1}{self.campo2}{self.campo3}{self.campo4}&#34;
 
-    linha_digitavel = re.sub(&#39;\D&#39;, &#39;&#39;, linha_digitavel)
+    linha_digitavel = re.sub(r&#34;\D&#34;, &#34;&#34;, linha_digitavel)
 
     if len(linha_digitavel) == 48:
         self.linha_digitavel = linha_digitavel
 
-        self.campo1 = linha_digitavel[ 0: 0+11]
-        self.dv1    = linha_digitavel[11:11+ 1]
-        self.campo2 = linha_digitavel[12:12+11]
-        self.dv2    = linha_digitavel[23:23+ 1]
-        self.campo3 = linha_digitavel[24:24+11]
-        self.dv3    = linha_digitavel[35:35+ 1]
-        self.campo4 = linha_digitavel[36:36+11]
-        self.dv4    = linha_digitavel[47:47+ 1]
+        self.campo1 = linha_digitavel[0 : 0 + 11]
+        self.dv1 = linha_digitavel[11 : 11 + 1]
+        self.campo2 = linha_digitavel[12 : 12 + 11]
+        self.dv2 = linha_digitavel[23 : 23 + 1]
+        self.campo3 = linha_digitavel[24 : 24 + 11]
+        self.dv3 = linha_digitavel[35 : 35 + 1]
+        self.campo4 = linha_digitavel[36 : 36 + 11]
+        self.dv4 = linha_digitavel[47 : 47 + 1]
 
         self.dv_geral = self.campo1[3]
 
@@ -846,6 +508,7 @@ Empresas / Órgãos que serão identificadas através do CNPJ.
     else:
         raise BoletoInvalidoException</code></pre>
 </details>
+<div class="desc"></div>
 </dd>
 </dl>
 </dd>
@@ -854,8 +517,6 @@ Empresas / Órgãos que serão identificadas através do CNPJ.
 <span>(</span><span>*args, **kwargs)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Helper class that provides a standard way to create an ABC using
-inheritance.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -873,6 +534,8 @@ inheritance.</p></div>
     def from_cod_barras(self, cod_barras):
         pass</code></pre>
 </details>
+<div class="desc"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p></div>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li>abc.ABC</li>
@@ -888,7 +551,6 @@ inheritance.</p></div>
 <span>def <span class="ident">from_cod_barras</span></span>(<span>self, cod_barras)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -897,12 +559,12 @@ inheritance.</p></div>
 def from_cod_barras(self, cod_barras):
     pass</code></pre>
 </details>
+<div class="desc"></div>
 </dd>
 <dt id="clipbarcode.boleto.Boleto.from_linha_digitavel"><code class="name flex">
 <span>def <span class="ident">from_linha_digitavel</span></span>(<span>self, linha_digitavel)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -911,35 +573,15 @@ def from_cod_barras(self, cod_barras):
 def from_linha_digitavel(self, linha_digitavel):
     pass</code></pre>
 </details>
+<div class="desc"></div>
 </dd>
 </dl>
-</dd>
-<dt id="clipbarcode.boleto.BoletoInvalidoException"><code class="flex name class">
-<span>class <span class="ident">BoletoInvalidoException</span></span>
-<span>(</span><span>*args, **kwargs)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Common base class for all non-exit exceptions.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class BoletoInvalidoException(Exception):
-    pass</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li>builtins.Exception</li>
-<li>builtins.BaseException</li>
-</ul>
 </dd>
 <dt id="clipbarcode.boleto.Cobranca"><code class="flex name class">
 <span>class <span class="ident">Cobranca</span></span>
 <span>(</span><span>*args, **kwargs)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Helper class that provides a standard way to create an ABC using
-inheritance.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -986,64 +628,75 @@ inheritance.</p></div>
 
     def from_linha_digitavel(self, linha_digitavel):
         &#34;&#34;&#34;
-            +---------+---------+--------------------------------------+
-            | Posição | Tamanho | Conteúdo                             |
-            +---------+---------+--------------------------------------+
-            | 01-03   | 3       | Identificação do Banco               |
-            +---------+---------+--------------------------------------+
-            | 04-04   | 1       | Código de Moeda (9 - Real)           |
-            +---------+---------+--------------------------------------+
-            | 05-09   | 5       | Posições 1 a 5 do campo livre        |
-            +---------+---------+--------------------------------------+
-            | 10-10   | 1       | Dígito verificador do primeiro campo |
-            +---------+---------+--------------------------------------+
-            | 11-20   | 10      | Posições 6 a 15 do campo livre       |
-            +---------+---------+--------------------------------------+
-            | 21-21   | 1       | Dígito verificador do segundo campo  |
-            +---------+---------+--------------------------------------+
-            | 22-31   | 10      | Posições 16 a 25 do campo livre      |
-            +---------+---------+--------------------------------------+
-            | 32-32   | 1       | Dígito verificador do terceiro campo |
-            +---------+---------+--------------------------------------+
-            | 33-33   | 1       | Dígito verificador geral             |
-            +---------+---------+--------------------------------------+
-            | 34-37   | 4       | Fator de Vencimento                  |
-            +---------+---------+--------------------------------------+
-            | 38-47   | 10      | Valor nominal do título              |
-            +---------+---------+--------------------------------------+
+        +---------+---------+--------------------------------------+
+        | Posição | Tamanho | Conteúdo                             |
+        +---------+---------+--------------------------------------+
+        | 01-03   | 3       | Identificação do Banco               |
+        +---------+---------+--------------------------------------+
+        | 04-04   | 1       | Código de Moeda (9 - Real)           |
+        +---------+---------+--------------------------------------+
+        | 05-09   | 5       | Posições 1 a 5 do campo livre        |
+        +---------+---------+--------------------------------------+
+        | 10-10   | 1       | Dígito verificador do primeiro campo |
+        +---------+---------+--------------------------------------+
+        | 11-20   | 10      | Posições 6 a 15 do campo livre       |
+        +---------+---------+--------------------------------------+
+        | 21-21   | 1       | Dígito verificador do segundo campo  |
+        +---------+---------+--------------------------------------+
+        | 22-31   | 10      | Posições 16 a 25 do campo livre      |
+        +---------+---------+--------------------------------------+
+        | 32-32   | 1       | Dígito verificador do terceiro campo |
+        +---------+---------+--------------------------------------+
+        | 33-33   | 1       | Dígito verificador geral             |
+        +---------+---------+--------------------------------------+
+        | 34-37   | 4       | Fator de Vencimento                  |
+        +---------+---------+--------------------------------------+
+        | 38-47   | 10      | Valor nominal do título              |
+        +---------+---------+--------------------------------------+
         &#34;&#34;&#34;
 
         def validar_linha_digitavel():
-            dv1 = mod10(f&#39;{self.id_banco}{self.cod_moeda}{self.campo_livre_1}&#39;)
-            dv2 = mod10(f&#39;{self.campo_livre_2}&#39;)
-            dv3 = mod10(f&#39;{self.campo_livre_3}&#39;)
-            dv = mod11(f&#39;{self.id_banco}{self.cod_moeda}{self.fator_venc}{int(round(self.valor * 100)):010}{self.campo_livre_1}{self.campo_livre_2}{self.campo_livre_3}&#39;)
+            dv1 = mod10(f&#34;{self.id_banco}{self.cod_moeda}{self.campo_livre_1}&#34;)
+            dv2 = mod10(f&#34;{self.campo_livre_2}&#34;)
+            dv3 = mod10(f&#34;{self.campo_livre_3}&#34;)
+            dv = mod11(
+                f&#34;{self.id_banco}{self.cod_moeda}{self.fator_venc}{int(round(self.valor * 100)):010}{self.campo_livre_1}{self.campo_livre_2}{self.campo_livre_3}&#34;
+            )
 
-            return dv1 == self.dv1 and dv2 == self.dv2 and dv3 == self.dv3 and dv == self.dv_geral
+            return (
+                dv1 == self.dv1
+                and dv2 == self.dv2
+                and dv3 == self.dv3
+                and dv == self.dv_geral
+            )
 
         def preencher_cod_barras():
-            self.campo_livre_cod_barras = f&#39;{self.campo_livre_1}{self.campo_livre_2}{self.campo_livre_3}&#39;
-            self.dv_cod_barras          = self.dv_geral
-            self.cod_barras             = f&#39;{self.id_banco}{self.cod_moeda}{self.dv_cod_barras}{self.fator_venc}{int(round(self.valor * 100)):010}{self.campo_livre_cod_barras}&#39;
+            self.campo_livre_cod_barras = (
+                f&#34;{self.campo_livre_1}{self.campo_livre_2}{self.campo_livre_3}&#34;
+            )
+            self.dv_cod_barras = self.dv_geral
+            self.cod_barras = f&#34;{self.id_banco}{self.cod_moeda}{self.dv_cod_barras}{self.fator_venc}{int(round(self.valor * 100)):010}{self.campo_livre_cod_barras}&#34;
 
-        linha_digitavel = re.sub(&#39;\D&#39;, &#39;&#39;, linha_digitavel)
+        linha_digitavel = re.sub(r&#34;\D&#34;, &#34;&#34;, linha_digitavel)
 
-        if len(linha_digitavel) == 47:                          # TODO: Realizar verificações necessárias, como verificar se só possuem números e coisas similares
+        if (
+            len(linha_digitavel) == 47
+        ):  # TODO: Realizar verificações necessárias, como verificar se só possuem números e coisas similares
             self.linha_digitavel = linha_digitavel
 
-            self.id_banco       = linha_digitavel[ 0: 0 +  3]
-            self.cod_moeda      = linha_digitavel[ 3: 3 +  1]
-            self.campo_livre_1  = linha_digitavel[ 4: 4 +  5]
-            self.dv1            = linha_digitavel[ 9: 9 +  1]
-            self.campo_livre_2  = linha_digitavel[10:10 + 10]
-            self.dv2            = linha_digitavel[20:20 +  1]
-            self.campo_livre_3  = linha_digitavel[21:21 + 10]
-            self.dv3            = linha_digitavel[31:31 +  1]
-            self.dv_geral       = linha_digitavel[32:32 +  1]
-            self.fator_venc     = linha_digitavel[33:33 +  4]
-            self.valor          = int(linha_digitavel[37:37 + 10]) / 100
+            self.id_banco = linha_digitavel[0 : 0 + 3]
+            self.cod_moeda = linha_digitavel[3 : 3 + 1]
+            self.campo_livre_1 = linha_digitavel[4 : 4 + 5]
+            self.dv1 = linha_digitavel[9 : 9 + 1]
+            self.campo_livre_2 = linha_digitavel[10 : 10 + 10]
+            self.dv2 = linha_digitavel[20 : 20 + 1]
+            self.campo_livre_3 = linha_digitavel[21 : 21 + 10]
+            self.dv3 = linha_digitavel[31 : 31 + 1]
+            self.dv_geral = linha_digitavel[32 : 32 + 1]
+            self.fator_venc = linha_digitavel[33 : 33 + 4]
+            self.valor = float(Decimal(linha_digitavel[37 : 37 + 10]) / 100)
 
-            self.venc           = calculate_date(DATA_BASE, self.fator_venc)
+            self.venc = calculate_date(DATA_BASE, self.fator_venc)
 
             if validar_linha_digitavel():
                 preencher_cod_barras()
@@ -1054,54 +707,56 @@ inheritance.</p></div>
 
     def from_cod_barras(self, cod_barras):
         &#34;&#34;&#34;
-                    +---------+---------+----------+--------------------------------------------------------------------------------+
-                    | Posição | Tamanho | Picture  | Conteúdo                                                                       |
-                    +---------+---------+----------+--------------------------------------------------------------------------------+
-                    | 01-03   | 3       | 9(3)     | Identificação do banco                                                         |
-                    +---------+---------+----------+--------------------------------------------------------------------------------+
-                    | 04-04   | 1       | 9        | Código moeda (9-Real)                                                          |
-                    +---------+---------+----------+--------------------------------------------------------------------------------+
-                    | 05-05   | 1       | 9        | Dígito verificador do código de barras (DV)                                    |
-                    +---------+---------+----------+--------------------------------------------------------------------------------+
-                    | 06-09   | 4       | 9(4)     | Fator de vencimento                                                            |
-                    +---------+---------+----------+--------------------------------------------------------------------------------+
-                    | 10-19   | 10      | 9(08)v99 | Valor nominal do título                                                        |
-                    +---------+---------+----------+--------------------------------------------------------------------------------+
-                    | 20-44   | 25      | 9(25)    | Campo livre - utilizado de acordo com a especificação interna do banco emissor |
-                    +---------+---------+----------+--------------------------------------------------------------------------------+
-                &#34;&#34;&#34;
+        +---------+---------+----------+--------------------------------------------------------------------------------+
+        | Posição | Tamanho | Picture  | Conteúdo                                                                       |
+        +---------+---------+----------+--------------------------------------------------------------------------------+
+        | 01-03   | 3       | 9(3)     | Identificação do banco                                                         |
+        +---------+---------+----------+--------------------------------------------------------------------------------+
+        | 04-04   | 1       | 9        | Código moeda (9-Real)                                                          |
+        +---------+---------+----------+--------------------------------------------------------------------------------+
+        | 05-05   | 1       | 9        | Dígito verificador do código de barras (DV)                                    |
+        +---------+---------+----------+--------------------------------------------------------------------------------+
+        | 06-09   | 4       | 9(4)     | Fator de vencimento                                                            |
+        +---------+---------+----------+--------------------------------------------------------------------------------+
+        | 10-19   | 10      | 9(08)v99 | Valor nominal do título                                                        |
+        +---------+---------+----------+--------------------------------------------------------------------------------+
+        | 20-44   | 25      | 9(25)    | Campo livre - utilizado de acordo com a especificação interna do banco emissor |
+        +---------+---------+----------+--------------------------------------------------------------------------------+
+        &#34;&#34;&#34;
 
         def validar_cod_barras():
-            dv = mod11(f&#39;{self.id_banco}{self.cod_moeda}{self.fator_venc}{int(round(self.valor * 100)):010}{self.campo_livre_cod_barras}&#39;)
+            dv = mod11(
+                f&#34;{self.id_banco}{self.cod_moeda}{self.fator_venc}{int(round(self.valor * 100)):010}{self.campo_livre_cod_barras}&#34;
+            )
             return dv == self.dv_cod_barras
 
         def preencher_linha_digitavel():
-            self.campo_livre_1  = self.campo_livre_cod_barras[0:0+5]
-            self.dv1            = mod10(f&#39;{self.id_banco}{self.cod_moeda}{self.campo_livre_1}&#39;)
+            self.campo_livre_1 = self.campo_livre_cod_barras[0 : 0 + 5]
+            self.dv1 = mod10(f&#34;{self.id_banco}{self.cod_moeda}{self.campo_livre_1}&#34;)
 
-            self.campo_livre_2  = self.campo_livre_cod_barras[5:5+10]
-            self.dv2            = mod10(f&#39;{self.campo_livre_2}&#39;)
+            self.campo_livre_2 = self.campo_livre_cod_barras[5 : 5 + 10]
+            self.dv2 = mod10(f&#34;{self.campo_livre_2}&#34;)
 
-            self.campo_livre_3  = self.campo_livre_cod_barras[15:15+10]
-            self.dv3            = mod10(f&#39;{self.campo_livre_3}&#39;)
+            self.campo_livre_3 = self.campo_livre_cod_barras[15 : 15 + 10]
+            self.dv3 = mod10(f&#34;{self.campo_livre_3}&#34;)
 
-            self.dv_geral       = self.dv_cod_barras
+            self.dv_geral = self.dv_cod_barras
 
-            self.linha_digitavel = f&#39;{self.id_banco}{self.cod_moeda}{self.campo_livre_1}{self.dv1}{self.campo_livre_2}{self.dv2}{self.campo_livre_3}{self.dv3}{self.dv_geral}{self.fator_venc}{int(self.valor*100):010}&#39;
+            self.linha_digitavel = f&#34;{self.id_banco}{self.cod_moeda}{self.campo_livre_1}{self.dv1}{self.campo_livre_2}{self.dv2}{self.campo_livre_3}{self.dv3}{self.dv_geral}{self.fator_venc}{int(round(self.valor * 100)):010}&#34;
 
-        cod_barras = re.sub(&#39;\D&#39;, &#39;&#39;, cod_barras)
+        cod_barras = re.sub(r&#34;\D&#34;, &#34;&#34;, cod_barras)
 
         if len(cod_barras) == 44:
             self.cod_barras = cod_barras
 
-            self.id_banco               = cod_barras[ 0: 0 +  3]
-            self.cod_moeda              = cod_barras[ 3: 3 +  1]
-            self.dv_cod_barras          = cod_barras[ 4: 4 +  1]
-            self.fator_venc             = cod_barras[ 5: 5 +  4]
-            self.valor                  = int(cod_barras[ 9: 9 + 10]) / 100
-            self.campo_livre_cod_barras = cod_barras[19:19 + 25]
+            self.id_banco = cod_barras[0 : 0 + 3]
+            self.cod_moeda = cod_barras[3 : 3 + 1]
+            self.dv_cod_barras = cod_barras[4 : 4 + 1]
+            self.fator_venc = cod_barras[5 : 5 + 4]
+            self.valor = float(Decimal(cod_barras[9 : 9 + 10]) / 100)
+            self.campo_livre_cod_barras = cod_barras[19 : 19 + 25]
 
-            self.venc                   = calculate_date(DATA_BASE, self.fator_venc)
+            self.venc = calculate_date(DATA_BASE, self.fator_venc)
 
             if validar_cod_barras():
                 preencher_linha_digitavel()
@@ -1110,6 +765,8 @@ inheritance.</p></div>
         else:
             raise BoletoInvalidoException</code></pre>
 </details>
+<div class="desc"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p></div>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="clipbarcode.boleto.Boleto" href="#clipbarcode.boleto.Boleto">Boleto</a></li>
@@ -1121,6 +778,70 @@ inheritance.</p></div>
 <span>def <span class="ident">from_cod_barras</span></span>(<span>self, cod_barras)</span>
 </code></dt>
 <dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def from_cod_barras(self, cod_barras):
+    &#34;&#34;&#34;
+    +---------+---------+----------+--------------------------------------------------------------------------------+
+    | Posição | Tamanho | Picture  | Conteúdo                                                                       |
+    +---------+---------+----------+--------------------------------------------------------------------------------+
+    | 01-03   | 3       | 9(3)     | Identificação do banco                                                         |
+    +---------+---------+----------+--------------------------------------------------------------------------------+
+    | 04-04   | 1       | 9        | Código moeda (9-Real)                                                          |
+    +---------+---------+----------+--------------------------------------------------------------------------------+
+    | 05-05   | 1       | 9        | Dígito verificador do código de barras (DV)                                    |
+    +---------+---------+----------+--------------------------------------------------------------------------------+
+    | 06-09   | 4       | 9(4)     | Fator de vencimento                                                            |
+    +---------+---------+----------+--------------------------------------------------------------------------------+
+    | 10-19   | 10      | 9(08)v99 | Valor nominal do título                                                        |
+    +---------+---------+----------+--------------------------------------------------------------------------------+
+    | 20-44   | 25      | 9(25)    | Campo livre - utilizado de acordo com a especificação interna do banco emissor |
+    +---------+---------+----------+--------------------------------------------------------------------------------+
+    &#34;&#34;&#34;
+
+    def validar_cod_barras():
+        dv = mod11(
+            f&#34;{self.id_banco}{self.cod_moeda}{self.fator_venc}{int(round(self.valor * 100)):010}{self.campo_livre_cod_barras}&#34;
+        )
+        return dv == self.dv_cod_barras
+
+    def preencher_linha_digitavel():
+        self.campo_livre_1 = self.campo_livre_cod_barras[0 : 0 + 5]
+        self.dv1 = mod10(f&#34;{self.id_banco}{self.cod_moeda}{self.campo_livre_1}&#34;)
+
+        self.campo_livre_2 = self.campo_livre_cod_barras[5 : 5 + 10]
+        self.dv2 = mod10(f&#34;{self.campo_livre_2}&#34;)
+
+        self.campo_livre_3 = self.campo_livre_cod_barras[15 : 15 + 10]
+        self.dv3 = mod10(f&#34;{self.campo_livre_3}&#34;)
+
+        self.dv_geral = self.dv_cod_barras
+
+        self.linha_digitavel = f&#34;{self.id_banco}{self.cod_moeda}{self.campo_livre_1}{self.dv1}{self.campo_livre_2}{self.dv2}{self.campo_livre_3}{self.dv3}{self.dv_geral}{self.fator_venc}{int(round(self.valor * 100)):010}&#34;
+
+    cod_barras = re.sub(r&#34;\D&#34;, &#34;&#34;, cod_barras)
+
+    if len(cod_barras) == 44:
+        self.cod_barras = cod_barras
+
+        self.id_banco = cod_barras[0 : 0 + 3]
+        self.cod_moeda = cod_barras[3 : 3 + 1]
+        self.dv_cod_barras = cod_barras[4 : 4 + 1]
+        self.fator_venc = cod_barras[5 : 5 + 4]
+        self.valor = float(Decimal(cod_barras[9 : 9 + 10]) / 100)
+        self.campo_livre_cod_barras = cod_barras[19 : 19 + 25]
+
+        self.venc = calculate_date(DATA_BASE, self.fator_venc)
+
+        if validar_cod_barras():
+            preencher_linha_digitavel()
+        else:
+            raise BoletoInvalidoException
+    else:
+        raise BoletoInvalidoException</code></pre>
+</details>
 <div class="desc"><p>+---------+---------+----------+--------------------------------------------------------------------------------+
 | Posição | Tamanho | Picture
 | Conteúdo
@@ -1160,73 +881,94 @@ inheritance.</p></div>
 | 9(25)
 | Campo livre - utilizado de acordo com a especificação interna do banco emissor |
 +---------+---------+----------+--------------------------------------------------------------------------------+</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def from_cod_barras(self, cod_barras):
-    &#34;&#34;&#34;
-                +---------+---------+----------+--------------------------------------------------------------------------------+
-                | Posição | Tamanho | Picture  | Conteúdo                                                                       |
-                +---------+---------+----------+--------------------------------------------------------------------------------+
-                | 01-03   | 3       | 9(3)     | Identificação do banco                                                         |
-                +---------+---------+----------+--------------------------------------------------------------------------------+
-                | 04-04   | 1       | 9        | Código moeda (9-Real)                                                          |
-                +---------+---------+----------+--------------------------------------------------------------------------------+
-                | 05-05   | 1       | 9        | Dígito verificador do código de barras (DV)                                    |
-                +---------+---------+----------+--------------------------------------------------------------------------------+
-                | 06-09   | 4       | 9(4)     | Fator de vencimento                                                            |
-                +---------+---------+----------+--------------------------------------------------------------------------------+
-                | 10-19   | 10      | 9(08)v99 | Valor nominal do título                                                        |
-                +---------+---------+----------+--------------------------------------------------------------------------------+
-                | 20-44   | 25      | 9(25)    | Campo livre - utilizado de acordo com a especificação interna do banco emissor |
-                +---------+---------+----------+--------------------------------------------------------------------------------+
-            &#34;&#34;&#34;
-
-    def validar_cod_barras():
-        dv = mod11(f&#39;{self.id_banco}{self.cod_moeda}{self.fator_venc}{int(round(self.valor * 100)):010}{self.campo_livre_cod_barras}&#39;)
-        return dv == self.dv_cod_barras
-
-    def preencher_linha_digitavel():
-        self.campo_livre_1  = self.campo_livre_cod_barras[0:0+5]
-        self.dv1            = mod10(f&#39;{self.id_banco}{self.cod_moeda}{self.campo_livre_1}&#39;)
-
-        self.campo_livre_2  = self.campo_livre_cod_barras[5:5+10]
-        self.dv2            = mod10(f&#39;{self.campo_livre_2}&#39;)
-
-        self.campo_livre_3  = self.campo_livre_cod_barras[15:15+10]
-        self.dv3            = mod10(f&#39;{self.campo_livre_3}&#39;)
-
-        self.dv_geral       = self.dv_cod_barras
-
-        self.linha_digitavel = f&#39;{self.id_banco}{self.cod_moeda}{self.campo_livre_1}{self.dv1}{self.campo_livre_2}{self.dv2}{self.campo_livre_3}{self.dv3}{self.dv_geral}{self.fator_venc}{int(self.valor*100):010}&#39;
-
-    cod_barras = re.sub(&#39;\D&#39;, &#39;&#39;, cod_barras)
-
-    if len(cod_barras) == 44:
-        self.cod_barras = cod_barras
-
-        self.id_banco               = cod_barras[ 0: 0 +  3]
-        self.cod_moeda              = cod_barras[ 3: 3 +  1]
-        self.dv_cod_barras          = cod_barras[ 4: 4 +  1]
-        self.fator_venc             = cod_barras[ 5: 5 +  4]
-        self.valor                  = int(cod_barras[ 9: 9 + 10]) / 100
-        self.campo_livre_cod_barras = cod_barras[19:19 + 25]
-
-        self.venc                   = calculate_date(DATA_BASE, self.fator_venc)
-
-        if validar_cod_barras():
-            preencher_linha_digitavel()
-        else:
-            raise BoletoInvalidoException
-    else:
-        raise BoletoInvalidoException</code></pre>
-</details>
 </dd>
 <dt id="clipbarcode.boleto.Cobranca.from_linha_digitavel"><code class="name flex">
 <span>def <span class="ident">from_linha_digitavel</span></span>(<span>self, linha_digitavel)</span>
 </code></dt>
 <dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def from_linha_digitavel(self, linha_digitavel):
+    &#34;&#34;&#34;
+    +---------+---------+--------------------------------------+
+    | Posição | Tamanho | Conteúdo                             |
+    +---------+---------+--------------------------------------+
+    | 01-03   | 3       | Identificação do Banco               |
+    +---------+---------+--------------------------------------+
+    | 04-04   | 1       | Código de Moeda (9 - Real)           |
+    +---------+---------+--------------------------------------+
+    | 05-09   | 5       | Posições 1 a 5 do campo livre        |
+    +---------+---------+--------------------------------------+
+    | 10-10   | 1       | Dígito verificador do primeiro campo |
+    +---------+---------+--------------------------------------+
+    | 11-20   | 10      | Posições 6 a 15 do campo livre       |
+    +---------+---------+--------------------------------------+
+    | 21-21   | 1       | Dígito verificador do segundo campo  |
+    +---------+---------+--------------------------------------+
+    | 22-31   | 10      | Posições 16 a 25 do campo livre      |
+    +---------+---------+--------------------------------------+
+    | 32-32   | 1       | Dígito verificador do terceiro campo |
+    +---------+---------+--------------------------------------+
+    | 33-33   | 1       | Dígito verificador geral             |
+    +---------+---------+--------------------------------------+
+    | 34-37   | 4       | Fator de Vencimento                  |
+    +---------+---------+--------------------------------------+
+    | 38-47   | 10      | Valor nominal do título              |
+    +---------+---------+--------------------------------------+
+    &#34;&#34;&#34;
+
+    def validar_linha_digitavel():
+        dv1 = mod10(f&#34;{self.id_banco}{self.cod_moeda}{self.campo_livre_1}&#34;)
+        dv2 = mod10(f&#34;{self.campo_livre_2}&#34;)
+        dv3 = mod10(f&#34;{self.campo_livre_3}&#34;)
+        dv = mod11(
+            f&#34;{self.id_banco}{self.cod_moeda}{self.fator_venc}{int(round(self.valor * 100)):010}{self.campo_livre_1}{self.campo_livre_2}{self.campo_livre_3}&#34;
+        )
+
+        return (
+            dv1 == self.dv1
+            and dv2 == self.dv2
+            and dv3 == self.dv3
+            and dv == self.dv_geral
+        )
+
+    def preencher_cod_barras():
+        self.campo_livre_cod_barras = (
+            f&#34;{self.campo_livre_1}{self.campo_livre_2}{self.campo_livre_3}&#34;
+        )
+        self.dv_cod_barras = self.dv_geral
+        self.cod_barras = f&#34;{self.id_banco}{self.cod_moeda}{self.dv_cod_barras}{self.fator_venc}{int(round(self.valor * 100)):010}{self.campo_livre_cod_barras}&#34;
+
+    linha_digitavel = re.sub(r&#34;\D&#34;, &#34;&#34;, linha_digitavel)
+
+    if (
+        len(linha_digitavel) == 47
+    ):  # TODO: Realizar verificações necessárias, como verificar se só possuem números e coisas similares
+        self.linha_digitavel = linha_digitavel
+
+        self.id_banco = linha_digitavel[0 : 0 + 3]
+        self.cod_moeda = linha_digitavel[3 : 3 + 1]
+        self.campo_livre_1 = linha_digitavel[4 : 4 + 5]
+        self.dv1 = linha_digitavel[9 : 9 + 1]
+        self.campo_livre_2 = linha_digitavel[10 : 10 + 10]
+        self.dv2 = linha_digitavel[20 : 20 + 1]
+        self.campo_livre_3 = linha_digitavel[21 : 21 + 10]
+        self.dv3 = linha_digitavel[31 : 31 + 1]
+        self.dv_geral = linha_digitavel[32 : 32 + 1]
+        self.fator_venc = linha_digitavel[33 : 33 + 4]
+        self.valor = float(Decimal(linha_digitavel[37 : 37 + 10]) / 100)
+
+        self.venc = calculate_date(DATA_BASE, self.fator_venc)
+
+        if validar_linha_digitavel():
+            preencher_cod_barras()
+        else:
+            raise BoletoInvalidoException
+    else:
+        raise BoletoInvalidoException</code></pre>
+</details>
 <div class="desc"><p>+---------+---------+--------------------------------------+
 | Posição | Tamanho | Conteúdo
 |
@@ -1284,78 +1026,6 @@ inheritance.</p></div>
 | Valor nominal do título
 |
 +---------+---------+--------------------------------------+</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def from_linha_digitavel(self, linha_digitavel):
-    &#34;&#34;&#34;
-        +---------+---------+--------------------------------------+
-        | Posição | Tamanho | Conteúdo                             |
-        +---------+---------+--------------------------------------+
-        | 01-03   | 3       | Identificação do Banco               |
-        +---------+---------+--------------------------------------+
-        | 04-04   | 1       | Código de Moeda (9 - Real)           |
-        +---------+---------+--------------------------------------+
-        | 05-09   | 5       | Posições 1 a 5 do campo livre        |
-        +---------+---------+--------------------------------------+
-        | 10-10   | 1       | Dígito verificador do primeiro campo |
-        +---------+---------+--------------------------------------+
-        | 11-20   | 10      | Posições 6 a 15 do campo livre       |
-        +---------+---------+--------------------------------------+
-        | 21-21   | 1       | Dígito verificador do segundo campo  |
-        +---------+---------+--------------------------------------+
-        | 22-31   | 10      | Posições 16 a 25 do campo livre      |
-        +---------+---------+--------------------------------------+
-        | 32-32   | 1       | Dígito verificador do terceiro campo |
-        +---------+---------+--------------------------------------+
-        | 33-33   | 1       | Dígito verificador geral             |
-        +---------+---------+--------------------------------------+
-        | 34-37   | 4       | Fator de Vencimento                  |
-        +---------+---------+--------------------------------------+
-        | 38-47   | 10      | Valor nominal do título              |
-        +---------+---------+--------------------------------------+
-    &#34;&#34;&#34;
-
-    def validar_linha_digitavel():
-        dv1 = mod10(f&#39;{self.id_banco}{self.cod_moeda}{self.campo_livre_1}&#39;)
-        dv2 = mod10(f&#39;{self.campo_livre_2}&#39;)
-        dv3 = mod10(f&#39;{self.campo_livre_3}&#39;)
-        dv = mod11(f&#39;{self.id_banco}{self.cod_moeda}{self.fator_venc}{int(round(self.valor * 100)):010}{self.campo_livre_1}{self.campo_livre_2}{self.campo_livre_3}&#39;)
-
-        return dv1 == self.dv1 and dv2 == self.dv2 and dv3 == self.dv3 and dv == self.dv_geral
-
-    def preencher_cod_barras():
-        self.campo_livre_cod_barras = f&#39;{self.campo_livre_1}{self.campo_livre_2}{self.campo_livre_3}&#39;
-        self.dv_cod_barras          = self.dv_geral
-        self.cod_barras             = f&#39;{self.id_banco}{self.cod_moeda}{self.dv_cod_barras}{self.fator_venc}{int(round(self.valor * 100)):010}{self.campo_livre_cod_barras}&#39;
-
-    linha_digitavel = re.sub(&#39;\D&#39;, &#39;&#39;, linha_digitavel)
-
-    if len(linha_digitavel) == 47:                          # TODO: Realizar verificações necessárias, como verificar se só possuem números e coisas similares
-        self.linha_digitavel = linha_digitavel
-
-        self.id_banco       = linha_digitavel[ 0: 0 +  3]
-        self.cod_moeda      = linha_digitavel[ 3: 3 +  1]
-        self.campo_livre_1  = linha_digitavel[ 4: 4 +  5]
-        self.dv1            = linha_digitavel[ 9: 9 +  1]
-        self.campo_livre_2  = linha_digitavel[10:10 + 10]
-        self.dv2            = linha_digitavel[20:20 +  1]
-        self.campo_livre_3  = linha_digitavel[21:21 + 10]
-        self.dv3            = linha_digitavel[31:31 +  1]
-        self.dv_geral       = linha_digitavel[32:32 +  1]
-        self.fator_venc     = linha_digitavel[33:33 +  4]
-        self.valor          = int(linha_digitavel[37:37 + 10]) / 100
-
-        self.venc           = calculate_date(DATA_BASE, self.fator_venc)
-
-        if validar_linha_digitavel():
-            preencher_cod_barras()
-        else:
-            raise BoletoInvalidoException
-    else:
-        raise BoletoInvalidoException</code></pre>
-</details>
 </dd>
 </dl>
 </dd>
@@ -1363,7 +1033,6 @@ inheritance.</p></div>
 </section>
 </article>
 <nav id="sidebar">
-<h1>Index</h1>
 <div class="toc">
 <ul></ul>
 </div>
@@ -1395,9 +1064,6 @@ inheritance.</p></div>
 </ul>
 </li>
 <li>
-<h4><code><a title="clipbarcode.boleto.BoletoInvalidoException" href="#clipbarcode.boleto.BoletoInvalidoException">BoletoInvalidoException</a></code></h4>
-</li>
-<li>
 <h4><code><a title="clipbarcode.boleto.Cobranca" href="#clipbarcode.boleto.Cobranca">Cobranca</a></code></h4>
 <ul class="">
 <li><code><a title="clipbarcode.boleto.Cobranca.from_cod_barras" href="#clipbarcode.boleto.Cobranca.from_cod_barras">from_cod_barras</a></code></li>
@@ -1410,7 +1076,7 @@ inheritance.</p></div>
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.6</a>.</p>
 </footer>
 </body>
 </html>

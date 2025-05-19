@@ -1,20 +1,18 @@
-# =============================================================================
 import re
 from abc import ABC, abstractmethod
 from decimal import Decimal
 
-from .datetime_tools import calculate_date
-from .digito_verificador import mod10, mod11
+from clipbarcode.datetime_tools import calculate_date
+from clipbarcode.digito_verificador import mod10, mod11
+from clipbarcode.exceptions import BoletoInvalidoException
 
-# =============================================================================
 DATA_BASE = "07/10/1997"
 
 
-# =============================================================================
 def new_boleto(*args, **kwargs):
     if "linha_digitavel" in kwargs:
         linha_digitavel = kwargs.get("linha_digitavel")
-        linha_digitavel = re.sub("\D", "", linha_digitavel)
+        linha_digitavel = re.sub(r"\D", "", linha_digitavel)
 
         if len(linha_digitavel) == 47:
             try:
@@ -26,7 +24,7 @@ def new_boleto(*args, **kwargs):
 
     elif "cod_barras" in kwargs:
         cod_barras = kwargs.get("cod_barras")
-        cod_barras = re.sub("\D", "", cod_barras)
+        cod_barras = re.sub(r"\D", "", cod_barras)
 
         if len(cod_barras) == 44:
             if cod_barras[0] == "8":
@@ -37,12 +35,6 @@ def new_boleto(*args, **kwargs):
     raise BoletoInvalidoException
 
 
-# =============================================================================
-class BoletoInvalidoException(Exception):
-    pass
-
-
-# =============================================================================
 class Boleto(ABC):
     def __init__(self, *args, **kwargs):
         self.linha_digitavel = None
@@ -146,7 +138,7 @@ class Arrecadacao(Boleto):
         def preencher_cod_barras():
             self.cod_barras = f"{self.campo1}{self.campo2}{self.campo3}{self.campo4}"
 
-        linha_digitavel = re.sub("\D", "", linha_digitavel)
+        linha_digitavel = re.sub(r"\D", "", linha_digitavel)
 
         if len(linha_digitavel) == 48:
             self.linha_digitavel = linha_digitavel
@@ -232,7 +224,7 @@ class Arrecadacao(Boleto):
 
             self.linha_digitavel = f"{self.campo1}{self.dv1}{self.campo2}{self.dv2}{self.campo3}{self.dv3}{self.campo4}{self.dv4}"
 
-        cod_barras = re.sub("\D", "", cod_barras)
+        cod_barras = re.sub(r"\D", "", cod_barras)
 
         if len(cod_barras) == 44:
             self.cod_barras = cod_barras
@@ -343,7 +335,7 @@ class Cobranca(Boleto):
             self.dv_cod_barras = self.dv_geral
             self.cod_barras = f"{self.id_banco}{self.cod_moeda}{self.dv_cod_barras}{self.fator_venc}{int(round(self.valor * 100)):010}{self.campo_livre_cod_barras}"
 
-        linha_digitavel = re.sub("\D", "", linha_digitavel)
+        linha_digitavel = re.sub(r"\D", "", linha_digitavel)
 
         if (
             len(linha_digitavel) == 47
@@ -410,7 +402,7 @@ class Cobranca(Boleto):
 
             self.linha_digitavel = f"{self.id_banco}{self.cod_moeda}{self.campo_livre_1}{self.dv1}{self.campo_livre_2}{self.dv2}{self.campo_livre_3}{self.dv3}{self.dv_geral}{self.fator_venc}{int(round(self.valor * 100)):010}"
 
-        cod_barras = re.sub("\D", "", cod_barras)
+        cod_barras = re.sub(r"\D", "", cod_barras)
 
         if len(cod_barras) == 44:
             self.cod_barras = cod_barras
@@ -430,17 +422,3 @@ class Cobranca(Boleto):
                 raise BoletoInvalidoException
         else:
             raise BoletoInvalidoException
-
-
-# =============================================================================
-"""
-    https://www.boletobancario-codigodebarras.com/2016/04/linha-digitavel.html
-    https://cmsarquivos.febraban.org.br/Arquivos/documentos/PDF/Layout%20-%20C%C3%B3digo%20de%20Barras%20ATUALIZADO.pdf
-    https://www.macoratti.net/07/10/net_bol.htm
-    https://www.banese.com.br/wps/discovirtual/download?nmInternalFolder=/Empresa_recebimento&nmFile=Composicao%20da%20Linha%20Digitavel%20e%20do%20Codigo%20de%20Barras_05062017.pdf
-    https://demo.iprefeituras.com.br/uploads/noticia/16091/manual_cnab_400.pdf
-    https://www.bb.com.br/docs/pub/emp/empl/dwn/Doc5175Bloqueto.pdf
-    https://www.bb.com.br/docs/pub/emp/empl/dwn/Doc8122GuiaNaoComp.pdf
-"""
-
-# =============================================================================

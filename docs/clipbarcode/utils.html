@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
 <meta name="generator" content="pdoc3 0.11.6">
-<title>clipbarcode.database API documentation</title>
+<title>clipbarcode.utils API documentation</title>
 <meta name="description" content="">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
@@ -33,7 +33,7 @@ el.replaceWith(d);
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>clipbarcode.database</code></h1>
+<h1 class="title">Module <code>clipbarcode.utils</code></h1>
 </header>
 <section id="section-intro">
 </section>
@@ -42,6 +42,32 @@ el.replaceWith(d);
 <section>
 </section>
 <section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="clipbarcode.utils.resource_path"><code class="name flex">
+<span>def <span class="ident">resource_path</span></span>(<span>relative_path)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def resource_path(relative_path):
+    &#34;&#34;&#34;Get the absolute path to a resource, works for development and PyInstaller.&#34;&#34;&#34;
+
+    if hasattr(sys, &#34;_MEIPASS&#34;):
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    else:
+        # Path when running the script directly (development)
+        base_path = os.path.abspath(&#34;.&#34;)
+
+    # Resulting path
+    return os.path.join(base_path, relative_path)</code></pre>
+</details>
+<div class="desc"><p>Get the absolute path to a resource, works for development and PyInstaller.</p></div>
+</dd>
+</dl>
 </section>
 <section>
 </section>
@@ -54,6 +80,11 @@ el.replaceWith(d);
 <li><h3>Super-module</h3>
 <ul>
 <li><code><a title="clipbarcode" href="index.html">clipbarcode</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="clipbarcode.utils.resource_path" href="#clipbarcode.utils.resource_path">resource_path</a></code></li>
 </ul>
 </li>
 </ul>
