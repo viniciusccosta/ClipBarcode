@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "clipbarcode"
-version = "2.1.1"
+version = "2.1.2"
 description = "Aplicação para leitura de códigos de barras e QR Codes a partir de capturas de tela."
 authors = ["Vinícius Costa <viniciusccosta95@gmail.com>"]
 license = "MIT"
