@@ -31,7 +31,7 @@ a = Analysis(
         ("/opt/homebrew/share/tessdata", "tessdata"),
     ],
     hiddenimports=[],
-    hookspath=[],
+    hookspath=["./hooks"],  # Add custom hooks directory
     hooksconfig={},
     runtime_hooks=[],
     excludes=[],
@@ -80,9 +80,14 @@ coll = BUNDLE(
         "CFBundleName": "ClipBarcode",  # Short name for the app
         "CFBundleVersion": version,  # Full version number
         "CFBundleShortVersionString": version,  # User-visible version
+        "CFBundleIconFile": "icon.icns", 
         "LSApplicationCategoryType": "public.app-category.productivity",  # App category
         "NSHighResolutionCapable": True,  # Support for Retina displays
         "NSAppleScriptEnabled": True,
         "NSClipboardUsageDescription": "This app needs clipboard access to read barcodes.",
+        # Additional keys to help with icon consistency
+        "CFBundleDocumentTypes": [],
+        "LSMinimumSystemVersion": "10.13.0",
+        "NSPrincipalClass": "NSApplication",
     },
 )

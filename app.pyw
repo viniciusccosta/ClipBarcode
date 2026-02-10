@@ -64,7 +64,25 @@ class App(ttk.Window):
 
         self.title(f"Clip Barcode {CURRENT_VERSION}")
         self.geometry("1280x720")
-        self.iconbitmap(resource_path("assets/icon.png"))
+
+        # Set window icon for macOS compatibility
+        try:
+            # Load the icon image
+            icon_image = Image.open(resource_path("assets/icon.png"))
+            # Convert to PhotoImage for Tkinter
+            icon_photo = ImageTk.PhotoImage(icon_image)
+            # Set the window icon using wm_iconphoto (works better on macOS)
+            self.wm_iconphoto(True, icon_photo)
+            # Keep a reference to prevent garbage collection
+            self.icon_photo = icon_photo
+        except Exception as e:
+            print(f"Failed to set window icon: {e}")
+            # Fallback to iconbitmap if PhotoImage fails
+            try:
+                self.iconbitmap(resource_path("assets/icon.png"))
+            except Exception:
+                pass
+
         self.place_window_center()
         self.position_center()
 
