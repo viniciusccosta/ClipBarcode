@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "clipbarcode"
-version = "2.1.3"
+version = "2.1.4"
 description = "Aplicação para leitura de códigos de barras e QR Codes a partir de capturas de tela."
 authors = ["Vinícius Costa <viniciusccosta95@gmail.com>"]
 license = "MIT"
@@ -10,15 +10,14 @@ package-mode = false
 [tool.poetry.dependencies]
 python = "~3.12"
 peewee = "^3.17.9"
-python-dotenv = "^1.1.0"
+python-dotenv = "^1.2.2"
 python-dateutil = "^2.9.0.post0"
 pytesseract = "^0.3.13"
 pyzbar = "^0.1.9"
 pyperclip = "^1.9.0"
-ttkbootstrap = "^1.12.0"
-tkhtmlview = "^0.3.1"
-markdown = "^3.7"
-requests = "^2.32.3"
+ttkbootstrap = "^1.20.0"
+Pillow = "^12.1.1"
+requests = "^2.33.0"
 pyparsing = "^3.2.3"
 toml = "^0.10.2"
 rich = "^14.0.0"
@@ -26,10 +25,15 @@ python-decouple = "^3.8"
 
 [tool.poetry.group.dev.dependencies]
 pdoc3 = "^0.11.6"
+markdown = "^3.8.1"
+mako = "^1.3.11"
+pygments = "^2.20.0"
 pyinstaller = "^6.12.0"
 taskipy = "^1.14.1"
-pytest = "^8.3.5"
+pytest = "^9.0.3"
 pre-commit = "^4.6.0"
+isort = "^8.0.1"
+black = "^26.3.1"
 
 [build-system]
 requires = ["poetry-core"]
