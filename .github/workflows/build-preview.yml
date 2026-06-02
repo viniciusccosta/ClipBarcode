@@ -1,0 +1,55 @@
+name: Build Preview DMG
+
+on:
+  pull_request:
+    branches:
+      - master
+      - main
+
+permissions:
+  contents: read
+  checks: read
+  pull-requests: read
+
+jobs:
+  build-preview:
+    name: Build macOS App & DMG Preview
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - name: Set up Python
+        id: setup-python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Poetry
+        run: pipx install --python "${{ steps.setup-python.outputs.python-path }}" poetry==2.1.2
+
+      - name: Install dependencies
+        run: poetry install --no-interaction --no-ansi
+
+      - name: Install create-dmg
+        run: brew install create-dmg
+
+      - name: Grant execution permissions to scripts
+        run: chmod +x scripts/build.sh scripts/create_dmg.sh
+
+      - name: Build .app
+        run: ./scripts/build.sh
+
+      - name: Create .dmg
+        run: ./scripts/create_dmg.sh
+
+      - name: Upload DMG artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ClipBarcode-dmg-preview
+          path: ClipBarcode.dmg
+          if-no-files-found: error
