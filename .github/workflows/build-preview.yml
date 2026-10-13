@@ -36,7 +36,7 @@ jobs:
         run: poetry install --no-interaction --no-ansi
 
       - name: Install create-dmg
-        run: brew install create-dmg
+        run: brew install create-dmg tesseract
 
       - name: Grant execution permissions to scripts
         run: chmod +x scripts/build.sh scripts/create_dmg.sh

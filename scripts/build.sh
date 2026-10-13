@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 APP_NAME="ClipBarcode"
 DMG_NAME="${APP_NAME}.dmg"
