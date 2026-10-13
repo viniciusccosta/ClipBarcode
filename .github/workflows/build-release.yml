@@ -1,0 +1,64 @@
+name: Build Release
+
+on:
+  push:
+    branches:
+      - master
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+  pull-requests: read
+
+jobs:
+  build-and-release:
+    name: Build macOS App & DMG
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        id: setup-python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Poetry
+        run: pipx install --python "${{ steps.setup-python.outputs.python-path }}" poetry==2.1.2
+
+      - name: Install dependencies
+        run: poetry install --no-interaction --no-ansi
+
+      - name: Install create-dmg
+        run: brew install create-dmg
+
+      - name: Grant execution permissions to scripts
+        run: chmod +x scripts/build.sh scripts/create_dmg.sh
+
+      - name: Build .app
+        run: ./scripts/build.sh
+
+      - name: Create .dmg
+        run: ./scripts/create_dmg.sh
+
+      - name: Get version
+        id: get-version
+        run: echo "version=$(poetry version -s)" >> "$GITHUB_OUTPUT"
+
+      - name: Draft GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: "v${{ steps.get-version.outputs.version }}"
+          files: ClipBarcode.dmg
+          draft: true
+          name: "Release v${{ steps.get-version.outputs.version }}"
+          body: |
+            Draft release for v${{ steps.get-version.outputs.version }}.
+            Please review and publish.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

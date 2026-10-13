@@ -1,0 +1,41 @@
+name: Validate Version Bump
+
+on:
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Detect pyproject changes
+        id: changes
+        run: |
+          if git diff --name-only "origin/${{ github.base_ref }}...${{ github.sha }}" | grep -qx 'pyproject.toml'; then
+            echo "pyproject_changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "pyproject_changed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Install dependencies
+        if: steps.changes.outputs.pyproject_changed == 'true'
+        run: pip install packaging toml
+
+      - name: Check version bump
+        if: steps.changes.outputs.pyproject_changed == 'true'
+        run: python scripts/check_version_bump.py
